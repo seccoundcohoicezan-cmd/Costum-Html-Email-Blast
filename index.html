@@ -390,18 +390,59 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
     <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 3</span>Generate</div>
   </div>
 
-  <!-- ── BASE64 INFO CARD ── -->
+  <!-- ── CARA PAKAI ── -->
   <div class="card" id="imgurSetupCard">
-    <div class="card-head">🖼 Mode Gambar — Embed Base64 <span class="tag" style="color:var(--a2)">✅ SIAP PAKAI</span></div>
+    <div class="card-head">🔗 Cara Mendapatkan URL Gambar <span class="tag" style="color:var(--a2)">GRATIS · TANPA API KEY</span></div>
     <div class="card-body">
-      <div class="alert alert-ok">
+      <div class="alert alert-info" style="margin-bottom:10px">
         <div>
-          <strong>Tidak perlu API key atau upload eksternal!</strong><br>
-          <span style="font-family:var(--mono);font-size:11px;line-height:2">
-            Gambar di-embed langsung sebagai <strong>base64</strong> di dalam HTML email.<br>
-            ✅ Tidak ada CORS · ✅ Tidak perlu akun ImgBB · ✅ Bekerja di semua email client<br>
-            ⚠ Catatan: base64 membuat ukuran HTML lebih besar — cocok untuk gambar &lt; 200 KB.
+          <strong>Kenapa perlu URL, bukan upload langsung?</strong><br>
+          <span style="font-family:var(--mono);font-size:11px;line-height:1.9">
+            Output HTML dikirim via Google Sheets (FormMule) yang punya batas <strong>50.000 karakter per sel</strong>.<br>
+            Base64 gambar bisa mencapai 500.000+ karakter — langsung melebihi batas tersebut.<br>
+            Solusi: gambar dihosting di luar, email cukup menyimpan <strong>URL pendek</strong> saja.
           </span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:var(--s2);border:1px solid var(--border);padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--a2);margin-bottom:8px;letter-spacing:.06em">✅ OPSI 1 — Google Drive (Recommended)</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text2);line-height:2">
+            1. Upload gambar ke Google Drive<br>
+            2. Klik kanan → <strong>Share</strong> → <strong>Anyone with the link</strong><br>
+            3. Copy link → paste di bawah<br>
+            4. Klik <strong>🔄 Konversi ke Direct URL</strong>
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:var(--text3);font-family:var(--mono)">Format: drive.google.com/file/d/<span style="color:var(--a4)">FILE_ID</span>/view</div>
+        </div>
+        <div style="background:var(--s2);border:1px solid var(--border);padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--a1);margin-bottom:8px;letter-spacing:.06em">✅ OPSI 2 — Hosting Lain</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text2);line-height:2">
+            • <strong>Cloudinary</strong> — cloudinary.com (gratis)<br>
+            • <strong>Imgur</strong> — imgur.com (upload manual)<br>
+            • <strong>GitHub</strong> — raw.githubusercontent.com<br>
+            • Server sendiri / VPS
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:var(--text3);font-family:var(--mono)">Pastikan URL langsung ke file gambar (berakhir .png/.jpg)</div>
+        </div>
+      </div>
+
+      <!-- Google Drive converter -->
+      <div style="margin-top:12px;background:var(--s2);border:1px solid var(--border);padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--a4);margin-bottom:8px">🔄 Google Drive URL Converter</div>
+        <div style="display:flex;gap:8px;align-items:flex-end">
+          <div class="field" style="flex:1;margin-bottom:0">
+            <label>Paste Google Drive Share Link</label>
+            <input type="text" id="gdriveLinkInput" placeholder="https://drive.google.com/file/d/XXXX/view?usp=sharing" style="font-family:var(--mono);font-size:11px">
+          </div>
+          <button class="btn btn-warn" onclick="convertGdriveUrl()" style="flex-shrink:0;height:38px">🔄 Konversi</button>
+        </div>
+        <div id="gdriveResult" style="display:none;margin-top:8px;padding:8px 12px;background:var(--bg);border:1px solid var(--border2);font-family:var(--mono);font-size:11px;color:var(--a2);word-break:break-all"></div>
+        <div style="display:flex;gap:8px;margin-top:8px" id="gdriveBtns" style="display:none">
+          <button class="btn btn-ghost" onclick="applyGdriveTo('header')" style="font-size:11px;padding:5px 12px">→ Pakai untuk Header</button>
+          <button class="btn btn-ghost" onclick="applyGdriveTo('footer')" style="font-size:11px;padding:5px 12px">→ Pakai untuk Footer</button>
+          <button class="btn btn-ghost" onclick="copyGdriveUrl()" style="font-size:11px;padding:5px 12px">📋 Copy URL</button>
         </div>
       </div>
     </div>
@@ -423,23 +464,9 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
       </div>
 
       <div id="headerImgFields" style="display:none">
-        <!-- Upload zone -->
-        <div class="imgur-upload-zone" id="headerDropZone"
-             onclick="document.getElementById('headerFileInput').click()"
-             ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event,'headerDropZone')" ondrop="handleDrop(event,'header')">
-          <div class="imgur-upload-icon">📁</div>
-          <div class="imgur-upload-text">Klik atau drag &amp; drop file PNG/JPG/GIF</div>
-          <div class="imgur-upload-sub" id="headerUploadStatus">PNG/JPG/GIF · Di-embed sebagai base64 langsung di HTML</div>
-          <div class="imgur-progress" id="headerProgress" style="display:none">
-            <div class="imgur-progress-bar" id="headerProgressBar"></div>
-          </div>
-        </div>
-        <input type="file" id="headerFileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event,'header')">
-
-        <!-- URL field (auto-filled after upload) -->
-        <div class="field" style="margin-top:12px">
-          <label>URL / Data Gambar Header <span id="headerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ BASE64 EMBED</span></label>
-          <input type="text" id="cfHeaderImgUrl" placeholder="Otomatis terisi base64 setelah upload — atau paste URL manual" oninput="previewImg('header')" style="font-family:var(--mono);font-size:11px">
+        <div class="field">
+          <label>URL Gambar Header <span id="headerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ OK</span></label>
+          <input type="text" id="cfHeaderImgUrl" placeholder="https://drive.google.com/uc?export=view&id=..." oninput="previewImg('header')" style="font-family:var(--mono);font-size:11px">
         </div>
 
         <div class="row2">
@@ -457,7 +484,6 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
           <input type="text" id="cfHeaderImgH" value="120">
         </div>
 
-        <!-- Preview -->
         <div style="margin-top:8px">
           <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:700">Preview</div>
           <div class="img-preview-box" id="headerImgPreview" style="height:80px">Belum ada gambar</div>
@@ -482,21 +508,9 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
       </div>
 
       <div id="footerImgFields" style="display:none">
-        <div class="imgur-upload-zone" id="footerDropZone"
-             onclick="document.getElementById('footerFileInput').click()"
-             ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event,'footerDropZone')" ondrop="handleDrop(event,'footer')">
-          <div class="imgur-upload-icon">📁</div>
-          <div class="imgur-upload-text">Klik atau drag &amp; drop file PNG/JPG/GIF</div>
-          <div class="imgur-upload-sub" id="footerUploadStatus">PNG/JPG/GIF · Di-embed sebagai base64 langsung di HTML</div>
-          <div class="imgur-progress" id="footerProgress" style="display:none">
-            <div class="imgur-progress-bar" id="footerProgressBar"></div>
-          </div>
-        </div>
-        <input type="file" id="footerFileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event,'footer')">
-
-        <div class="field" style="margin-top:12px">
-          <label>URL / Data Gambar Footer <span id="footerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ BASE64 EMBED</span></label>
-          <input type="text" id="cfFooterImgUrl" placeholder="Otomatis terisi base64 setelah upload — atau paste URL manual" oninput="previewImg('footer')" style="font-family:var(--mono);font-size:11px">
+        <div class="field">
+          <label>URL Gambar Footer <span id="footerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ OK</span></label>
+          <input type="text" id="cfFooterImgUrl" placeholder="https://drive.google.com/uc?export=view&id=..." oninput="previewImg('footer')" style="font-family:var(--mono);font-size:11px">
         </div>
 
         <div class="row2">
@@ -824,12 +838,12 @@ function getVars(forPreview) {
     url_pelatihan: forPreview ? 'https://drive.google.com/uc?id=pelatihan' : '<<LINK_SERTIFIKAT_PELATIHAN>>',
     // Image config
     headerImgOn: headerOn,
-    headerImgUrl: document.getElementById('cfHeaderImgUrl').value || '',
+    headerImgUrl: getImgSrc('header'),
     headerImgLink: document.getElementById('cfHeaderImgLink').value || '#',
     headerImgAlt: document.getElementById('cfHeaderImgAlt').value || 'Header Email',
     headerImgH: document.getElementById('cfHeaderImgH').value || '120',
     footerImgOn: footerOn,
-    footerImgUrl: document.getElementById('cfFooterImgUrl').value || '',
+    footerImgUrl: getImgSrc('footer'),
     footerImgLink: document.getElementById('cfFooterImgLink').value || '#',
     footerImgAlt: document.getElementById('cfFooterImgAlt').value || 'Footer Email',
     footerImgH: document.getElementById('cfFooterImgH').value || '80'
@@ -1153,96 +1167,77 @@ function updateImgNavBadge() {
 }
 
 function previewImg(which) {
-  const url = document.getElementById('cf' + (which==='header'?'Header':'Footer') + 'ImgUrl').value;
+  const url = getImgSrc(which);
   const box = document.getElementById(which + 'ImgPreview');
   if (!url) { box.innerHTML = '<span>Belum ada gambar</span>'; return; }
-  box.innerHTML = `<img src="${url}" alt="preview" style="max-height:100%;max-width:100%;object-fit:contain" onerror="this.parentNode.innerHTML='<span style=color:var(--a3)>❌ URL tidak bisa dimuat. Cek link publik.</span>'" onload="this.parentNode.style.background='#0008'">`;
+  box.innerHTML = `<img src="${url}" alt="preview" style="max-height:100%;max-width:100%;object-fit:contain" onerror="this.parentNode.innerHTML='<span style=color:var(--a3)>❌ URL tidak bisa dimuat</span>'">`;
 }
 
-// ═══ BASE64 IMAGE EMBED ═══
-// No API key, no CORS — images embedded directly as data URIs
+// ═══ IMAGE URL HELPERS ═══
 
-// Store base64 data URIs keyed by 'header' / 'footer'
-const imgBase64 = { header: '', footer: '' };
-
-function fileToDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result); // full data:image/...;base64,... string
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+function getImgSrc(which) {
+  return document.getElementById('cf' + (which === 'header' ? 'Header' : 'Footer') + 'ImgUrl').value.trim();
 }
 
-async function embedImageAsBase64(file, which) {
-  const zone     = document.getElementById(which + 'DropZone');
-  const status   = document.getElementById(which + 'UploadStatus');
-  const progress = document.getElementById(which + 'Progress');
-  const progressBar = document.getElementById(which + 'ProgressBar');
-  const urlInput = document.getElementById('cf' + (which === 'header' ? 'Header' : 'Footer') + 'ImgUrl');
-  const urlBadge = document.getElementById(which + 'UrlBadge');
-
-  const MAX_BYTES = 500 * 1024; // warn above 500 KB
-  if (file.size > 10 * 1024 * 1024) { toast('File terlalu besar (maks 10MB untuk base64)', 'warn'); return; }
-
-  zone.classList.add('uploading');
-  zone.classList.remove('done');
-  status.textContent = '⏳ Membaca & mengkonversi ke base64...';
-  progress.style.display = 'block';
-  progressBar.style.width = '30%';
-
-  try {
-    const dataUrl = await fileToDataURL(file);
-    progressBar.style.width = '100%';
-
-    // Store and inject into URL input field so existing generate logic works
-    imgBase64[which] = dataUrl;
-    urlInput.value = dataUrl;
-    urlBadge.style.display = 'inline';
-    previewImg(which);
-
-    zone.classList.remove('uploading');
-    zone.classList.add('done');
-
-    const kb = (file.size / 1024).toFixed(0);
-    const sizeWarn = file.size > MAX_BYTES ? ' ⚠ >500KB — pertimbangkan kompres dulu' : '';
-    status.textContent = `✅ Base64 siap! ${file.name} (${kb} KB)${sizeWarn}`;
-    setTimeout(() => { progress.style.display = 'none'; progressBar.style.width = '0%'; }, 1200);
-    toast(`✔ Gambar ${which} siap (base64 embed)`, 'ok');
-    setStatus(`✔ Base64 OK — ${file.name}`);
-  } catch(e) {
-    zone.classList.remove('uploading');
-    status.textContent = '❌ Gagal membaca file: ' + e.message;
-    progressBar.style.background = 'var(--a3)';
-    setTimeout(() => { progress.style.display='none'; progressBar.style.background=''; progressBar.style.width='0%'; }, 2500);
-    toast('❌ Gagal: ' + e.message, 'err');
+function previewImg(which) {
+  const url = getImgSrc(which);
+  const badge = document.getElementById(which + 'UrlBadge');
+  const box = document.getElementById(which + 'ImgPreview');
+  if (!url) {
+    box.innerHTML = '<span>Belum ada gambar</span>';
+    if (badge) badge.style.display = 'none';
+    return;
   }
+  if (badge) badge.style.display = 'inline';
+  box.innerHTML = `<img src="${url}" alt="preview" style="max-height:100%;max-width:100%;object-fit:contain" onerror="this.parentNode.innerHTML='<span style=color:var(--a3)>❌ URL tidak bisa dimuat — pastikan link publik</span>'">`;
 }
 
-// ── Drag & Drop handlers ──
-function handleDragOver(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  const zone = e.currentTarget;
-  zone.classList.add('drag-over');
+// ── Google Drive URL Converter ──
+let _gdriveConverted = '';
+
+function convertGdriveUrl() {
+  const raw = document.getElementById('gdriveLinkInput').value.trim();
+  const resultBox = document.getElementById('gdriveResult');
+  const btnsBox   = document.getElementById('gdriveBtns');
+
+  // Extract file ID from various GDrive URL formats
+  const match = raw.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  if (!match) {
+    resultBox.style.display = 'block';
+    resultBox.style.color = 'var(--a3)';
+    resultBox.textContent = '❌ URL tidak dikenali. Pastikan format: drive.google.com/file/d/FILE_ID/view';
+    btnsBox.style.display = 'none';
+    _gdriveConverted = '';
+    return;
+  }
+
+  const fileId = match[1];
+  const directUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+  _gdriveConverted = directUrl;
+
+  resultBox.style.display = 'block';
+  resultBox.style.color = 'var(--a2)';
+  resultBox.textContent = '✅ ' + directUrl;
+  btnsBox.style.display = 'flex';
+  toast('✔ URL berhasil dikonversi!', 'ok');
 }
-function handleDragLeave(e, zoneId) {
-  document.getElementById(zoneId).classList.remove('drag-over');
+
+function applyGdriveTo(which) {
+  if (!_gdriveConverted) return;
+  document.getElementById('cf' + (which === 'header' ? 'Header' : 'Footer') + 'ImgUrl').value = _gdriveConverted;
+  previewImg(which);
+  toast(`✔ URL dipakai untuk ${which}`, 'ok');
+  // Auto-enable the toggle if not already on
+  const cb = document.getElementById('cf' + (which === 'header' ? 'Header' : 'Footer') + 'ImgOn');
+  if (cb && !cb.checked) { cb.checked = true; toggleImgSection(which); }
 }
-function handleDrop(e, which) {
-  e.preventDefault();
-  e.stopPropagation();
-  const zone = document.getElementById(which + 'DropZone');
-  zone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) embedImageAsBase64(file, which);
-  else toast('File harus berupa gambar (PNG/JPG/GIF)', 'warn');
+
+function copyGdriveUrl() {
+  if (!_gdriveConverted) return;
+  navigator.clipboard.writeText(_gdriveConverted).then(() => toast('📋 URL disalin!', 'ok'));
 }
-function handleFileSelect(e, which) {
-  const file = e.target.files[0];
-  if (file) embedImageAsBase64(file, which);
-  e.target.value = ''; // reset so same file can be re-selected
-}
+
+// ── Drag & Drop removed — using URL input instead ──
 
 // ═══ MODE ═══
 function setMode(m) {
