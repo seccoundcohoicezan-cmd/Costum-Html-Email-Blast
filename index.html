@@ -1202,6 +1202,31 @@ function loadSavedClientId() {
   } catch(e) {}
 }
 
+// Convert file to base64 string (strips data:...;base64, prefix)
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// Post to ImgBB using URLSearchParams (avoids CORS preflight that blocks FormData)
+async function imgbbPost(apiKey, b64image, name) {
+  const params = new URLSearchParams();
+  params.append('key', apiKey);
+  params.append('image', b64image);
+  if (name) params.append('name', name);
+  const res = await fetch('https://api.imgbb.com/1/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString()
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
 async function testImgurConnection(silent = false) {
   const id = document.getElementById('cfImgurClientId').value.trim();
   if (!id) { toast('Isi API Key dulu','warn'); return; }
@@ -1212,18 +1237,9 @@ async function testImgurConnection(silent = false) {
   resultBox.innerHTML = '<span style="color:var(--a4);font-family:var(--mono);font-size:11px">⏳ Menghubungkan ke ImgBB API...</span>';
 
   try {
-    // Test ImgBB API with a minimal 1x1 pixel PNG (base64)
+    // 1x1 transparent PNG in base64
     const testPixel = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-    const formData = new FormData();
-    formData.append('key', id);
-    formData.append('image', testPixel);
-    formData.append('name', 'test_connection');
-
-    const res = await fetch('https://api.imgbb.com/1/upload', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
+    const data = await imgbbPost(id, testPixel, 'test');
 
     if (data.success) {
       imgurClientId = id;
@@ -1264,33 +1280,28 @@ async function uploadToImgur(file, which) {
 
   zone.classList.add('uploading');
   zone.classList.remove('done');
-  status.textContent = '⏳ Mengupload ke ImgBB CDN...';
+  status.textContent = '⏳ Mengkonversi & upload ke ImgBB...';
   progress.style.display = 'block';
   progressBar.style.width = '0%';
 
   let prog = 0;
   const progInterval = setInterval(() => {
-    prog = Math.min(prog + Math.random() * 15, 85);
+    prog = Math.min(prog + Math.random() * 12, 80);
     progressBar.style.width = prog + '%';
   }, 200);
 
   try {
-    const formData = new FormData();
-    formData.append('key', imgurClientId);
-    formData.append('image', file);
-    formData.append('name', file.name.replace(/\.[^.]+$/, ''));
-
-    const res = await fetch('https://api.imgbb.com/1/upload', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
+    // Convert file to base64 first (bypasses CORS preflight issue with FormData)
+    const b64 = await fileToBase64(file);
+    const name = file.name.replace(/\.[^.]+$/, '');
+    const data = await imgbbPost(imgurClientId, b64, name);
 
     clearInterval(progInterval);
     progressBar.style.width = '100%';
 
     if (data.success) {
-      const imgUrl = data.data.url;
+      // Prefer display_url (direct image link, no HTML wrapper)
+      const imgUrl = data.data.display_url || data.data.url;
       urlInput.value = imgUrl;
       urlBadge.style.display = 'inline';
       previewImg(which);
