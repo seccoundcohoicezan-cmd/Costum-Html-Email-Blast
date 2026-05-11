@@ -398,19 +398,14 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
       <!-- How to get API Key -->
       <div class="alert alert-info" style="margin-bottom:14px">
         <div>
-          <strong>Setup ImgBB API (wajib 2 langkah):</strong><br>
+          <strong>Cara dapat API Key ImgBB (gratis, &lt;1 menit):</strong><br>
           <span style="font-family:var(--mono);font-size:11px;line-height:2">
-            1. Buka <strong>api.imgbb.com</strong> → login → klik <strong>Add API key</strong> → copy key<br>
-            2. ⚠️ <strong>WAJIB:</strong> Di halaman yang sama, scroll ke bagian <strong>"Domains"</strong> atau <strong>"Allowed hosts"</strong><br>
-            &nbsp;&nbsp;&nbsp;→ Tambahkan domain: <strong>costom-html-email-blast.vercel.app</strong><br>
-            &nbsp;&nbsp;&nbsp;→ Tambahkan juga: <strong>localhost</strong> (untuk testing lokal)<br>
-            &nbsp;&nbsp;&nbsp;→ Klik Save/Add<br>
-            3. Paste API key di bawah → Test & Connect
+            1. Buka <strong>api.imgbb.com</strong> → login (pakai akun imgbb.com)<br>
+            2. Klik <strong>Add API key</strong> → beri nama bebas → klik <strong>Generate</strong><br>
+            3. Copy API key yang muncul → paste di kotak bawah<br>
+            4. Klik <strong>🔌 Test &amp; Connect</strong>
           </span>
         </div>
-      </div>
-      <div style="background:rgba(227,179,65,.1);border-left:3px solid var(--a4);padding:8px 12px;margin-bottom:12px;font-size:11px;font-family:var(--mono);color:var(--a4)">
-        ⚠ Error "forbidden" = domain Vercel belum diwhitelist di akun ImgBB Anda
       </div>
 
       <div style="display:flex;gap:10px;align-items:flex-end">
@@ -1217,7 +1212,7 @@ function fileToBase64(file) {
   });
 }
 
-// Post to ImgBB using FormData with base64 string (not File object)
+// Post to ImgBB — base64 string via FormData
 async function imgbbPost(apiKey, b64image, name) {
   const fd = new FormData();
   fd.append('key', apiKey);
@@ -1228,21 +1223,18 @@ async function imgbbPost(apiKey, b64image, name) {
   try {
     res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
   } catch(e) {
-    throw new Error('Network error — periksa koneksi internet');
+    throw new Error('Gagal terhubung ke ImgBB — periksa koneksi internet');
   }
 
-  // Read body as text first to handle non-JSON responses (e.g. "Host not in allowlist")
   const text = await res.text();
   let data;
-  try { data = JSON.parse(text); } catch(e) { data = null; }
-
-  if (!res.ok || !data) {
-    if (text.includes('not in allowlist') || res.status === 403) {
-      throw new Error('Domain belum diizinkan di akun ImgBB. Buka api.imgbb.com → Settings → tambahkan domain: costom-html-email-blast.vercel.app');
-    }
-    throw new Error(data?.error?.message || text || 'HTTP ' + res.status);
+  try { data = JSON.parse(text); } catch(e) {
+    throw new Error('Response tidak valid dari ImgBB (HTTP ' + res.status + ')');
   }
-  if (!data.success) throw new Error(data?.error?.message || 'Upload gagal');
+
+  if (!data.success) {
+    throw new Error(data?.error?.message || 'HTTP ' + res.status);
+  }
   return data;
 }
 
