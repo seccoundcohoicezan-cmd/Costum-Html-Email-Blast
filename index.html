@@ -213,7 +213,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <div class="logo-badge">v7</div>
+    <div class="logo-badge">v7.3</div>
     Email Template Generator
     <span class="logo-sub">MULE + LISTMONK</span>
   </div>
@@ -1195,26 +1195,45 @@ function fileToBase64(file) {
   });
 }
 
-// Upload langsung ke ImgBB dari browser menggunakan FormData
-// ImgBB API support CORS — tidak perlu proxy server
+// Upload langsung ke ImgBB — direct browser fetch, no proxy
 async function imgbbUpload(apiKey, b64image, name) {
+  // Method 1: URLSearchParams (paling kompatibel dengan ImgBB CORS)
+  const params = new URLSearchParams();
+  params.append('key', apiKey);
+  params.append('image', b64image);
+  if (name) params.append('name', name);
+
+  let res, data;
+
+  try {
+    res = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    });
+    data = await res.json();
+    if (data.success) return data;
+    // Jika gagal, coba FormData
+  } catch(e1) { /* fallthrough */ }
+
+  // Method 2: FormData fallback
   const fd = new FormData();
   fd.append('key', apiKey);
   fd.append('image', b64image);
   if (name) fd.append('name', name);
 
-  const res = await fetch('https://api.imgbb.com/1/upload', {
-    method: 'POST',
-    body: fd,
-  });
-
-  let data;
-  try { data = await res.json(); } catch(e) {
-    throw new Error('ImgBB tidak merespons dengan benar (HTTP ' + res.status + ')');
+  try {
+    res = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      body: fd,
+    });
+    data = await res.json();
+  } catch(e2) {
+    throw new Error('Tidak dapat terhubung ke ImgBB. Cek koneksi internet.');
   }
 
   if (!data.success) {
-    const msg = data?.error?.message || ('Upload gagal (HTTP ' + res.status + ')');
+    const msg = data?.error?.message || ('Upload gagal (HTTP ' + (res?.status||'?') + ')');
     throw new Error(msg);
   }
   return data;
