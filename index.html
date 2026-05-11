@@ -1212,19 +1212,20 @@ function fileToBase64(file) {
   });
 }
 
-// Post to ImgBB using URLSearchParams (avoids CORS preflight that blocks FormData)
+// Post to ImgBB using FormData with base64 string (not File object)
 async function imgbbPost(apiKey, b64image, name) {
-  const params = new URLSearchParams();
-  params.append('key', apiKey);
-  params.append('image', b64image);
-  if (name) params.append('name', name);
+  const fd = new FormData();
+  fd.append('key', apiKey);
+  fd.append('image', b64image);
+  if (name) fd.append('name', name);
   const res = await fetch('https://api.imgbb.com/1/upload', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: params.toString()
+    body: fd
   });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+  let data;
+  try { data = await res.json(); } catch(e) { throw new Error('HTTP ' + res.status); }
+  if (!res.ok) throw new Error(data?.error?.message || 'HTTP ' + res.status);
+  return data;
 }
 
 async function testImgurConnection(silent = false) {
