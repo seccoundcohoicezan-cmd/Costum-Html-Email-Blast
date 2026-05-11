@@ -138,6 +138,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 .ph-green{background:rgba(63,185,80,.12);color:var(--a2);border-color:rgba(63,185,80,.25)}
 .ph-blue{background:rgba(88,166,255,.12);color:var(--a1);border-color:rgba(88,166,255,.25)}
 .ph-purple{background:rgba(188,140,255,.12);color:var(--a5);border-color:rgba(188,140,255,.25)}
+.ph-warn{background:rgba(227,179,65,.12);color:var(--a4);border-color:rgba(227,179,65,.25)}
 
 /* Stats */
 .info-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
@@ -169,6 +170,38 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 .char-info{font-family:var(--mono);font-size:11px;margin-top:8px}
 .char-safe{color:var(--a2)}.char-warn{color:var(--a4)}.char-danger{color:var(--a3)}
 
+/* Target toggle (FormMule vs Listmonk) */
+.target-toggle{display:flex;gap:0;margin-bottom:16px}
+.target-btn{flex:1;padding:14px 10px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:var(--s2);color:var(--text3);text-align:center;transition:.15s;font-family:var(--font);line-height:1.4;position:relative}
+.target-btn:first-child{border-right:none}
+.target-btn.active-mule{background:var(--a2);color:#000;border-color:var(--a2)}
+.target-btn.active-listmonk{background:var(--a4);color:#000;border-color:var(--a4)}
+.target-btn:hover:not(.active-mule):not(.active-listmonk){color:var(--text);border-color:var(--text3)}
+.target-sub{font-size:10px;font-weight:400;opacity:.8;display:block;margin-top:2px}
+.target-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 5px;letter-spacing:.08em;font-family:var(--mono);margin-top:4px}
+.badge-mule{background:rgba(63,185,80,.2);color:var(--a2);border:1px solid rgba(63,185,80,.35)}
+.badge-listmonk{background:rgba(227,179,65,.2);color:var(--a4);border:1px solid rgba(227,179,65,.35)}
+
+/* Image fields */
+.img-section{border:1px solid var(--border);padding:14px;margin-bottom:12px;background:var(--s2)}
+.img-section-head{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.img-section-head .badge-img{background:rgba(88,166,255,.15);color:var(--a1);border:1px solid rgba(88,166,255,.3);font-size:9px;padding:1px 6px;font-family:var(--mono)}
+.img-preview-box{width:100%;height:48px;background:var(--s3);border:1px dashed var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:6px;overflow:hidden}
+.img-preview-box img{max-height:100%;max-width:100%;object-fit:contain}
+
+/* ImgBB upload zone */
+.imgur-upload-zone{border:2px dashed var(--border2);background:var(--s2);padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.imgur-upload-zone:hover{border-color:var(--a1);background:rgba(88,166,255,.04)}
+.imgur-upload-zone.drag-over{border-color:var(--a2);background:rgba(63,185,80,.08);border-style:solid}
+.imgur-upload-zone.uploading{border-color:var(--a4);cursor:wait}
+.imgur-upload-zone.done{border-color:var(--a2);border-style:solid;background:rgba(63,185,80,.06)}
+.imgur-upload-icon{font-size:28px;margin-bottom:6px;line-height:1}
+.imgur-upload-text{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.imgur-upload-sub{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.imgur-progress{margin-top:12px;height:4px;background:var(--s3);border:1px solid var(--border);overflow:hidden}
+.imgur-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--a1),var(--a5));transition:width .3s ease}
+.imgur-upload-zone.done .imgur-upload-icon::after{content:' ✅'}
+
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--s1)}
 ::-webkit-scrollbar-thumb{background:var(--border2)}
@@ -180,12 +213,12 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <div class="logo-badge">v5</div>
+    <div class="logo-badge">v6</div>
     Email Template Generator
-    <span class="logo-sub">MULE READY</span>
+    <span class="logo-sub">MULE + LISTMONK</span>
   </div>
   <div class="topbar-right">
-    <div class="topbar-badge">PLACEHOLDER MODE · NO CSV NEEDED</div>
+    <div class="topbar-badge" id="topbarBadge">FORMMULE MODE · PLACEHOLDER READY</div>
     <span id="tdStatus" style="color:var(--a2)">● Ready</span>
   </div>
 </div>
@@ -195,6 +228,9 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
   <div class="nav-section">Flow</div>
   <div class="nav-item active" onclick="showPanel('config')" id="nav-config">
     <span class="ico">⚙</span>Konfigurasi<span class="nav-badge" id="nvMode">2 Sertif</span>
+  </div>
+  <div class="nav-item" onclick="showPanel('images')" id="nav-images">
+    <span class="ico">🖼</span>Gambar Header/Footer<span class="nav-badge" id="nvImg">OFF</span>
   </div>
   <div class="nav-item" onclick="showPanel('template')" id="nav-template">
     <span class="ico">🎨</span>Pilih Template<span class="nav-badge purple" id="nvTpl">01</span>
@@ -221,6 +257,35 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
     <div class="step-item active" onclick="showPanel('config')"><span class="step-num">STEP 1</span>Konfigurasi</div>
     <div class="step-item" onclick="showPanel('template')"><span class="step-num">STEP 2</span>Pilih Template</div>
     <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 3</span>Generate &amp; Export</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">🚀 Target Output Platform <span class="tag">Pilih Sistem Blast</span></div>
+    <div class="card-body">
+      <div class="target-toggle">
+        <button class="target-btn active-mule" id="tgtBtnMule" onclick="setTarget('mule')">
+          📊 FormMule
+          <span class="target-sub">Google Sheets + Gmail</span>
+          <span class="target-badge badge-mule">«« »» PLACEHOLDER</span>
+        </button>
+        <button class="target-btn" id="tgtBtnListmonk" onclick="setTarget('listmonk')">
+          🐒 Listmonk
+          <span class="target-sub">Self-hosted Email Campaign</span>
+          <span class="target-badge badge-listmonk">{{ }} Go Template</span>
+        </button>
+        <button class="target-btn" id="tgtBtnBoth" onclick="setTarget('both')" style="border-left:none;background:var(--s3);color:var(--text3)">
+          📊+🐒 Keduanya
+          <span class="target-sub">Generate 2 output sekaligus</span>
+          <span class="target-badge" style="background:rgba(188,140,255,.15);color:var(--a5);border:1px solid rgba(188,140,255,.3)">DUAL OUTPUT</span>
+        </button>
+      </div>
+      <div id="targetInfoMule" class="alert alert-ok">
+        <div>✅ <strong>FormMule Mode:</strong> Placeholder format <code style="background:rgba(0,0,0,.2);padding:1px 5px">«&lt;&lt;NAMA&gt;&gt;»</code> — Mule membaca langsung dari kolom spreadsheet. Output 1-line untuk Google Sheets.</div>
+      </div>
+      <div id="targetInfoListmonk" class="alert alert-warn" style="display:none">
+        <div>⚡ <strong>Listmonk Mode:</strong> Placeholder format <code style="background:rgba(0,0,0,.2);padding:1px 5px">{{ .Subscriber.Attribs.nama }}</code> — Template type harus <strong>Campaign / HTML</strong>. Tag <code style="background:rgba(0,0,0,.2);padding:1px 5px">{{ template "content" . }}</code> otomatis disisipkan.</div>
+      </div>
+    </div>
   </div>
 
   <div class="card">
@@ -310,8 +375,177 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
   </div>
 
   <div class="btn-row">
-    <button class="btn btn-primary" onclick="showPanel('template')">➜ Lanjut: Pilih Template</button>
+    <button class="btn btn-primary" onclick="showPanel('images')">➜ Lanjut: Gambar Header/Footer</button>
     <button class="btn btn-ghost" onclick="openPreview()">👁 Preview</button>
+  </div>
+</div>
+
+<!-- ═══ IMAGES ═══ -->
+<div class="panel" id="panel-images">
+
+  <div class="steps-bar">
+    <div class="step-item done" onclick="showPanel('config')"><span class="step-num">STEP 1</span>Konfigurasi</div>
+    <div class="step-item active"><span class="step-num">STEP 1.5</span>Gambar Header/Footer</div>
+    <div class="step-item" onclick="showPanel('template')"><span class="step-num">STEP 2</span>Pilih Template</div>
+    <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 3</span>Generate</div>
+  </div>
+
+  <!-- ── IMGBB SETUP CARD ── -->
+  <div class="card" id="imgurSetupCard">
+    <div class="card-head">🔑 ImgBB API — Setup Sekali <span class="tag" id="imgurStatusTag">BELUM CONNECT</span></div>
+    <div class="card-body">
+
+      <!-- How to get API Key -->
+      <div class="alert alert-info" style="margin-bottom:14px">
+        <div>
+          <strong>Cara dapat API Key ImgBB (gratis, &lt;1 menit):</strong><br>
+          <span style="font-family:var(--mono);font-size:11px;line-height:2">
+            1. Buka <strong>api.imgbb.com</strong> → klik <strong>Get API key</strong><br>
+            2. Login/daftar gratis (bisa pakai Google)<br>
+            3. Isi nama aplikasi bebas, misal <em>EmailTemplateGen</em> → klik Generate<br>
+            4. Copy API key yang muncul → paste di bawah
+          </span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:flex-end">
+        <div class="field" style="flex:1;margin-bottom:0">
+          <label>ImgBB API Key</label>
+          <input type="text" id="cfImgurClientId" placeholder="Paste API key ImgBB di sini" style="font-family:var(--mono)">
+        </div>
+        <button class="btn btn-primary" onclick="testImgurConnection()" style="flex-shrink:0;height:38px">🔌 Test &amp; Connect</button>
+        <button class="btn btn-ghost" onclick="saveImgurClientId()" style="flex-shrink:0;height:38px" title="Simpan ke localStorage agar tidak perlu isi ulang">💾 Simpan</button>
+      </div>
+
+      <div id="imgurConnectResult" style="margin-top:10px;display:none"></div>
+
+      <!-- Connected state -->
+      <div id="imgurConnectedInfo" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(63,185,80,.08);border-left:3px solid var(--a2)">
+        <span style="font-size:12px;color:var(--a2);font-weight:700">✅ ImgBB Connected</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:10px;font-family:var(--mono)" id="imgurConnectedId"></span>
+        <span style="font-size:11px;color:var(--text3);margin-left:6px">· Gambar permanen &amp; publik · CDN global</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HEADER IMAGE CARD ── -->
+  <div class="card">
+    <div class="card-head">🖼 Gambar Header <span class="tag">Atas Email</span></div>
+    <div class="card-body">
+      <div class="toggle-row" style="margin-bottom:12px">
+        <div>
+          <div class="toggle-label">Aktifkan Gambar Header</div>
+          <div class="toggle-sub">Gambar ditampilkan di bagian paling atas email</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="cfHeaderImgOn" onchange="toggleImgSection('header')">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div id="headerImgFields" style="display:none">
+        <!-- Upload zone -->
+        <div class="imgur-upload-zone" id="headerDropZone"
+             onclick="document.getElementById('headerFileInput').click()"
+             ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event,'headerDropZone')" ondrop="handleDrop(event,'header')">
+          <div class="imgur-upload-icon">📁</div>
+          <div class="imgur-upload-text">Klik atau drag &amp; drop file PNG/JPG/GIF</div>
+          <div class="imgur-upload-sub" id="headerUploadStatus">Maks 32 MB · Disimpan permanen di ImgBB CDN</div>
+          <div class="imgur-progress" id="headerProgress" style="display:none">
+            <div class="imgur-progress-bar" id="headerProgressBar"></div>
+          </div>
+        </div>
+        <input type="file" id="headerFileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event,'header')">
+
+        <!-- URL field (auto-filled after upload) -->
+        <div class="field" style="margin-top:12px">
+          <label>URL Gambar Header <span id="headerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ IMGBB CDN</span></label>
+          <input type="text" id="cfHeaderImgUrl" placeholder="Otomatis terisi setelah upload — atau paste URL manual" oninput="previewImg('header')" style="font-family:var(--mono);font-size:11px">
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Link Tujuan saat Diklik</label>
+            <input type="text" id="cfHeaderImgLink" placeholder="https://universitasstekom.ac.id" value="https://universitasstekom.ac.id">
+          </div>
+          <div class="field">
+            <label>Alt Text</label>
+            <input type="text" id="cfHeaderImgAlt" value="Header Email">
+          </div>
+        </div>
+        <div class="field" style="max-width:160px">
+          <label>Tinggi Gambar (px) <span style="color:var(--text3);font-weight:400">— lebar otomatis 100%</span></label>
+          <input type="text" id="cfHeaderImgH" value="120">
+        </div>
+
+        <!-- Preview -->
+        <div style="margin-top:8px">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:700">Preview</div>
+          <div class="img-preview-box" id="headerImgPreview" style="height:80px">Belum ada gambar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER IMAGE CARD ── -->
+  <div class="card">
+    <div class="card-head">🖼 Gambar Footer <span class="tag">Bawah Email</span></div>
+    <div class="card-body">
+      <div class="toggle-row" style="margin-bottom:12px">
+        <div>
+          <div class="toggle-label">Aktifkan Gambar Footer</div>
+          <div class="toggle-sub">Gambar ditampilkan di bagian paling bawah email</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="cfFooterImgOn" onchange="toggleImgSection('footer')">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div id="footerImgFields" style="display:none">
+        <div class="imgur-upload-zone" id="footerDropZone"
+             onclick="document.getElementById('footerFileInput').click()"
+             ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event,'footerDropZone')" ondrop="handleDrop(event,'footer')">
+          <div class="imgur-upload-icon">📁</div>
+          <div class="imgur-upload-text">Klik atau drag &amp; drop file PNG/JPG/GIF</div>
+          <div class="imgur-upload-sub" id="footerUploadStatus">Maks 32 MB · Disimpan permanen di ImgBB CDN</div>
+          <div class="imgur-progress" id="footerProgress" style="display:none">
+            <div class="imgur-progress-bar" id="footerProgressBar"></div>
+          </div>
+        </div>
+        <input type="file" id="footerFileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event,'footer')">
+
+        <div class="field" style="margin-top:12px">
+          <label>URL Gambar Footer <span id="footerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ IMGBB CDN</span></label>
+          <input type="text" id="cfFooterImgUrl" placeholder="Otomatis terisi setelah upload — atau paste URL manual" oninput="previewImg('footer')" style="font-family:var(--mono);font-size:11px">
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Link Tujuan saat Diklik</label>
+            <input type="text" id="cfFooterImgLink" placeholder="https://universitasstekom.ac.id" value="https://universitasstekom.ac.id">
+          </div>
+          <div class="field">
+            <label>Alt Text</label>
+            <input type="text" id="cfFooterImgAlt" value="Footer Email">
+          </div>
+        </div>
+        <div class="field" style="max-width:160px">
+          <label>Tinggi Gambar (px)</label>
+          <input type="text" id="cfFooterImgH" value="80">
+        </div>
+
+        <div style="margin-top:8px">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-weight:700">Preview</div>
+          <div class="img-preview-box" id="footerImgPreview" style="height:80px">Belum ada gambar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="showPanel('template')">➜ Lanjut: Pilih Template</button>
+    <button class="btn btn-ghost" onclick="showPanel('config')">← Kembali</button>
   </div>
 </div>
 
@@ -408,13 +642,14 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
   <div class="card" id="outputCard" style="display:none">
     <div class="card-head">📄 Output HTML Template <span class="tag" id="outLabel">—</span></div>
     <div class="card-body">
-      <div class="alert alert-ok" id="outAlert">✅ Template siap! Placeholder tetap utuh — Mule akan mengisi otomatis dari spreadsheet.</div>
+      <div class="alert alert-ok" id="outAlert">✅ Template siap! Placeholder tetap utuh — sistem blast akan mengisi otomatis.</div>
 
       <div class="info-row">
         <div class="info-chip">Template: <span id="infoTpl">—</span></div>
         <div class="info-chip">Mode: <span id="infoMode">—</span></div>
         <div class="info-chip">Chars: <span id="infoChars">—</span></div>
         <div class="info-chip">Sekolah: <span id="infoSekolah">—</span></div>
+        <div class="info-chip">Target: <span id="infoTarget">—</span></div>
       </div>
 
       <!-- Subject -->
@@ -426,15 +661,50 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
         </div>
       </div>
 
-      <!-- HTML Body -->
-      <div style="margin-bottom:4px">
-        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:700">HTML Body (1 Line · Mule Ready)</div>
+      <!-- FormMule Output -->
+      <div id="outMuleSection" style="margin-bottom:16px">
+        <div style="font-size:10px;color:var(--a2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:700">📊 HTML Body — FormMule (1 Line · Mule Ready)</div>
         <div class="output-box" id="outHTML" style="min-height:120px"></div>
         <div class="char-info" id="charInfo"></div>
         <div class="output-actions">
-          <button class="btn btn-success" onclick="copyField('outHTML','HTML Body')">📋 Copy HTML</button>
-          <button class="btn btn-purple" onclick="downloadHTML()">⬇ Download .html</button>
+          <button class="btn btn-success" onclick="copyField('outHTML','HTML Body FormMule')">📋 Copy HTML (Mule)</button>
+          <button class="btn btn-purple" onclick="downloadHTML('mule')">⬇ Download Mule .html</button>
           <button class="btn btn-ghost" onclick="openPreview()">👁 Preview Email</button>
+        </div>
+      </div>
+
+      <!-- Listmonk Output -->
+      <div id="outListmonkSection" style="margin-bottom:4px;display:none">
+        <div style="font-size:10px;color:var(--a4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:700">🐒 HTML Template — Listmonk (Campaign / HTML)</div>
+        <div class="alert alert-warn" style="margin-bottom:8px;font-size:11px">
+          Paste ke Listmonk → <strong>Templates → New Template → Type: Campaign / HTML</strong>. Sudah mengandung <code style="background:rgba(0,0,0,.2);padding:1px 4px">{{ template "content" . }}</code>
+        </div>
+        <div class="output-box" id="outHTMLListmonk" style="min-height:120px"></div>
+        <div class="char-info" id="charInfoListmonk"></div>
+        <div class="output-actions">
+          <button class="btn btn-warn" onclick="copyField('outHTMLListmonk','HTML Body Listmonk')">📋 Copy HTML (Listmonk)</button>
+          <button class="btn btn-purple" onclick="downloadHTML('listmonk')">⬇ Download Listmonk .html</button>
+          <button class="btn btn-ghost" onclick="openPreview()">👁 Preview Email</button>
+        </div>
+      </div>
+
+      <!-- Both Mode: show both -->
+      <div id="outBothSection" style="display:none">
+        <div style="border-top:1px solid var(--border);margin:16px 0;padding-top:16px">
+          <div style="font-size:10px;color:var(--a2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:700">📊 Output 1 — FormMule (<<PLACEHOLDER>>)</div>
+          <div class="output-box" id="outHTMLMule2" style="min-height:80px"></div>
+          <div class="output-actions">
+            <button class="btn btn-success" onclick="copyField('outHTMLMule2','HTML Mule')">📋 Copy HTML (Mule)</button>
+            <button class="btn btn-purple" onclick="downloadHTML('mule')">⬇ Download Mule</button>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);margin:16px 0;padding-top:16px">
+          <div style="font-size:10px;color:var(--a4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:700">🐒 Output 2 — Listmonk ({{ .Attribs }})</div>
+          <div class="output-box" id="outHTMLListmonk2" style="min-height:80px"></div>
+          <div class="output-actions">
+            <button class="btn btn-warn" onclick="copyField('outHTMLListmonk2','HTML Listmonk')">📋 Copy HTML (Listmonk)</button>
+            <button class="btn btn-purple" onclick="downloadHTML('listmonk')">⬇ Download Listmonk</button>
+          </div>
         </div>
       </div>
     </div>
@@ -530,7 +800,9 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 let certMode = 2; // default 2 (sesuai screenshot user)
 let activeTpl = 1;
 let generatedHTML = '';
+let generatedHTMLListmonk = '';
 let generatedSubject = '';
+let targetPlatform = 'mule'; // 'mule' | 'listmonk' | 'both'
 
 const TPL_NAMES = {
   1:'01 · Navy Classic',2:'02 · Emerald Modern',3:'03 · Sunset Promo',
@@ -545,6 +817,10 @@ function getVars(forPreview) {
     ? document.getElementById('cfShowSekolah1').checked
     : document.getElementById('cfShowSekolah2').checked;
   const showNominal = certMode===2 && document.getElementById('cfShowNominal').checked;
+
+  // Image config
+  const headerOn = document.getElementById('cfHeaderImgOn').checked;
+  const footerOn = document.getElementById('cfFooterImgOn').checked;
 
   return {
     judul: gv('judul') || '{{judul}}',
@@ -566,7 +842,18 @@ function getVars(forPreview) {
     nominal: forPreview ? 'Rp 1.000.000' : (showNominal ? '<<NOMINAL>>' : ''),
     url_sertifikat: forPreview ? 'https://drive.google.com/uc?id=xxx' : '<<LINK_SERTIFIKAT_PELATIHAN>>',
     url_beasiswa: forPreview ? 'https://drive.google.com/uc?id=beasiswa' : '<<LINK_SERTIFIKAT_BEASISWA>>',
-    url_pelatihan: forPreview ? 'https://drive.google.com/uc?id=pelatihan' : '<<LINK_SERTIFIKAT_PELATIHAN>>'
+    url_pelatihan: forPreview ? 'https://drive.google.com/uc?id=pelatihan' : '<<LINK_SERTIFIKAT_PELATIHAN>>',
+    // Image config
+    headerImgOn: headerOn,
+    headerImgUrl: document.getElementById('cfHeaderImgUrl').value || '',
+    headerImgLink: document.getElementById('cfHeaderImgLink').value || '#',
+    headerImgAlt: document.getElementById('cfHeaderImgAlt').value || 'Header Email',
+    headerImgH: document.getElementById('cfHeaderImgH').value || '120',
+    footerImgOn: footerOn,
+    footerImgUrl: document.getElementById('cfFooterImgUrl').value || '',
+    footerImgLink: document.getElementById('cfFooterImgLink').value || '#',
+    footerImgAlt: document.getElementById('cfFooterImgAlt').value || 'Footer Email',
+    footerImgH: document.getElementById('cfFooterImgH').value || '80'
   };
 }
 
@@ -587,9 +874,55 @@ function buildSekolahRow(d, color1, color2, fontFamily) {
   return `<p style="margin:0 0 4px 0;font-size:12px;color:${color1};letter-spacing:0.12em;text-transform:uppercase;font-family:${ff};">Asal Sekolah</p><p style="margin:0 0 24px 0;font-size:15px;font-weight:700;color:${color2};font-family:${ff};">${d.asal_sekolah}</p>`;
 }
 
+// ═══ BUILD IMAGE BLOCK (email-safe, clickable) ═══
+function buildHeaderImg(d) {
+  if (!d.headerImgOn || !d.headerImgUrl) return '';
+  const h = parseInt(d.headerImgH) || 120;
+  return `<tr><td align="center" style="padding:0;font-size:0;line-height:0;"><a href="${d.headerImgLink}" target="_blank" style="display:block;border:0;text-decoration:none;"><img src="${d.headerImgUrl}" alt="${d.headerImgAlt}" width="600" height="${h}" style="display:block;width:100%;max-width:600px;height:auto;border:0;" border="0"></a></td></tr>`;
+}
+
+function buildFooterImg(d) {
+  if (!d.footerImgOn || !d.footerImgUrl) return '';
+  const h = parseInt(d.footerImgH) || 80;
+  return `<tr><td align="center" style="padding:0;font-size:0;line-height:0;"><a href="${d.footerImgLink}" target="_blank" style="display:block;border:0;text-decoration:none;"><img src="${d.footerImgUrl}" alt="${d.footerImgAlt}" width="600" height="${h}" style="display:block;width:100%;max-width:600px;height:auto;border:0;" border="0"></a></td></tr>`;
+}
+
+// ═══ CONVERT MULE HTML → LISTMONK HTML ═══
+// Replaces <<PLACEHOLDER>> with {{ .Subscriber.Attribs.key }} and adds {{ template "content" . }}
+function convertToListmonk(muleHTML) {
+  const phMap = {
+    'NAMA': '{{ .Subscriber.Name }}',
+    'EMAIL': '{{ .Subscriber.Email }}',
+    'LINK_SERTIFIKAT_PELATIHAN': '{{ .Subscriber.Attribs.link_sertifikat_pelatihan }}',
+    'LINK_SERTIFIKAT_BEASISWA': '{{ .Subscriber.Attribs.link_sertifikat_beasiswa }}',
+    'ASAL_SEKOLAH': '{{ .Subscriber.Attribs.asal_sekolah }}',
+    'NOMINAL': '{{ .Subscriber.Attribs.nominal }}'
+  };
+
+  let html = muleHTML;
+  // Replace each <<KEY>> with listmonk template syntax
+  Object.entries(phMap).forEach(([key, val]) => {
+    const rx = new RegExp('<<' + key + '>>', 'g');
+    html = html.replace(rx, val);
+  });
+
+  // Insert {{ template "content" . }} before the first download section (after the description paragraph)
+  // Find the closing tag before downloadBtns area — inject before </td></tr></table></body></html>
+  // We insert it just before the closing footer row as a hidden spacer
+  // Strategy: inject right before the first footer <tr><td bgcolor="#... (darkest footer)
+  // For safety, inject right before </body>
+  const contentTag = '<!-- listmonk:content -->{{ template "content" . }}<!-- /listmonk:content -->';
+  // Insert after the last </table> before </body>
+  html = html.replace(/<\/body><\/html>$/, contentTag + '</body></html>');
+
+  return html;
+}
+
 // ═══ 10 TEMPLATES (with placeholder support) ═══
 function getTemplate(id, d) {
   const downloadBtns = buildDownloadSection(d);
+  const headerImgRow = buildHeaderImg(d);
+  const footerImgRow = buildFooterImg(d);
 
   const sekolahNav = buildSekolahRow(d, '#8BA8C4', '#0A1628', "Georgia,'Times New Roman',serif");
   const sekolahGreen = buildSekolahRow(d, '#7DCEA0', '#374151', 'Arial,sans-serif');
@@ -624,7 +957,33 @@ function getTemplate(id, d) {
     10: `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Sertifikat ${d.judul}</title></head><body style="margin:0;padding:0;background-color:#EDF0FF;font-family:Arial,Helvetica,sans-serif;"><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#EDF0FF"><tr><td align="center" style="padding:36px 16px;"><table role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="width:600px;"><tr><td><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="50%" height="5" bgcolor="#4154F1" style="background-color:#4154F1;font-size:0;"></td><td width="30%" height="5" bgcolor="#F5A623" style="background-color:#F5A623;font-size:0;"></td><td width="20%" height="5" bgcolor="#1DCFCF" style="background-color:#1DCFCF;font-size:0;"></td></tr></table></td></tr><tr><td><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="220" bgcolor="#4154F1" style="background-color:#4154F1;padding:40px 28px;vertical-align:middle;"><p style="margin:0 0 6px 0;font-size:9px;font-weight:700;color:#A5ADFF;letter-spacing:0.22em;text-transform:uppercase;">${d.penyelenggara}</p><p style="margin:0 0 24px 0;font-size:20px;font-weight:700;color:#FFFFFF;line-height:1.25;">${d.judul}</p><table role="presentation" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#F5A623" style="background-color:#F5A623;padding:4px 10px;"><p style="margin:0;font-size:9px;font-weight:700;color:#2C1A06;letter-spacing:0.12em;text-transform:uppercase;">${d.program}</p></td></tr></table></td><td bgcolor="#FFFFFF" style="background-color:#FFFFFF;padding:32px;vertical-align:top;"><p style="margin:0 0 4px 0;font-size:10px;color:#A5ADFF;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">Diberikan Kepada</p><p style="margin:0 0 2px 0;font-size:22px;font-weight:700;color:#1A1F6B;line-height:1.2;">${d.nama}</p>${sekolahIndigo}<table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:20px;"><tr><td bgcolor="#EDF0FF" style="background-color:#EDF0FF;border-left:3px solid #4154F1;padding:10px 14px;"><p style="margin:0;font-size:13px;color:#1A1F6B;font-weight:700;line-height:1.6;">&#10003; Selamat! Sertifikat resmi Anda siap diunduh.</p></td></tr></table><p style="margin:0 0 14px 0;font-size:13px;color:#4A5568;line-height:1.8;">Anda telah menyelesaikan <strong style="color:#4154F1;">${d.judul}</strong> bersama ${d.penyelenggara}.</p>${downloadBtns}</td></tr></table></td></tr><tr><td bgcolor="#1A1F6B" style="background-color:#1A1F6B;padding:18px 32px;"><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td valign="middle"><p style="margin:0;font-size:12px;font-weight:700;color:#FFFFFF;">${d.from_name}</p><p style="margin:2px 0 0 0;font-size:11px;color:#A5ADFF;">${d.penyelenggara}</p></td><td align="right" valign="middle"><a href="https://instagram.com/${d.ig1}" style="font-size:11px;color:#F5A623;text-decoration:none;display:block;text-align:right;">@${d.ig1}</a><a href="https://instagram.com/${d.ig2}" style="font-size:11px;color:#A5ADFF;text-decoration:none;display:block;text-align:right;margin-top:3px;">@${d.ig2}</a></td></tr></table></td></tr><tr><td><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="50%" height="5" bgcolor="#4154F1" style="background-color:#4154F1;font-size:0;"></td><td width="30%" height="5" bgcolor="#F5A623" style="background-color:#F5A623;font-size:0;"></td><td width="20%" height="5" bgcolor="#1DCFCF" style="background-color:#1DCFCF;font-size:0;"></td></tr></table></td></tr></table></td></tr></table></body></html>`
   };
 
-  return T[id] || T[1];
+  return injectImages(T[id] || T[1], headerImgRow, footerImgRow);
+}
+
+// ═══ INJECT IMAGES INTO TEMPLATE ═══
+function injectImages(html, headerRow, footerRow) {
+  if (!headerRow && !footerRow) return html;
+  // Find the inner 600px table and inject header after its opening, footer before its close
+  // Pattern: the email-content 600px table is <table role="presentation" width="600"
+  // Header: inject as first row inside the outer wrapper table (after <td align="center" style="padding:...">)
+  // Footer: inject as last row before </table></td></tr></table></body></html>
+
+  if (headerRow) {
+    // Insert header row: after the first <td align="center" style="padding: that wraps the 600px table
+    html = html.replace(
+      /(<td align="center" style="padding:[^"]*"><table role="presentation" width="600[^>]*>)/,
+      '$1' + headerRow
+    );
+  }
+  if (footerRow) {
+    // Insert footer row before the last </table> closing the 600px table
+    // Replace the pattern: last </table></td></tr></table></body></html>
+    html = html.replace(
+      /(<\/table><\/td><\/tr><\/table><\/body><\/html>)$/,
+      footerRow + '$1'
+    );
+  }
+  return html;
 }
 
 // ═══ MINIFY ═══
@@ -643,6 +1002,7 @@ function doGenerate() {
   const d = getVars(false); // false = keep placeholders
   const rawHTML = getTemplate(activeTpl, d);
   generatedHTML = minify(rawHTML);
+  generatedHTMLListmonk = minify(convertToListmonk(rawHTML));
 
   const subjectTpl = document.getElementById('cfSubject').value;
   generatedSubject = subjectTpl
@@ -659,7 +1019,28 @@ function doGenerate() {
   document.getElementById('outSubject').textContent = generatedSubject;
   document.getElementById('outHTML').textContent = generatedHTML;
 
-  // Char info
+  // Show/hide output sections based on target
+  const isMule = targetPlatform === 'mule';
+  const isListmonk = targetPlatform === 'listmonk';
+  const isBoth = targetPlatform === 'both';
+
+  document.getElementById('outMuleSection').style.display = (isMule || isBoth) ? 'block' : 'none';
+  document.getElementById('outListmonkSection').style.display = isListmonk ? 'block' : 'none';
+  document.getElementById('outBothSection').style.display = isBoth ? 'block' : 'none';
+
+  if (isListmonk) {
+    document.getElementById('outHTMLListmonk').textContent = generatedHTMLListmonk;
+    const lenL = generatedHTMLListmonk.length;
+    const ciL = document.getElementById('charInfoListmonk');
+    ciL.textContent = lenL.toLocaleString() + ' karakter' + (lenL < 32767 ? ' ✓ aman' : lenL < 65535 ? ' ⚠ mendekati batas' : ' ✗ melebihi batas');
+    ciL.className = 'char-info ' + (lenL < 32767 ? 'char-safe' : lenL < 65535 ? 'char-warn' : 'char-danger');
+  }
+  if (isBoth) {
+    document.getElementById('outHTMLMule2').textContent = generatedHTML;
+    document.getElementById('outHTMLListmonk2').textContent = generatedHTMLListmonk;
+  }
+
+  // Char info (Mule)
   const len = generatedHTML.length;
   const ci = document.getElementById('charInfo');
   const safe = len < 32767, warn2 = len < 65535;
@@ -674,9 +1055,17 @@ function doGenerate() {
   document.getElementById('infoMode').textContent = certMode === 1 ? '1 Sertifikat' : '2 Sertifikat';
   document.getElementById('infoChars').textContent = len.toLocaleString();
   document.getElementById('infoSekolah').textContent = showSekolah ? 'Ditampilkan' : 'Disembunyikan';
+  document.getElementById('infoTarget').textContent = targetPlatform === 'mule' ? '📊 FormMule' : targetPlatform === 'listmonk' ? '🐒 Listmonk' : '📊+🐒 Both';
   document.getElementById('genLabel').textContent = TPL_NAMES[activeTpl];
-  document.getElementById('outLabel').textContent = certMode===1 ? '1 Sertif · 1-Line Mule' : '2 Sertif · 1-Line Mule';
+  document.getElementById('outLabel').textContent = certMode===1 ? '1 Sertif · '+targetPlatform.toUpperCase() : '2 Sertif · '+targetPlatform.toUpperCase();
   document.getElementById('nvGen').textContent = '✓ OK';
+
+  // Alert message
+  document.getElementById('outAlert').textContent = targetPlatform === 'mule'
+    ? '✅ FormMule: Placeholder <<...>> siap diisi Mule dari spreadsheet.'
+    : targetPlatform === 'listmonk'
+    ? '✅ Listmonk: Template {{ .Subscriber.Attribs.x }} siap dipakai di Campaign / HTML.'
+    : '✅ Kedua format siap — FormMule dan Listmonk.';
 
   // Placeholder list
   const phs = [];
@@ -689,6 +1078,10 @@ function doGenerate() {
     const showNom = document.getElementById('cfShowNominal').checked;
     if (showNom) phs.push({t:'purple',v:'<<NOMINAL>>'});
   }
+  if (targetPlatform !== 'mule') {
+    phs.push({t:'warn',v:'Listmonk: {{ .Subscriber.Name }}'});
+    phs.push({t:'warn',v:'{{ .Subscriber.Attribs.link_sertifikat_pelatihan }}'});
+  }
   phs.push(
     {t:'blue',v:'{{judul}} → '+d.judul},
     {t:'blue',v:'{{penyelenggara}} → '+d.penyelenggara},
@@ -699,8 +1092,8 @@ function doGenerate() {
     `<span class="ph ph-${p.t}">${p.v}</span>`
   ).join('');
 
-  setStatus('✓ Template generated · '+len.toLocaleString()+' chars');
-  toast('✔ HTML Template siap!','ok');
+  setStatus('✓ Template generated · '+len.toLocaleString()+' chars · '+targetPlatform);
+  toast('✔ HTML Template siap! ('+targetPlatform+')','ok');
 }
 
 // ═══ COPY ═══
@@ -713,17 +1106,19 @@ function copyField(id, label) {
 }
 
 // ═══ DOWNLOAD ═══
-function downloadHTML() {
-  if (!generatedHTML) { toast('Generate dulu!','warn'); return; }
-  const blob = new Blob([generatedHTML], {type:'text/html'});
+function downloadHTML(type) {
+  const which = type || targetPlatform;
+  const html = which === 'listmonk' ? generatedHTMLListmonk : generatedHTML;
+  if (!html) { toast('Generate dulu!','warn'); return; }
+  const blob = new Blob([html], {type:'text/html'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   const tplSlug = TPL_NAMES[activeTpl].replace(/[^a-z0-9]/gi,'_').toLowerCase();
   a.href = url;
-  a.download = 'email_template_'+tplSlug+'_mode'+certMode+'.html';
+  a.download = 'email_template_'+tplSlug+'_mode'+certMode+'_'+which+'.html';
   a.click();
   URL.revokeObjectURL(url);
-  toast('✔ File diunduh','ok');
+  toast('✔ File diunduh ('+which+')','ok');
 }
 
 // ═══ PREVIEW ═══
@@ -734,6 +1129,213 @@ function openPreview() {
   document.getElementById('prevSubject').textContent = subj;
   document.getElementById('previewFrame').srcdoc = html;
   openModal('modalPreview');
+}
+
+// ═══ TARGET PLATFORM ═══
+function setTarget(t) {
+  targetPlatform = t;
+  const btnMule = document.getElementById('tgtBtnMule');
+  const btnListmonk = document.getElementById('tgtBtnListmonk');
+  const btnBoth = document.getElementById('tgtBtnBoth');
+
+  btnMule.className = 'target-btn' + (t === 'mule' ? ' active-mule' : '');
+  btnListmonk.className = 'target-btn' + (t === 'listmonk' ? ' active-listmonk' : '');
+  btnBoth.className = 'target-btn';
+  if (t === 'both') btnBoth.style.background = 'var(--a5)';
+  else btnBoth.style.background = 'var(--s3)';
+
+  document.getElementById('targetInfoMule').style.display = (t === 'mule' || t === 'both') ? 'block' : 'none';
+  document.getElementById('targetInfoListmonk').style.display = (t === 'listmonk' || t === 'both') ? 'block' : 'none';
+
+  const badge = document.getElementById('topbarBadge');
+  badge.textContent = t === 'mule' ? 'FORMMULE MODE · <<PLACEHOLDER>>' : t === 'listmonk' ? 'LISTMONK MODE · {{ .Attribs }}' : 'DUAL MODE · MULE + LISTMONK';
+  badge.style.background = t === 'mule' ? 'rgba(63,185,80,.12)' : t === 'listmonk' ? 'rgba(227,179,65,.12)' : 'rgba(188,140,255,.12)';
+  badge.style.color = t === 'mule' ? 'var(--a2)' : t === 'listmonk' ? 'var(--a4)' : 'var(--a5)';
+  badge.style.borderColor = t === 'mule' ? 'rgba(63,185,80,.25)' : t === 'listmonk' ? 'rgba(227,179,65,.25)' : 'rgba(188,140,255,.25)';
+
+  toast('✔ Target: ' + (t === 'mule' ? 'FormMule' : t === 'listmonk' ? 'Listmonk' : 'Keduanya'), 'ok');
+}
+
+// ═══ IMAGE TOGGLE ═══
+function toggleImgSection(which) {
+  const on = document.getElementById('cf' + (which==='header'?'Header':'Footer') + 'ImgOn').checked;
+  document.getElementById(which + 'ImgFields').style.display = on ? 'block' : 'none';
+  updateImgNavBadge();
+}
+
+function updateImgNavBadge() {
+  const h = document.getElementById('cfHeaderImgOn').checked;
+  const f = document.getElementById('cfFooterImgOn').checked;
+  const badge = document.getElementById('nvImg');
+  if (!h && !f) { badge.textContent = 'OFF'; badge.className = 'nav-badge'; }
+  else if (h && f) { badge.textContent = 'H+F'; badge.className = 'nav-badge live'; }
+  else if (h) { badge.textContent = 'HDR'; badge.className = 'nav-badge live'; }
+  else { badge.textContent = 'FTR'; badge.className = 'nav-badge live'; }
+}
+
+function previewImg(which) {
+  const url = document.getElementById('cf' + (which==='header'?'Header':'Footer') + 'ImgUrl').value;
+  const box = document.getElementById(which + 'ImgPreview');
+  if (!url) { box.innerHTML = '<span>Belum ada gambar</span>'; return; }
+  box.innerHTML = `<img src="${url}" alt="preview" style="max-height:100%;max-width:100%;object-fit:contain" onerror="this.parentNode.innerHTML='<span style=color:var(--a3)>❌ URL tidak bisa dimuat. Cek link publik.</span>'" onload="this.parentNode.style.background='#0008'">`;
+}
+
+// ═══ IMGUR API ═══
+let imgurClientId = '';
+let imgurConnected = false;
+
+function saveImgurClientId() {
+  const id = document.getElementById('cfImgurClientId').value.trim();
+  if (!id) { toast('API Key kosong','warn'); return; }
+  try { localStorage.setItem('imgurClientId', id); toast('✔ API Key disimpan','ok'); }
+  catch(e) { toast('localStorage tidak tersedia','warn'); }
+}
+
+function loadSavedClientId() {
+  try {
+    const saved = localStorage.getItem('imgurClientId');
+    if (saved) {
+      document.getElementById('cfImgurClientId').value = saved;
+      imgurClientId = saved;
+      testImgurConnection(true);
+    }
+  } catch(e) {}
+}
+
+async function testImgurConnection(silent = false) {
+  const id = document.getElementById('cfImgurClientId').value.trim();
+  if (!id) { toast('Isi API Key dulu','warn'); return; }
+
+  const resultBox = document.getElementById('imgurConnectResult');
+  const tag = document.getElementById('imgurStatusTag');
+  resultBox.style.display = 'block';
+  resultBox.innerHTML = '<span style="color:var(--a4);font-family:var(--mono);font-size:11px">⏳ Menghubungkan ke ImgBB API...</span>';
+
+  try {
+    // Test ImgBB API with a minimal 1x1 pixel PNG (base64)
+    const testPixel = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+    const formData = new FormData();
+    formData.append('key', id);
+    formData.append('image', testPixel);
+    formData.append('name', 'test_connection');
+
+    const res = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      imgurClientId = id;
+      imgurConnected = true;
+      tag.textContent = '✅ CONNECTED';
+      tag.style.color = 'var(--a2)';
+      resultBox.innerHTML = `<span style="color:var(--a2);font-family:var(--mono);font-size:11px">✅ ImgBB terhubung! API Key valid & siap digunakan.</span>`;
+      document.getElementById('imgurConnectedInfo').style.display = 'block';
+      document.getElementById('imgurConnectedId').textContent = 'Key: ' + id.slice(0,6) + '••••••';
+      if (!silent) toast('✔ ImgBB API Key valid & terhubung!', 'ok');
+    } else {
+      throw new Error(data.error?.message || 'API Key tidak valid');
+    }
+  } catch(e) {
+    imgurConnected = false;
+    tag.textContent = '❌ GAGAL';
+    tag.style.color = 'var(--a3)';
+    resultBox.innerHTML = `<span style="color:var(--a3);font-family:var(--mono);font-size:11px">❌ Gagal: ${e.message} — Pastikan API Key benar.</span>`;
+    document.getElementById('imgurConnectedInfo').style.display = 'none';
+    if (!silent) toast('❌ API Key tidak valid', 'err');
+  }
+}
+
+async function uploadToImgur(file, which) {
+  const zone = document.getElementById(which + 'DropZone');
+  const status = document.getElementById(which + 'UploadStatus');
+  const progress = document.getElementById(which + 'Progress');
+  const progressBar = document.getElementById(which + 'ProgressBar');
+  const urlInput = document.getElementById('cf' + (which==='header'?'Header':'Footer') + 'ImgUrl');
+  const urlBadge = document.getElementById(which + 'UrlBadge');
+
+  if (!imgurConnected || !imgurClientId) {
+    toast('⚠ Hubungkan ImgBB API Key dulu di atas!', 'warn');
+    document.getElementById('imgurSetupCard').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+  if (file.size > 32 * 1024 * 1024) { toast('File terlalu besar (maks 32MB)', 'warn'); return; }
+
+  zone.classList.add('uploading');
+  zone.classList.remove('done');
+  status.textContent = '⏳ Mengupload ke ImgBB CDN...';
+  progress.style.display = 'block';
+  progressBar.style.width = '0%';
+
+  let prog = 0;
+  const progInterval = setInterval(() => {
+    prog = Math.min(prog + Math.random() * 15, 85);
+    progressBar.style.width = prog + '%';
+  }, 200);
+
+  try {
+    const formData = new FormData();
+    formData.append('key', imgurClientId);
+    formData.append('image', file);
+    formData.append('name', file.name.replace(/\.[^.]+$/, ''));
+
+    const res = await fetch('https://api.imgbb.com/1/upload', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+
+    clearInterval(progInterval);
+    progressBar.style.width = '100%';
+
+    if (data.success) {
+      const imgUrl = data.data.url;
+      urlInput.value = imgUrl;
+      urlBadge.style.display = 'inline';
+      previewImg(which);
+      zone.classList.remove('uploading');
+      zone.classList.add('done');
+      status.textContent = '✅ Upload berhasil! ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)';
+      setTimeout(() => { progress.style.display = 'none'; progressBar.style.width = '0%'; }, 1500);
+      toast('✔ Gambar ' + which + ' berhasil diupload ke ImgBB!', 'ok');
+      setStatus('✔ ImgBB upload OK — ' + file.name);
+    } else {
+      throw new Error(data.error?.message || 'Upload gagal');
+    }
+  } catch(e) {
+    clearInterval(progInterval);
+    zone.classList.remove('uploading');
+    status.textContent = '❌ Upload gagal: ' + e.message;
+    progressBar.style.background = 'var(--a3)';
+    setTimeout(() => { progress.style.display='none'; progressBar.style.background=''; progressBar.style.width='0%'; }, 2500);
+    toast('❌ Upload gagal: ' + e.message, 'err');
+  }
+}
+
+// ── Drag & Drop handlers ──
+function handleDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const zone = e.currentTarget;
+  zone.classList.add('drag-over');
+}
+function handleDragLeave(e, zoneId) {
+  document.getElementById(zoneId).classList.remove('drag-over');
+}
+function handleDrop(e, which) {
+  e.preventDefault();
+  e.stopPropagation();
+  const zone = document.getElementById(which + 'DropZone');
+  zone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) uploadToImgur(file, which);
+  else toast('File harus berupa gambar (PNG/JPG/GIF)', 'warn');
+}
+function handleFileSelect(e, which) {
+  const file = e.target.files[0];
+  if (file) uploadToImgur(file, which);
+  e.target.value = ''; // reset so same file can be re-selected
 }
 
 // ═══ MODE ═══
@@ -788,8 +1390,10 @@ function gv(key) {
 
 // ═══ INIT ═══
 window.addEventListener('DOMContentLoaded', () => {
-  setMode(2); // default 2 sertif sesuai kebutuhan user
+  setMode(2);
   selectTemplate(1);
+  setTarget('mule');
+  loadSavedClientId(); // auto-load ImgBB API Key jika sudah disimpan
   setStatus('Ready');
 });
 document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => {
