@@ -213,7 +213,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <div class="logo-badge">v7.5</div>
+    <div class="logo-badge">v7.6</div>
     Email Template Generator
     <span class="logo-sub">MULE + LISTMONK</span>
   </div>
@@ -691,43 +691,145 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 
 <!-- ═══ INFO ═══ -->
 <div class="panel" id="panel-info">
+
+  <!-- CARD 1: Format Placeholder di HTML Email -->
   <div class="card">
-    <div class="card-head">📋 Referensi Placeholder &amp; Struktur Spreadsheet</div>
+    <div class="card-head">📋 Format Placeholder di HTML Email <span class="tag">Wajib Baca</span></div>
     <div class="card-body">
       <div class="alert alert-info" style="margin-bottom:16px">
-        Placeholder ini yang harus ada di spreadsheet Mule sebagai kolom header. HTML template yang di-generate sudah menggunakan format ini.
+        Agar placeholder terbaca oleh sistem blast, <strong>nama kolom di spreadsheet HARUS sama persis</strong> dengan placeholder di bawah (huruf besar, spasi diganti underscore).
       </div>
 
+      <!-- TABEL PERBANDINGAN FORMMULE vs LISTMONK -->
+      <p style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:.04em">⚡ Tabel Referensi: Format Placeholder per Sistem</p>
+      <div style="overflow-x:auto;margin-bottom:20px">
+        <table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px">
+          <thead>
+            <tr style="background:var(--s3);border-bottom:2px solid var(--border2)">
+              <th style="padding:9px 12px;text-align:left;color:var(--text3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap">Kolom Spreadsheet</th>
+              <th style="padding:9px 12px;text-align:left;color:var(--a2);font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap">📊 FormMule (di HTML)</th>
+              <th style="padding:9px 12px;text-align:left;color:var(--a4);font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap">🐒 Listmonk (di HTML)</th>
+              <th style="padding:9px 12px;text-align:left;color:var(--text3);font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap">Contoh Nilai</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:8px 12px;color:var(--text2)">NAMA</td>
+              <td style="padding:8px 12px"><span class="ph ph-green" style="font-size:11px">&lt;&lt;NAMA&gt;&gt;</span></td>
+              <td style="padding:8px 12px"><span class="ph ph-warn" style="font-size:11px">{{ .Subscriber.Name }}</span></td>
+              <td style="padding:8px 12px;color:var(--text3)">Vania Dido Azzahra</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)">
+              <td style="padding:8px 12px;color:var(--text2)">EMAIL</td>
+              <td style="padding:8px 12px"><span class="ph ph-green" style="font-size:11px">&lt;&lt;EMAIL&gt;&gt;</span></td>
+              <td style="padding:8px 12px"><span class="ph ph-warn" style="font-size:11px">{{ .Subscriber.Email }}</span></td>
+              <td style="padding:8px 12px;color:var(--text3)">vania@email.com</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:8px 12px;color:var(--text2)">LINK SERTIFIKAT PELATIHAN</td>
+              <td style="padding:8px 12px"><span class="ph ph-green" style="font-size:11px">&lt;&lt;LINK_SERTIFIKAT_PELATIHAN&gt;&gt;</span></td>
+              <td style="padding:8px 12px"><span class="ph ph-warn" style="font-size:11px">{{ .Subscriber.Attribs.link_sertifikat_pelatihan }}</span></td>
+              <td style="padding:8px 12px;color:var(--text3)">https://drive.google.com/...</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)">
+              <td style="padding:8px 12px;color:var(--text2)">LINK SERTIFIKAT BEASISWA</td>
+              <td style="padding:8px 12px"><span class="ph ph-green" style="font-size:11px">&lt;&lt;LINK_SERTIFIKAT_BEASISWA&gt;&gt;</span></td>
+              <td style="padding:8px 12px"><span class="ph ph-warn" style="font-size:11px">{{ .Subscriber.Attribs.link_sertifikat_beasiswa }}</span></td>
+              <td style="padding:8px 12px;color:var(--text3)">https://drive.google.com/...</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border)">
+              <td style="padding:8px 12px;color:var(--text2)">ASAL SEKOLAH <small style="color:var(--a5)">(opsional)</small></td>
+              <td style="padding:8px 12px"><span class="ph ph-purple" style="font-size:11px">&lt;&lt;ASAL_SEKOLAH&gt;&gt;</span></td>
+              <td style="padding:8px 12px"><span class="ph ph-warn" style="font-size:11px">{{ .Subscriber.Attribs.asal_sekolah }}</span></td>
+              <td style="padding:8px 12px;color:var(--text3)">SMA Negeri 1 Semarang</td>
+            </tr>
+            <tr style="background:rgba(255,255,255,.02)">
+              <td style="padding:8px 12px;color:var(--text2)">NOMINAL <small style="color:var(--a5)">(opsional)</small></td>
+              <td style="padding:8px 12px"><span class="ph ph-purple" style="font-size:11px">&lt;&lt;NOMINAL&gt;&gt;</span></td>
+              <td style="padding:8px 12px"><span class="ph ph-warn" style="font-size:11px">{{ .Subscriber.Attribs.nominal }}</span></td>
+              <td style="padding:8px 12px;color:var(--text3)">Rp 1.000.000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- LEGENDA WARNA -->
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;padding:10px 14px;background:var(--s2);border:1px solid var(--border)">
+        <span style="font-size:11px;color:var(--text3)">Legenda:</span>
+        <span class="ph ph-green" style="font-size:11px">&lt;&lt;X&gt;&gt; = dari kolom spreadsheet</span>
+        <span class="ph ph-blue" style="font-size:11px">&#123;&#123;x&#125;&#125; = dari Konfigurasi (fixed)</span>
+        <span class="ph ph-warn" style="font-size:11px">&#123;&#123; .Subscriber &#125;&#125; = Listmonk Go Template</span>
+        <span class="ph ph-purple" style="font-size:11px">&lt;&lt;X&gt;&gt; = opsional</span>
+      </div>
+
+      <!-- ATURAN PENTING -->
+      <p style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:.04em">⚠️ Aturan Agar Placeholder Terbaca</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+
+        <!-- FormMule Rules -->
+        <div style="background:rgba(63,185,80,.06);border:1px solid rgba(63,185,80,.2);padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--a2);margin-bottom:10px;letter-spacing:.08em">📊 FORMMULE</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.9">
+            ✅ Header kolom = <span style="color:var(--a2);font-family:var(--mono)">NAMA</span>, <span style="color:var(--a2);font-family:var(--mono)">EMAIL</span>, dst<br>
+            ✅ Placeholder di HTML: <span style="color:var(--a2);font-family:var(--mono)">&lt;&lt;NAMA&gt;&gt;</span><br>
+            ✅ Spasi di nama kolom → <span style="color:var(--a2);font-family:var(--mono)">_</span> (underscore) di placeholder<br>
+            ✅ HTML body = 1 baris (sudah otomatis)<br>
+            ❌ Jangan pakai karakter: <span style="color:var(--a3);font-family:var(--mono)">" , &lt; &gt;</span> di nilai sel<br>
+            ❌ Nilai dengan koma → bungkus dengan <span style="color:var(--a3);font-family:var(--mono)">"kutip ganda"</span>
+          </div>
+        </div>
+
+        <!-- Listmonk Rules -->
+        <div style="background:rgba(227,179,65,.06);border:1px solid rgba(227,179,65,.2);padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--a4);margin-bottom:10px;letter-spacing:.08em">🐒 LISTMONK</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.9">
+            ✅ Nama = <span style="color:var(--a4);font-family:var(--mono)">{{ .Subscriber.Name }}</span><br>
+            ✅ Email = <span style="color:var(--a4);font-family:var(--mono)">{{ .Subscriber.Email }}</span><br>
+            ✅ Kolom custom = <span style="color:var(--a4);font-family:var(--mono)">{{ .Subscriber.Attribs.key }}</span><br>
+            ✅ Key di Attribs = huruf kecil + underscore<br>
+            ✅ Template type = <span style="color:var(--a4);font-family:var(--mono)">Campaign / HTML</span><br>
+            ✅ Sudah ada <span style="color:var(--a4);font-family:var(--mono)">&#123;&#123; template "content" . &#125;&#125;</span> otomatis
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2: Struktur Spreadsheet -->
+  <div class="card">
+    <div class="card-head">📊 Struktur Kolom Spreadsheet</div>
+    <div class="card-body">
+
       <p style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">📜 Mode 1 Sertifikat — Kolom Spreadsheet:</p>
-      <div style="background:var(--s2);border:1px solid var(--border);padding:14px;font-family:var(--mono);font-size:11px;color:var(--a1);margin-bottom:16px">
+      <div style="background:var(--s2);border:1px solid var(--border);padding:14px;font-family:var(--mono);font-size:11px;color:var(--a1);margin-bottom:12px">
         NO &nbsp;|&nbsp; NAMA &nbsp;|&nbsp; EMAIL &nbsp;|&nbsp; NO TELP &nbsp;|&nbsp; LINK SERTIFIKAT PELATIHAN
       </div>
       <div class="ph-list" style="margin-bottom:20px">
-        <span class="ph ph-green"><<NAMA>></span>
-        <span class="ph ph-green"><<EMAIL>></span>
-        <span class="ph ph-green"><<LINK_SERTIFIKAT_PELATIHAN>></span>
-        <span class="ph ph-purple"><<ASAL_SEKOLAH>> <small>(opsional)</small></span>
-        <span class="ph ph-blue">{{judul}}</span>
-        <span class="ph ph-blue">{{penyelenggara}}</span>
-        <span class="ph ph-blue">{{program}}</span>
-        <span class="ph ph-blue">{{from_name}}</span>
+        <span class="ph ph-green">&lt;&lt;NAMA&gt;&gt;</span>
+        <span class="ph ph-green">&lt;&lt;EMAIL&gt;&gt;</span>
+        <span class="ph ph-green">&lt;&lt;LINK_SERTIFIKAT_PELATIHAN&gt;&gt;</span>
+        <span class="ph ph-purple">&lt;&lt;ASAL_SEKOLAH&gt;&gt; <small>(opsional)</small></span>
+        <span class="ph ph-blue">&#123;&#123;judul&#125;&#125;</span>
+        <span class="ph ph-blue">&#123;&#123;penyelenggara&#125;&#125;</span>
+        <span class="ph ph-blue">&#123;&#123;program&#125;&#125;</span>
+        <span class="ph ph-blue">&#123;&#123;from_name&#125;&#125;</span>
       </div>
 
       <p style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px">📜📜 Mode 2 Sertifikat — Kolom Spreadsheet:</p>
-      <div style="background:var(--s2);border:1px solid var(--border);padding:14px;font-family:var(--mono);font-size:11px;color:var(--a5);margin-bottom:16px">
+      <div style="background:var(--s2);border:1px solid var(--border);padding:14px;font-family:var(--mono);font-size:11px;color:var(--a5);margin-bottom:12px">
         NO &nbsp;|&nbsp; NAMA &nbsp;|&nbsp; ASAL SEKOLAH &nbsp;|&nbsp; EMAIL &nbsp;|&nbsp; LINK SERTIFIKAT BEASISWA &nbsp;|&nbsp; LINK SERTIFIKAT PELATIHAN &nbsp;|&nbsp; NOMINAL
       </div>
       <div class="ph-list" style="margin-bottom:20px">
-        <span class="ph ph-green"><<NAMA>></span>
-        <span class="ph ph-green"><<EMAIL>></span>
-        <span class="ph ph-green"><<LINK_SERTIFIKAT_BEASISWA>></span>
-        <span class="ph ph-green"><<LINK_SERTIFIKAT_PELATIHAN>></span>
-        <span class="ph ph-purple"><<ASAL_SEKOLAH>> <small>(opsional)</small></span>
-        <span class="ph ph-purple"><<NOMINAL>> <small>(opsional)</small></span>
-        <span class="ph ph-blue">{{judul}}</span>
-        <span class="ph ph-blue">{{penyelenggara}}</span>
-        <span class="ph ph-blue">{{program}}</span>
-        <span class="ph ph-blue">{{from_name}}</span>
+        <span class="ph ph-green">&lt;&lt;NAMA&gt;&gt;</span>
+        <span class="ph ph-green">&lt;&lt;EMAIL&gt;&gt;</span>
+        <span class="ph ph-green">&lt;&lt;LINK_SERTIFIKAT_BEASISWA&gt;&gt;</span>
+        <span class="ph ph-green">&lt;&lt;LINK_SERTIFIKAT_PELATIHAN&gt;&gt;</span>
+        <span class="ph ph-purple">&lt;&lt;ASAL_SEKOLAH&gt;&gt; <small>(opsional)</small></span>
+        <span class="ph ph-purple">&lt;&lt;NOMINAL&gt;&gt; <small>(opsional)</small></span>
+        <span class="ph ph-blue">&#123;&#123;judul&#125;&#125;</span>
+        <span class="ph ph-blue">&#123;&#123;penyelenggara&#125;&#125;</span>
+        <span class="ph ph-blue">&#123;&#123;program&#125;&#125;</span>
+        <span class="ph ph-blue">&#123;&#123;from_name&#125;&#125;</span>
       </div>
 
       <div class="alert alert-warn">
@@ -740,6 +842,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
       </div>
     </div>
   </div>
+
 </div>
 
 </div><!-- /main -->
