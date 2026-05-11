@@ -416,7 +416,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
       <div id="imgurConnectedInfo" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(63,185,80,.08);border-left:3px solid var(--a2)">
         <span style="font-size:12px;color:var(--a2);font-weight:700">✅ ImgBB Connected</span>
         <span style="font-size:11px;color:var(--text3);margin-left:10px;font-family:var(--mono)" id="imgurConnectedId"></span>
-        <span style="font-size:11px;color:var(--text3);margin-left:6px">· Upload via Vercel proxy · No CORS</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:6px">· Upload langsung ke ImgBB · CORS OK</span>
       </div>
     </div>
   </div>
@@ -1162,9 +1162,8 @@ function previewImg(which) {
   box.innerHTML = `<img src="${url}" alt="preview" style="max-height:100%;max-width:100%;object-fit:contain" onerror="this.parentNode.innerHTML='<span style=color:var(--a3)>❌ URL tidak bisa dimuat</span>'">`;
 }
 
-// ═══ IMGBB via VERCEL PROXY ═══
-// Upload dikirim ke /api/imgbb-upload (serverless fn) → diteruskan ke ImgBB
-// Tidak ada CORS karena request dari server ke server
+// ═══ IMGBB DIRECT UPLOAD ═══
+// Upload langsung ke ImgBB API dari browser — support CORS tanpa proxy
 
 let imgurClientId = '';
 let imgurConnected = false;
@@ -1196,28 +1195,9 @@ function fileToBase64(file) {
   });
 }
 
-// Upload langsung ke ImgBB — ImgBB API support CORS dari browser
-// Fallback ke Vercel proxy jika tersedia (untuk deployment di Vercel)
+// Upload langsung ke ImgBB dari browser menggunakan FormData
+// ImgBB API support CORS — tidak perlu proxy server
 async function imgbbUpload(apiKey, b64image, name) {
-  // Coba proxy Vercel dulu (jika app jalan di Vercel)
-  const useProxy = window.location.hostname !== 'localhost' &&
-                   !window.location.protocol.startsWith('file') &&
-                   window.location.hostname.includes('vercel.app');
-
-  if (useProxy) {
-    try {
-      const res = await fetch('/api/imgbb-upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ apiKey, image: b64image, name }),
-      });
-      const data = await res.json();
-      if (data.success) return data;
-      // Jika proxy gagal, lanjut ke direct upload
-    } catch(e) { /* fallthrough ke direct */ }
-  }
-
-  // Direct upload ke ImgBB (support CORS, tidak perlu proxy)
   const fd = new FormData();
   fd.append('key', apiKey);
   fd.append('image', b64image);
@@ -1227,7 +1207,12 @@ async function imgbbUpload(apiKey, b64image, name) {
     method: 'POST',
     body: fd,
   });
-  const data = await res.json();
+
+  let data;
+  try { data = await res.json(); } catch(e) {
+    throw new Error('ImgBB tidak merespons dengan benar (HTTP ' + res.status + ')');
+  }
+
   if (!data.success) {
     const msg = data?.error?.message || ('Upload gagal (HTTP ' + res.status + ')');
     throw new Error(msg);
