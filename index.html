@@ -1196,15 +1196,42 @@ function fileToBase64(file) {
   });
 }
 
-// Upload via Vercel proxy — tidak ada CORS
+// Upload langsung ke ImgBB — ImgBB API support CORS dari browser
+// Fallback ke Vercel proxy jika tersedia (untuk deployment di Vercel)
 async function imgbbUpload(apiKey, b64image, name) {
-  const res = await fetch('/api/imgbb-upload', {
+  // Coba proxy Vercel dulu (jika app jalan di Vercel)
+  const useProxy = window.location.hostname !== 'localhost' &&
+                   !window.location.protocol.startsWith('file') &&
+                   window.location.hostname.includes('vercel.app');
+
+  if (useProxy) {
+    try {
+      const res = await fetch('/api/imgbb-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey, image: b64image, name }),
+      });
+      const data = await res.json();
+      if (data.success) return data;
+      // Jika proxy gagal, lanjut ke direct upload
+    } catch(e) { /* fallthrough ke direct */ }
+  }
+
+  // Direct upload ke ImgBB (support CORS, tidak perlu proxy)
+  const fd = new FormData();
+  fd.append('key', apiKey);
+  fd.append('image', b64image);
+  if (name) fd.append('name', name);
+
+  const res = await fetch('https://api.imgbb.com/1/upload', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ apiKey, image: b64image, name }),
+    body: fd,
   });
   const data = await res.json();
-  if (!data.success) throw new Error(data?.error?.message || 'Upload gagal (HTTP ' + res.status + ')');
+  if (!data.success) {
+    const msg = data?.error?.message || ('Upload gagal (HTTP ' + res.status + ')');
+    throw new Error(msg);
+  }
   return data;
 }
 
@@ -1215,7 +1242,7 @@ async function testImgurConnection(silent = false) {
   const resultBox = document.getElementById('imgurConnectResult');
   const tag = document.getElementById('imgurStatusTag');
   resultBox.style.display = 'block';
-  resultBox.innerHTML = '<span style="color:var(--a4);font-family:var(--mono);font-size:11px">⏳ Menghubungkan via Vercel proxy...</span>';
+  resultBox.innerHTML = '<span style="color:var(--a4);font-family:var(--mono);font-size:11px">⏳ Menghubungkan ke ImgBB...</span>';
 
   try {
     // 1×1 transparent PNG
