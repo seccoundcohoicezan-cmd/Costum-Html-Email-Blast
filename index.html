@@ -205,6 +205,67 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--s1)}
 ::-webkit-scrollbar-thumb{background:var(--border2)}
+
+/* ── Live Preview Split ── */
+.split-layout{display:grid;grid-template-columns:1fr 1fr;gap:0;height:calc(100vh - 52px);overflow:hidden}
+.split-form{overflow-y:auto;padding:24px;border-right:1px solid var(--border)}
+.split-preview-pane{overflow:hidden;display:flex;flex-direction:column;background:var(--bg)}
+.split-preview-header{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--s1);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;flex-shrink:0}
+.split-preview-toggle{display:flex;gap:0;margin-left:auto}
+.split-preview-btn{padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:var(--s2);color:var(--text3);font-family:var(--font);transition:.15s}
+.split-preview-btn.active{background:var(--a1);color:#000;border-color:var(--a1)}
+.split-preview-frame{flex:1;border:none;background:#fff}
+.split-preview-placeholder{flex:1;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text3);font-family:var(--mono)}
+
+/* ── Custom Placeholder ── */
+.ph-builder-row{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.ph-builder-row:last-child{border-bottom:none}
+.ph-col-name{font-family:var(--mono);font-size:12px;color:var(--a2);flex:1;background:var(--s2);border:1px solid var(--border2);padding:7px 10px;color:var(--text);outline:none}
+.ph-col-name:focus{border-color:var(--a1)}
+.ph-sample{font-family:var(--mono);font-size:12px;flex:1;background:var(--s2);border:1px solid var(--border2);padding:7px 10px;color:var(--text3);outline:none}
+.ph-sample:focus{border-color:var(--a1)}
+.ph-generated{font-family:var(--mono);font-size:11px;padding:4px 8px;background:rgba(63,185,80,.1);color:var(--a2);border:1px solid rgba(63,185,80,.2);white-space:nowrap}
+.ph-del-btn{background:rgba(241,80,102,.1);border:1px solid rgba(241,80,102,.25);color:var(--a3);cursor:pointer;padding:6px 10px;font-size:12px;transition:.15s}
+.ph-del-btn:hover{background:rgba(241,80,102,.2)}
+
+/* ── Presets ── */
+.preset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.preset-card{background:var(--s2);border:1px solid var(--border);padding:12px;cursor:pointer;transition:all .15s;position:relative}
+.preset-card:hover{border-color:var(--a1);background:rgba(88,166,255,.04)}
+.preset-card-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.preset-card-meta{font-size:10px;color:var(--text3);font-family:var(--mono)}
+.preset-card-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;opacity:.5;transition:.15s;padding:2px 5px}
+.preset-card-del:hover{opacity:1;color:var(--a3)}
+
+/* ── Customizer ── */
+.color-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.color-row label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;width:140px;flex-shrink:0}
+.color-swatch{width:32px;height:32px;border:1px solid var(--border2);cursor:pointer;background:none}
+.color-hex{font-family:var(--mono);font-size:12px;background:var(--s2);border:1px solid var(--border2);color:var(--text);padding:6px 10px;width:100px;outline:none}
+.color-hex:focus{border-color:var(--a1)}
+
+/* ── History ── */
+.hist-card{background:var(--s2);border:1px solid var(--border);padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
+.hist-card:hover{border-color:var(--a1)}
+.hist-thumb{width:48px;height:32px;border:1px solid var(--border);overflow:hidden;flex-shrink:0;background:var(--s3)}
+.hist-thumb iframe{width:300px;height:200px;border:none;transform:scale(.16);transform-origin:top left;pointer-events:none}
+.hist-meta{flex:1;min-width:0}
+.hist-name{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-time{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.hist-badge{font-size:9px;font-weight:700;padding:2px 6px;letter-spacing:.08em;font-family:var(--mono);margin-top:4px;display:inline-block}
+.hist-actions{display:flex;gap:6px;flex-shrink:0}
+.hist-btn{padding:5px 10px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:var(--s3);color:var(--text2);font-family:var(--font);transition:.15s;white-space:nowrap}
+.hist-btn:hover{border-color:var(--a1);color:var(--text)}
+
+/* ── Spam Score ── */
+.spam-meter{height:12px;background:var(--s2);border:1px solid var(--border);margin:10px 0;position:relative;overflow:hidden}
+.spam-meter-fill{height:100%;transition:width .5s ease,background .5s ease}
+.spam-rule-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px}
+.spam-rule-row:last-child{border-bottom:none}
+.spam-rule-ico{font-size:13px;flex-shrink:0;width:16px}
+.spam-rule-label{color:var(--text);flex:1}
+.spam-rule-detail{color:var(--text3);margin-top:2px}
+.spam-score-big{font-size:48px;font-weight:800;font-family:var(--mono);line-height:1}
 </style>
 </head>
 <body>
@@ -218,6 +279,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
     <span class="logo-sub">MULE + LISTMONK</span>
   </div>
   <div class="topbar-right">
+    <button class="btn btn-ghost" onclick="toggleLivePreview()" id="livePreviewBtn" style="font-size:11px;padding:5px 12px;">⬜ Live Preview</button>
     <div class="topbar-badge" id="topbarBadge">FORMMULE MODE · PLACEHOLDER READY</div>
     <span id="tdStatus" style="color:var(--a2)">● Ready</span>
   </div>
@@ -245,10 +307,26 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
   <div class="nav-item" onclick="showPanel('info')" id="nav-info">
     <span class="ico">📋</span>Info Placeholder
   </div>
+  <div class="nav-item" onclick="showPanel('customph')" id="nav-customph">
+    <span class="ico">🧩</span>Custom Placeholder<span class="nav-badge purple" id="nvPh">0</span>
+  </div>
+  <div class="nav-item" onclick="showPanel('presets')" id="nav-presets">
+    <span class="ico">💾</span>Simpan Konfigurasi<span class="nav-badge" id="nvPresets">0</span>
+  </div>
+  <div class="nav-item" onclick="showPanel('customizer')" id="nav-customizer">
+    <span class="ico">🎨</span>Template Customizer
+  </div>
+  <div class="nav-item" onclick="showPanel('history')" id="nav-history">
+    <span class="ico">🕐</span>History Generate<span class="nav-badge" id="nvHistory">0</span>
+  </div>
+  <div class="nav-item" onclick="showPanel('spamscore')" id="nav-spamscore">
+    <span class="ico">🛡</span>Spam Score Checker
+  </div>
 </div>
 
-<!-- MAIN -->
-<div class="main">
+<!-- MAIN SPLIT WRAPPER -->
+<div id="splitWrapper" style="display:contents">
+<div class="main" id="mainContent">
 
 <!-- ═══ CONFIG ═══ -->
 <div class="panel active" id="panel-config">
@@ -845,7 +923,193 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 
 </div>
 
+<!-- ═══ CUSTOM PLACEHOLDER BUILDER ═══ -->
+<div class="panel" id="panel-customph">
+  <div class="card">
+    <div class="card-head">🧩 Custom Placeholder Builder <span class="tag">Tambah Kolom Spreadsheet</span></div>
+    <div class="card-body">
+      <div class="alert alert-info" style="margin-bottom:14px">
+        Tambah kolom spreadsheet kustom — otomatis jadi placeholder di HTML template saat Generate.
+        Format: nama kolom → <code style="background:rgba(0,0,0,.2);padding:1px 5px">&lt;&lt;NAMA_KOLOM&gt;&gt;</code> (spasi → underscore, otomatis uppercase).
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 120px 36px;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase">Nama Kolom Spreadsheet</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase">Sample Data (Preview)</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase">Placeholder</div>
+        <div></div>
+      </div>
+      <div id="phBuilderRows"></div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn btn-primary" onclick="addCustomPh()">+ Tambah Kolom</button>
+        <button class="btn btn-ghost" onclick="clearCustomPh()">🗑 Reset</button>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="phPreviewCard" style="display:none">
+    <div class="card-head">👁 Preview Placeholder di Email</div>
+    <div class="card-body">
+      <p style="font-size:11px;color:var(--text3);margin-bottom:10px">Placeholder berikut akan disertakan dalam output HTML:</p>
+      <div class="ph-list" id="customPhPreview"></div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn btn-success" onclick="doGenerate();showPanel('generate')">⚡ Generate dengan Placeholder Ini</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SIMPAN & LOAD KONFIGURASI ═══ -->
+<div class="panel" id="panel-presets">
+  <div class="card">
+    <div class="card-head">💾 Simpan Konfigurasi <span class="tag">Preset Event</span></div>
+    <div class="card-body">
+      <div class="alert alert-ok" style="margin-bottom:14px">Simpan seluruh konfigurasi event (judul, penyelenggara, template, placeholder kustom, dll) sebagai preset bernama.</div>
+      <div class="row2" style="margin-bottom:12px">
+        <div class="field" style="margin-bottom:0"><label>Nama Preset</label><input type="text" id="presetNameInput" placeholder="Contoh: Pelatihan STEKOM Mei 2025" style="width:100%"></div>
+        <div style="display:flex;align-items:flex-end;gap:8px">
+          <button class="btn btn-success" onclick="savePreset()" style="height:38px">💾 Simpan</button>
+          <button class="btn btn-ghost" onclick="exportAllPresets()" style="height:38px">⬇ Export JSON</button>
+          <label class="btn btn-ghost" style="height:38px;cursor:pointer">⬆ Import JSON<input type="file" accept=".json" onchange="importPresets(event)" style="display:none"></label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">📂 Preset Tersimpan <span class="tag" id="presetCountTag">0 preset</span></div>
+    <div class="card-body">
+      <div id="presetGrid" class="preset-grid">
+        <div style="color:var(--text3);font-size:12px;grid-column:1/-1;padding:20px;text-align:center">Belum ada preset. Simpan konfigurasi event pertamamu!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TEMPLATE CUSTOMIZER VISUAL ═══ -->
+<div class="panel" id="panel-customizer">
+  <div class="card">
+    <div class="card-head">🎨 Template Customizer Visual <span class="tag">Override Warna & Teks</span></div>
+    <div class="card-body">
+      <div class="alert alert-purple" style="margin-bottom:14px">
+        Override warna dan teks header template langsung dari sini — tanpa menyentuh kode HTML. Setting ini diterapkan saat Generate.
+      </div>
+      <div class="row2">
+        <div>
+          <p style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em">🎨 Override Warna</p>
+          <div class="color-row">
+            <label>Warna Header BG</label>
+            <input type="color" class="color-swatch" id="custHeaderBg" value="#0A1628" oninput="syncColorHex('custHeaderBg')">
+            <input type="text" class="color-hex" id="custHeaderBgHex" value="#0A1628" oninput="syncColorPicker('custHeaderBg','custHeaderBgHex')" maxlength="7">
+          </div>
+          <div class="color-row">
+            <label>Warna Aksen / Border</label>
+            <input type="color" class="color-swatch" id="custAccent" value="#C9A84C" oninput="syncColorHex('custAccent')">
+            <input type="text" class="color-hex" id="custAccentHex" value="#C9A84C" oninput="syncColorPicker('custAccent','custAccentHex')" maxlength="7">
+          </div>
+          <div class="color-row">
+            <label>Warna Tombol CTA</label>
+            <input type="color" class="color-swatch" id="custCta" value="#378ADD" oninput="syncColorHex('custCta')">
+            <input type="text" class="color-hex" id="custCtaHex" value="#378ADD" oninput="syncColorPicker('custCta','custCtaHex')" maxlength="7">
+          </div>
+          <div class="color-row">
+            <label>Warna Footer BG</label>
+            <input type="color" class="color-swatch" id="custFooterBg" value="#0A1628" oninput="syncColorHex('custFooterBg')">
+            <input type="text" class="color-hex" id="custFooterBgHex" value="#0A1628" oninput="syncColorPicker('custFooterBg','custFooterBgHex')" maxlength="7">
+          </div>
+          <label class="toggle-row" style="padding:10px 0;cursor:pointer">
+            <div><div class="toggle-label" style="font-size:13px">Aktifkan Override Warna</div><div class="toggle-sub">Terapkan warna kustom saat Generate</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="custColorOn"><span class="toggle-slider"></span></label>
+          </label>
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em">✏️ Override Teks</p>
+          <div class="field"><label>Teks Greeting (Pembuka)</label><input type="text" id="custGreeting" placeholder="Biarkan kosong = default template" oninput="scheduleRealtimePreview()"></div>
+          <div class="field"><label>Teks Penutup Email</label><input type="text" id="custClosing" placeholder="Contoh: Hormat kami," oninput="scheduleRealtimePreview()"></div>
+          <div class="field"><label>Teks Sub-judul Header</label><input type="text" id="custSubheader" placeholder="Contoh: SERTIFIKAT KELULUSAN" oninput="scheduleRealtimePreview()"></div>
+          <div class="btn-row" style="margin-top:8px">
+            <button class="btn btn-ghost" onclick="resetCustomizer()">↺ Reset ke Default</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head">👁 Preview Realtime</div>
+    <div class="card-body" style="padding:0">
+      <iframe id="customizerFrame" style="width:100%;height:400px;border:none;background:#fff"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HISTORY GENERATE ═══ -->
+<div class="panel" id="panel-history">
+  <div class="card">
+    <div class="card-head">🕐 Riwayat Generate <span class="tag">10 Terakhir</span></div>
+    <div class="card-body">
+      <div class="alert alert-info" style="margin-bottom:14px">
+        Setiap Generate tersimpan otomatis. Klik item untuk restore konfigurasi & HTML, atau bandingkan antar versi.
+      </div>
+      <div id="historyList">
+        <div style="text-align:center;padding:24px;color:var(--text3);font-size:12px">Belum ada riwayat. Generate template pertamamu!</div>
+      </div>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn btn-ghost" onclick="clearHistory()">🗑 Hapus Semua History</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SPAM SCORE CHECKER ═══ -->
+<div class="panel" id="panel-spamscore">
+  <div class="card">
+    <div class="card-head">🛡 Email Spam Score Checker <span class="tag">Analisis HTML</span></div>
+    <div class="card-body">
+      <div class="alert alert-warn" style="margin-bottom:14px">
+        Analisis HTML template sebelum dikirim — deteksi kata spam, rasio gambar/teks, ukuran HTML, dan saran perbaikan.
+      </div>
+      <div class="btn-row" style="margin-bottom:14px">
+        <button class="btn btn-primary" onclick="runSpamCheck()">🛡 Cek Template Aktif</button>
+        <button class="btn btn-ghost" onclick="runSpamCheckCustom()">📋 Paste HTML Manual</button>
+      </div>
+      <div id="spamCustomInput" style="display:none;margin-bottom:12px">
+        <textarea id="spamCustomHtml" style="width:100%;height:100px;background:var(--s2);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:11px;padding:10px;outline:none;resize:vertical" placeholder="Paste HTML email template di sini..."></textarea>
+        <button class="btn btn-warn" style="margin-top:6px" onclick="runSpamCheckFromTextarea()">Analisis HTML Ini</button>
+      </div>
+      <div id="spamResult" style="display:none">
+        <div style="display:flex;align-items:center;gap:20px;margin-bottom:16px;padding:16px;background:var(--s2);border:1px solid var(--border)">
+          <div>
+            <div class="spam-score-big" id="spamScoreNum">0</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:4px;font-family:var(--mono)">SPAM SCORE (0=aman, 100=spam)</div>
+          </div>
+          <div style="flex:1">
+            <div class="spam-meter"><div class="spam-meter-fill" id="spamMeterFill"></div></div>
+            <div style="font-size:13px;font-weight:700;margin-top:6px" id="spamVerdict"></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px" id="spamVerdictSub"></div>
+          </div>
+        </div>
+        <div class="card-head" style="padding:10px 0 10px 2px;margin-bottom:4px">📋 Rincian Pemeriksaan</div>
+        <div id="spamRules"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- /main -->
+
+<!-- LIVE PREVIEW PANE (hidden by default) -->
+<div class="split-preview-pane" id="livePreviewPane" style="display:none">
+  <div class="split-preview-header">
+    <span>⚡ LIVE PREVIEW</span>
+    <div class="split-preview-toggle">
+      <button class="split-preview-btn active" onclick="setPreviewDevice('desktop')" id="pvBtnDesk">Desktop 600px</button>
+      <button class="split-preview-btn" onclick="setPreviewDevice('mobile')" id="pvBtnMob">Mobile 375px</button>
+    </div>
+    <button onclick="refreshLivePreview()" style="margin-left:8px;background:none;border:none;color:var(--a1);cursor:pointer;font-size:12px;font-weight:700;">↻ Refresh</button>
+  </div>
+  <div style="flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:16px;background:var(--s3)">
+    <iframe id="livePreviewFrame" style="width:600px;min-height:500px;border:none;background:#fff;transition:width .3s" src="about:blank"></iframe>
+  </div>
+</div>
+
+</div><!-- /splitWrapper -->
 </div><!-- /app -->
 
 <!-- MODAL PREVIEW -->
@@ -1441,10 +1705,546 @@ window.addEventListener('DOMContentLoaded', () => {
   setTarget('mule');
   loadSavedClientId();
   setStatus('Ready');
+  renderPresets();
+  renderHistory();
+  renderCustomPh();
 });
 document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => {
   if (e.target === m) m.classList.remove('open');
 }));
+
+// ════════════════════════════════════════
+// FEATURE 1: LIVE PREVIEW SIDE-BY-SIDE
+// ════════════════════════════════════════
+let livePreviewActive = false;
+let livePreviewDevice = 'desktop';
+let livePreviewTimer = null;
+
+function toggleLivePreview() {
+  livePreviewActive = !livePreviewActive;
+  const btn = document.getElementById('livePreviewBtn');
+  const pane = document.getElementById('livePreviewPane');
+  const app = document.querySelector('.app');
+
+  if (livePreviewActive) {
+    btn.textContent = '⬛ Live Preview ON';
+    btn.style.background = 'rgba(63,185,80,.15)';
+    btn.style.color = 'var(--a2)';
+    btn.style.borderColor = 'rgba(63,185,80,.3)';
+    pane.style.display = 'flex';
+    pane.style.flexDirection = 'column';
+    app.style.gridTemplateColumns = '220px 1fr 1fr';
+    refreshLivePreview();
+  } else {
+    btn.textContent = '⬜ Live Preview';
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    pane.style.display = 'none';
+    app.style.gridTemplateColumns = '220px 1fr';
+  }
+}
+
+function setPreviewDevice(dev) {
+  livePreviewDevice = dev;
+  document.getElementById('pvBtnDesk').classList.toggle('active', dev === 'desktop');
+  document.getElementById('pvBtnMob').classList.toggle('active', dev === 'mobile');
+  const frame = document.getElementById('livePreviewFrame');
+  frame.style.width = dev === 'mobile' ? '375px' : '600px';
+}
+
+function refreshLivePreview() {
+  if (!livePreviewActive) return;
+  const d = getVars(true);
+  const html = getTemplate(activeTpl, d);
+  const frame = document.getElementById('livePreviewFrame');
+  if (frame) frame.srcdoc = html;
+}
+
+function scheduleRealtimePreview() {
+  clearTimeout(livePreviewTimer);
+  livePreviewTimer = setTimeout(() => {
+    refreshLivePreview();
+    if (document.getElementById('panel-customizer').classList.contains('active')) {
+      refreshCustomizerPreview();
+    }
+  }, 300);
+}
+
+// Hook input changes for live preview
+document.addEventListener('input', e => {
+  if (e.target.matches && e.target.matches('#cfJudul,#cfPenyelenggara,#cfProgram,#cfFromName,#cfSubject,#cfIg1,#cfIg2,#cfLabel1,#cfLabel2a,#cfLabel2b')) {
+    scheduleRealtimePreview();
+  }
+});
+document.addEventListener('change', e => {
+  if (e.target.matches && e.target.matches('#cfShowSekolah1,#cfShowSekolah2,#cfShowNominal,#cfHeaderImgOn,#cfFooterImgOn')) {
+    scheduleRealtimePreview();
+  }
+});
+
+// Patch selectTemplate for live preview
+const _origSelectTemplate = window.selectTemplate;
+window.selectTemplate = function(id) {
+  _origSelectTemplate(id);
+  scheduleRealtimePreview();
+};
+
+// ════════════════════════════════════════
+// FEATURE 2: CUSTOM PLACEHOLDER BUILDER
+// ════════════════════════════════════════
+let customPlaceholders = [];
+
+function addCustomPh(colName='', sample='') {
+  const id = 'cph_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+  customPlaceholders.push({id, col:colName, sample});
+  renderCustomPh();
+}
+
+function renderCustomPh() {
+  const container = document.getElementById('phBuilderRows');
+  if (!container) return;
+  if (customPlaceholders.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px">Belum ada custom placeholder. Klik "+ Tambah Kolom".</div>';
+    document.getElementById('phPreviewCard').style.display = 'none';
+    document.getElementById('nvPh').textContent = '0';
+    return;
+  }
+  container.innerHTML = customPlaceholders.map((ph) => {
+    const phTag = ph.col.trim() ? '<<' + ph.col.trim().toUpperCase().replace(/\s+/g,'_') + '>>' : '...';
+    return `<div class="ph-builder-row" data-id="${ph.id}" style="display:grid;grid-template-columns:1fr 1fr 130px 36px;gap:8px;align-items:center">
+      <input class="ph-col-name" type="text" value="${ph.col}" placeholder="Nama kolom..." oninput="updateCustomPh('${ph.id}','col',this.value)" style="text-transform:uppercase;width:100%">
+      <input class="ph-sample" type="text" value="${ph.sample}" placeholder="Sample data..." oninput="updateCustomPh('${ph.id}','sample',this.value)" style="width:100%">
+      <span class="ph-generated">${phTag}</span>
+      <button class="ph-del-btn" onclick="deleteCustomPh('${ph.id}')">✕</button>
+    </div>`;
+  }).join('');
+  document.getElementById('phPreviewCard').style.display = 'block';
+  document.getElementById('customPhPreview').innerHTML = customPlaceholders
+    .filter(ph => ph.col.trim())
+    .map(ph => {
+      const tag = '<<' + ph.col.trim().toUpperCase().replace(/\s+/g,'_') + '>>';
+      return `<span class="ph ph-green">${tag}</span>`;
+    }).join('');
+  document.getElementById('nvPh').textContent = customPlaceholders.filter(p => p.col.trim()).length;
+}
+
+function updateCustomPh(id, field, value) {
+  const ph = customPlaceholders.find(p => p.id === id);
+  if (ph) { ph[field] = value; renderCustomPh(); }
+}
+
+function deleteCustomPh(id) {
+  customPlaceholders = customPlaceholders.filter(p => p.id !== id);
+  renderCustomPh();
+}
+
+function clearCustomPh() {
+  customPlaceholders = [];
+  renderCustomPh();
+}
+
+// ════════════════════════════════════════
+// FEATURE 3: SIMPAN & LOAD KONFIGURASI
+// ════════════════════════════════════════
+const PRESETS_KEY = 'etg_presets_v1';
+
+function getAllPresets() {
+  try { return JSON.parse(localStorage.getItem(PRESETS_KEY) || '[]'); } catch { return []; }
+}
+
+function saveAllPresets(presets) {
+  localStorage.setItem(PRESETS_KEY, JSON.stringify(presets));
+}
+
+function captureCurrentConfig() {
+  return {
+    judul: document.getElementById('cfJudul').value,
+    penyelenggara: document.getElementById('cfPenyelenggara').value,
+    program: document.getElementById('cfProgram').value,
+    from_name: document.getElementById('cfFromName').value,
+    subject: document.getElementById('cfSubject').value,
+    ig1: document.getElementById('cfIg1').value,
+    ig2: document.getElementById('cfIg2').value,
+    label1: document.getElementById('cfLabel1').value,
+    label2a: document.getElementById('cfLabel2a').value,
+    label2b: document.getElementById('cfLabel2b').value,
+    certMode,
+    activeTpl,
+    targetPlatform,
+    customPlaceholders: JSON.parse(JSON.stringify(customPlaceholders)),
+    showSekolah1: document.getElementById('cfShowSekolah1').checked,
+    showSekolah2: document.getElementById('cfShowSekolah2').checked,
+    showNominal: document.getElementById('cfShowNominal').checked,
+  };
+}
+
+function applyConfig(cfg) {
+  const set = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined) el.value = val; };
+  set('cfJudul', cfg.judul); set('cfPenyelenggara', cfg.penyelenggara);
+  set('cfProgram', cfg.program); set('cfFromName', cfg.from_name);
+  set('cfSubject', cfg.subject); set('cfIg1', cfg.ig1); set('cfIg2', cfg.ig2);
+  set('cfLabel1', cfg.label1); set('cfLabel2a', cfg.label2a); set('cfLabel2b', cfg.label2b);
+  if (cfg.certMode) setMode(cfg.certMode);
+  if (cfg.activeTpl) { activeTpl = cfg.activeTpl; const t = document.getElementById('tc-'+activeTpl); if(t){document.querySelectorAll('.tmpl-card').forEach(c=>c.classList.remove('selected'));t.classList.add('selected');document.getElementById('nvTpl').textContent=String(activeTpl).padStart(2,'0');document.getElementById('tplActiveLabel').textContent=TPL_NAMES[activeTpl];} }
+  if (cfg.targetPlatform) setTarget(cfg.targetPlatform);
+  if (cfg.customPlaceholders) { customPlaceholders = cfg.customPlaceholders; renderCustomPh(); }
+  const chk = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined) el.checked = val; };
+  chk('cfShowSekolah1', cfg.showSekolah1); chk('cfShowSekolah2', cfg.showSekolah2); chk('cfShowNominal', cfg.showNominal);
+  scheduleRealtimePreview();
+}
+
+function savePreset() {
+  const name = document.getElementById('presetNameInput').value.trim();
+  if (!name) { toast('⚠ Isi nama preset dulu!', 'warn'); return; }
+  const presets = getAllPresets();
+  const existing = presets.findIndex(p => p.name === name);
+  const entry = { name, savedAt: Date.now(), config: captureCurrentConfig() };
+  if (existing >= 0) presets[existing] = entry;
+  else presets.unshift(entry);
+  saveAllPresets(presets);
+  document.getElementById('presetNameInput').value = '';
+  renderPresets();
+  toast('✔ Preset "' + name + '" disimpan!', 'ok');
+}
+
+function loadPreset(name) {
+  const p = getAllPresets().find(p => p.name === name);
+  if (!p) return;
+  applyConfig(p.config);
+  showPanel('config');
+  toast('✔ Preset "' + name + '" dimuat!', 'ok');
+}
+
+function deletePreset(name) {
+  saveAllPresets(getAllPresets().filter(p => p.name !== name));
+  renderPresets();
+  toast('Preset "' + name + '" dihapus.', 'info');
+}
+
+function renderPresets() {
+  const presets = getAllPresets();
+  const grid = document.getElementById('presetGrid');
+  const countTag = document.getElementById('presetCountTag');
+  const nvBadge = document.getElementById('nvPresets');
+  if (countTag) countTag.textContent = presets.length + ' preset';
+  if (nvBadge) nvBadge.textContent = presets.length;
+  if (!grid) return;
+  if (!presets.length) {
+    grid.innerHTML = '<div style="color:var(--text3);font-size:12px;grid-column:1/-1;padding:20px;text-align:center">Belum ada preset. Simpan konfigurasi event pertamamu!</div>';
+    return;
+  }
+  grid.innerHTML = presets.map(p => {
+    const meta = p.config ? `Tpl ${p.config.activeTpl||'?'} · Mode ${p.config.certMode||'?'}` : '';
+    const time = new Date(p.savedAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+    const safeName = p.name.replace(/'/g,"\\'");
+    return `<div class="preset-card" onclick="loadPreset('${safeName}')" title="Klik untuk load">
+      <button class="preset-card-del" onclick="event.stopPropagation();deletePreset('${safeName}')" title="Hapus">✕</button>
+      <div class="preset-card-name">${p.name}</div>
+      <div class="preset-card-meta">${meta}</div>
+      <div class="preset-card-meta" style="margin-top:2px">📅 ${time}</div>
+    </div>`;
+  }).join('');
+}
+
+function exportAllPresets() {
+  const presets = getAllPresets();
+  if (!presets.length) { toast('Belum ada preset!', 'warn'); return; }
+  const blob = new Blob([JSON.stringify(presets, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'etg_presets_' + Date.now() + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('✔ Presets diexport!', 'ok');
+}
+
+function importPresets(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) throw new Error('Format tidak valid');
+      const current = getAllPresets();
+      imported.forEach(p => { if (!current.find(c => c.name === p.name)) current.push(p); });
+      saveAllPresets(current);
+      renderPresets();
+      toast('✔ ' + imported.length + ' preset diimport!', 'ok');
+    } catch { toast('❌ File JSON tidak valid', 'err'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ════════════════════════════════════════
+// FEATURE 4: TEMPLATE CUSTOMIZER VISUAL
+// ════════════════════════════════════════
+function syncColorHex(id) {
+  const picker = document.getElementById(id);
+  const hexEl = document.getElementById(id + 'Hex');
+  if (hexEl) hexEl.value = picker.value;
+  scheduleRealtimePreview();
+  setTimeout(refreshCustomizerPreview, 50);
+}
+
+function syncColorPicker(pickerId, hexId) {
+  const hex = document.getElementById(hexId).value;
+  if (/^#[0-9a-fA-F]{6}$/.test(hex)) document.getElementById(pickerId).value = hex;
+  scheduleRealtimePreview();
+  setTimeout(refreshCustomizerPreview, 50);
+}
+
+function resetCustomizer() {
+  [['custHeaderBg','#0A1628'],['custAccent','#C9A84C'],['custCta','#378ADD'],['custFooterBg','#0A1628']].forEach(([id,val]) => {
+    document.getElementById(id).value = val;
+    document.getElementById(id+'Hex').value = val;
+  });
+  ['custGreeting','custClosing','custSubheader'].forEach(id => document.getElementById(id).value = '');
+  refreshCustomizerPreview();
+  toast('↺ Customizer direset ke default', 'info');
+}
+
+function getCustomizerOverrides() {
+  const on = document.getElementById('custColorOn');
+  if (!on || !on.checked) return null;
+  return {
+    headerBg: document.getElementById('custHeaderBg').value,
+    accent: document.getElementById('custAccent').value,
+    cta: document.getElementById('custCta').value,
+    footerBg: document.getElementById('custFooterBg').value,
+    subheader: document.getElementById('custSubheader').value,
+  };
+}
+
+function applyCustomizerToHtml(html) {
+  const ov = getCustomizerOverrides();
+  if (!ov || !html) return html;
+  // Replace dominant header/accent/CTA colors
+  const headerBgColors = ['#0A1628','#0D4F3C','#E8450A','#0D1117','#1A1A1A','#3A1C8C','#C0190A','#0A6B6B','#2C1A06','#4154F1'];
+  const accentColors = ['#C9A84C','#3BCB8A','#F5A623','#00F0A0','#7C3AED','#FF6B6B','#1DCFCF','#F5A623'];
+  let result = html;
+  if (ov.headerBg) headerBgColors.forEach(c => { result = result.replaceAll(c, ov.headerBg); });
+  if (ov.accent) accentColors.forEach(c => { result = result.replaceAll(c, ov.accent); });
+  if (ov.cta) result = result.replaceAll('#378ADD', ov.cta);
+  if (ov.subheader) result = result.replace(/SERTIFIKAT PENYELESAIAN PROGRAM|Sertifikat Penyelesaian Program/g, ov.subheader);
+  return result;
+}
+
+function refreshCustomizerPreview() {
+  const frame = document.getElementById('customizerFrame');
+  if (!frame) return;
+  const d = getVars(true);
+  let html = getTemplate(activeTpl, d);
+  // Apply customizer always for preview (even if toggle off)
+  const onEl = document.getElementById('custColorOn');
+  const wasOn = onEl && onEl.checked;
+  if (onEl) onEl.checked = true;
+  html = applyCustomizerToHtml(html);
+  if (onEl) onEl.checked = wasOn;
+  frame.srcdoc = html;
+}
+
+// ════════════════════════════════════════
+// FEATURE 5: HISTORY GENERATE
+// ════════════════════════════════════════
+const HISTORY_KEY = 'etg_history_v1';
+
+function getAllHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; }
+}
+
+function saveHistory(entries) { localStorage.setItem(HISTORY_KEY, JSON.stringify(entries)); }
+
+function pushHistory(htmlMule, htmlListmonk, config) {
+  const entries = getAllHistory();
+  const entry = { id: Date.now(), savedAt: Date.now(), name: config.judul || '(tanpa judul)', tpl: activeTpl, tplName: TPL_NAMES[activeTpl], mode: certMode, target: targetPlatform, htmlMule, htmlListmonk, config: JSON.parse(JSON.stringify(config)) };
+  entries.unshift(entry);
+  saveHistory(entries);
+  renderHistory();
+}
+
+function renderHistory() {
+  const entries = getAllHistory();
+  const list = document.getElementById('historyList');
+  const nvBadge = document.getElementById('nvHistory');
+  if (nvBadge) nvBadge.textContent = entries.length;
+  if (!list) return;
+  if (!entries.length) {
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:12px">Belum ada riwayat. Generate template pertamamu!</div>';
+    return;
+  }
+  list.innerHTML = entries.map((e, i) => {
+    const time = new Date(e.savedAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+    const targetColor = e.target === 'mule' ? 'var(--a2)' : e.target === 'listmonk' ? 'var(--a4)' : 'var(--a5)';
+    const targetLabel = e.target === 'mule' ? '📊 Mule' : e.target === 'listmonk' ? '🐒 Listmonk' : '📊+🐒 Both';
+    return `<div class="hist-card">
+      <div style="flex:1;min-width:0">
+        <div class="hist-name">${i+1}. ${e.name} — ${e.tplName||''}</div>
+        <div class="hist-time">📅 ${time} · Mode ${e.mode||'?'} Sertif</div>
+        <span class="hist-badge" style="background:rgba(88,166,255,.08);color:${targetColor};border:1px solid ${targetColor}40">${targetLabel}</span>
+      </div>
+      <div class="hist-actions">
+        <button class="hist-btn" onclick="restoreHistory(${e.id})">↺ Restore</button>
+        <button class="hist-btn" onclick="previewHistory(${e.id})">👁 Preview</button>
+        <button class="hist-btn" onclick="copyHistoryItem(${e.id})">📋 Copy</button>
+        <button class="hist-btn" onclick="deleteHistory(${e.id})" style="color:var(--a3)">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function restoreHistory(id) {
+  const e = getAllHistory().find(h => h.id === id);
+  if (!e) return;
+  if (e.config) applyConfig(e.config);
+  if (e.htmlMule) generatedHTML = e.htmlMule;
+  if (e.htmlListmonk) generatedHTMLListmonk = e.htmlListmonk;
+  showPanel('config');
+  toast('✔ Konfigurasi dari history dimuat!', 'ok');
+}
+
+function previewHistory(id) {
+  const e = getAllHistory().find(h => h.id === id);
+  if (!e) return;
+  const html = (e.htmlMule || e.htmlListmonk || '').replace(/<<NAMA>>/g,'Vania Dido Azzahra').replace(/<<ASAL_SEKOLAH>>/g,'SMA Negeri 1 Semarang').replace(/<<LINK_SERTIFIKAT_PELATIHAN>>/g,'#').replace(/<<LINK_SERTIFIKAT_BEASISWA>>/g,'#').replace(/<<NOMINAL>>/g,'Rp 1.000.000');
+  if (!html) { toast('Tidak ada HTML di history ini', 'warn'); return; }
+  document.getElementById('previewFrame').srcdoc = html;
+  document.getElementById('prevSubject').textContent = e.name;
+  openModal('modalPreview');
+}
+
+function copyHistoryItem(id) {
+  const e = getAllHistory().find(h => h.id === id);
+  if (!e) return;
+  navigator.clipboard?.writeText(e.htmlMule || '');
+  flashCopy('✓ HTML history dicopy!');
+}
+
+function deleteHistory(id) {
+  saveHistory(getAllHistory().filter(h => h.id !== id));
+  renderHistory();
+}
+
+function clearHistory() {
+  if (!confirm('Hapus semua history generate?')) return;
+  saveHistory([]);
+  renderHistory();
+  toast('History dihapus.', 'info');
+}
+
+// ════════════════════════════════════════
+// FEATURE 6: SPAM SCORE CHECKER
+// ════════════════════════════════════════
+const SPAM_WORDS = ['gratis','free','klik di sini','click here','menang','winner','hadiah','prize','urgent','segera','limited','terbatas','diskon besar','big discount','beli sekarang','buy now','penawaran khusus','promo','murah','cheap','garansi','guarantee','100%','cash','uang tunai','transfer','rekening','password','kata sandi'];
+
+function runSpamCheck() {
+  const html = generatedHTML || generatedHTMLListmonk;
+  if (!html) { toast('Generate template dulu!', 'warn'); return; }
+  analyzeSpam(html);
+}
+
+function runSpamCheckCustom() {
+  const inputDiv = document.getElementById('spamCustomInput');
+  inputDiv.style.display = inputDiv.style.display === 'none' ? 'block' : 'none';
+}
+
+function runSpamCheckFromTextarea() {
+  const html = document.getElementById('spamCustomHtml').value;
+  if (!html.trim()) { toast('Paste HTML dulu!', 'warn'); return; }
+  analyzeSpam(html);
+}
+
+function analyzeSpam(html) {
+  const rules = [];
+  let score = 0;
+
+  // 1. Size
+  const sizeKb = (html.length / 1024).toFixed(1);
+  if (html.length > 102400) { rules.push({ico:'❌',label:'Ukuran HTML terlalu besar',detail:`${sizeKb} KB — Maksimal ideal 100 KB. Email besar sering dipotong Gmail.`,points:20}); score+=20; }
+  else if (html.length > 61440) { rules.push({ico:'⚠️',label:'Ukuran HTML mendekati batas',detail:`${sizeKb} KB — Masih aman, idealnya di bawah 60 KB.`,points:10}); score+=10; }
+  else { rules.push({ico:'✅',label:'Ukuran HTML OK',detail:`${sizeKb} KB — Ukuran ideal.`,points:0}); }
+
+  // 2. Spam words
+  const lower = html.toLowerCase();
+  const found = SPAM_WORDS.filter(w => lower.includes(w));
+  if (found.length >= 4) { rules.push({ico:'❌',label:'Banyak kata pemicu spam',detail:`Ditemukan: ${found.slice(0,6).join(', ')}...`,points:25}); score+=25; }
+  else if (found.length >= 2) { rules.push({ico:'⚠️',label:'Ada kata spam terdeteksi',detail:`Ditemukan: ${found.join(', ')}`,points:10}); score+=10; }
+  else if (found.length===1) { rules.push({ico:'⚠️',label:'1 kata spam',detail:`Ditemukan: "${found[0]}"`,points:5}); score+=5; }
+  else { rules.push({ico:'✅',label:'Tidak ada kata spam umum',detail:'Isi email bersih dari kata pemicu spam.',points:0}); }
+
+  // 3. Image:text ratio
+  const imgs = (html.match(/<img/gi)||[]).length;
+  const textLen = html.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim().length;
+  if (imgs>0 && textLen<80) { rules.push({ico:'❌',label:'Terlalu sedikit teks',detail:`${imgs} gambar, hanya ~${textLen} kar teks. Ideal rasio teks:gambar = 60:40.`,points:20}); score+=20; }
+  else { rules.push({ico:'✅',label:'Rasio teks:gambar OK',detail:`${imgs} gambar, ~${textLen} kar teks.`,points:0}); }
+
+  // 4. Unsubscribe
+  const hasUnsub = lower.includes('unsubscribe') || lower.includes('berhenti berlangganan') || lower.includes('opt-out');
+  if (!hasUnsub) { rules.push({ico:'⚠️',label:'Tidak ada link unsubscribe',detail:'Email blast yang baik menyertakan opsi berhenti berlangganan (CAN-SPAM, GDPR).',points:10}); score+=10; }
+  else { rules.push({ico:'✅',label:'Ada link unsubscribe',detail:'Bagus! Membantu reputasi pengirim.',points:0}); }
+
+  // 5. ALL CAPS abuse
+  const capsCount = (html.replace(/<[^>]+>/g,'').match(/\b[A-Z]{5,}\b/g)||[]).filter(w=>!/^(NAMA|EMAIL|LINK|SERTIFIKAT|BEASISWA|PELATIHAN|NOMINAL|SEKOLAH|DOCTYPE)$/.test(w)).length;
+  if (capsCount>=4) { rules.push({ico:'⚠️',label:`Terlalu banyak HURUF KAPITAL (${capsCount})`,detail:'Penggunaan caps berlebihan memicu filter spam.',points:8}); score+=8; }
+  else { rules.push({ico:'✅',label:'Penggunaan kapital normal',detail:'Tidak ada penyalahgunaan caps lock.',points:0}); }
+
+  // 6. Placeholder check
+  const phs = (html.match(/<<[A-Z_]+>>/g)||[]);
+  rules.push({ico:'✅',label:`${phs.length} placeholder aktif`,detail:`Placeholder siap diisi Mule: ${phs.slice(0,4).join(', ')||'tidak ada'} — normal.`,points:0});
+
+  score = Math.min(score, 100);
+  renderSpamResult(score, rules);
+}
+
+function renderSpamResult(score, rules) {
+  document.getElementById('spamResult').style.display = 'block';
+  document.getElementById('spamScoreNum').textContent = score;
+  const color = score<=20?'var(--a2)':score<=40?'var(--a4)':'var(--a3)';
+  document.getElementById('spamScoreNum').style.color = color;
+  const fill = document.getElementById('spamMeterFill');
+  fill.style.width = score+'%';
+  fill.style.background = color;
+  const v = document.getElementById('spamVerdict');
+  const vs = document.getElementById('spamVerdictSub');
+  if (score<=15) { v.textContent='✅ Sangat Aman — Siap Blast!'; v.style.color='var(--a2)'; vs.textContent='Risiko spam sangat rendah.'; }
+  else if (score<=30) { v.textContent='🟡 Aman dengan Catatan'; v.style.color='var(--a4)'; vs.textContent='Perhatikan poin kuning untuk optimasi.'; }
+  else if (score<=55) { v.textContent='⚠️ Perlu Perbaikan'; v.style.color='var(--a4)'; vs.textContent='Risiko cukup tinggi. Perbaiki poin merah sebelum blast.'; }
+  else { v.textContent='❌ Risiko Tinggi'; v.style.color='var(--a3)'; vs.textContent='Email ini kemungkinan besar masuk spam.'; }
+  document.getElementById('spamRules').innerHTML = rules.map(r=>`<div class="spam-rule-row"><span class="spam-rule-ico">${r.ico}</span><div><div class="spam-rule-label">${r.label}${r.points>0?` <span style="color:var(--a3);font-family:var(--mono);font-size:10px">(+${r.points} pts)</span>`:''}</div><div class="spam-rule-detail">${r.detail}</div></div></div>`).join('');
+}
+
+// ════════════════════════════════════════
+// PATCH doGenerate + showPanel
+// ════════════════════════════════════════
+const _origDoGenerate = doGenerate;
+doGenerate = function() {
+  _origDoGenerate();
+  // Apply customizer if enabled
+  if (document.getElementById('custColorOn') && document.getElementById('custColorOn').checked) {
+    generatedHTML = applyCustomizerToHtml(generatedHTML);
+    generatedHTMLListmonk = applyCustomizerToHtml(generatedHTMLListmonk);
+    const outEl = document.getElementById('outHTML');
+    if (outEl && generatedHTML) outEl.textContent = generatedHTML;
+    const outElL = document.getElementById('outHTMLListmonk');
+    if (outElL && generatedHTMLListmonk) outElL.textContent = generatedHTMLListmonk;
+  }
+  // Push history
+  setTimeout(() => {
+    if (generatedHTML || generatedHTMLListmonk) pushHistory(generatedHTML, generatedHTMLListmonk, captureCurrentConfig());
+  }, 150);
+  scheduleRealtimePreview();
+};
+
+const _origShowPanel2 = showPanel;
+showPanel = function(name) {
+  _origShowPanel2(name);
+  if (name==='presets') renderPresets();
+  if (name==='history') renderHistory();
+  if (name==='customizer') setTimeout(refreshCustomizerPreview, 60);
+  if (name==='customph') renderCustomPh();
+};
 </script>
 </body>
 </html>
