@@ -390,40 +390,19 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
     <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 3</span>Generate</div>
   </div>
 
-  <!-- ── IMGBB SETUP CARD ── -->
+  <!-- ── BASE64 INFO CARD ── -->
   <div class="card" id="imgurSetupCard">
-    <div class="card-head">🔑 ImgBB API — Setup Sekali <span class="tag" id="imgurStatusTag">BELUM CONNECT</span></div>
+    <div class="card-head">🖼 Mode Gambar — Embed Base64 <span class="tag" style="color:var(--a2)">✅ SIAP PAKAI</span></div>
     <div class="card-body">
-
-      <!-- How to get API Key -->
-      <div class="alert alert-info" style="margin-bottom:14px">
+      <div class="alert alert-ok">
         <div>
-          <strong>Cara dapat API Key ImgBB (gratis, &lt;1 menit):</strong><br>
+          <strong>Tidak perlu API key atau upload eksternal!</strong><br>
           <span style="font-family:var(--mono);font-size:11px;line-height:2">
-            1. Buka <strong>api.imgbb.com</strong> → login (pakai akun imgbb.com)<br>
-            2. Klik <strong>Add API key</strong> → beri nama bebas → klik <strong>Generate</strong><br>
-            3. Copy API key yang muncul → paste di kotak bawah<br>
-            4. Klik <strong>🔌 Test &amp; Connect</strong>
+            Gambar di-embed langsung sebagai <strong>base64</strong> di dalam HTML email.<br>
+            ✅ Tidak ada CORS · ✅ Tidak perlu akun ImgBB · ✅ Bekerja di semua email client<br>
+            ⚠ Catatan: base64 membuat ukuran HTML lebih besar — cocok untuk gambar &lt; 200 KB.
           </span>
         </div>
-      </div>
-
-      <div style="display:flex;gap:10px;align-items:flex-end">
-        <div class="field" style="flex:1;margin-bottom:0">
-          <label>ImgBB API Key</label>
-          <input type="text" id="cfImgurClientId" placeholder="Paste API key ImgBB di sini" style="font-family:var(--mono)">
-        </div>
-        <button class="btn btn-primary" onclick="testImgurConnection()" style="flex-shrink:0;height:38px">🔌 Test &amp; Connect</button>
-        <button class="btn btn-ghost" onclick="saveImgurClientId()" style="flex-shrink:0;height:38px" title="Simpan ke localStorage agar tidak perlu isi ulang">💾 Simpan</button>
-      </div>
-
-      <div id="imgurConnectResult" style="margin-top:10px;display:none"></div>
-
-      <!-- Connected state -->
-      <div id="imgurConnectedInfo" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(63,185,80,.08);border-left:3px solid var(--a2)">
-        <span style="font-size:12px;color:var(--a2);font-weight:700">✅ ImgBB Connected</span>
-        <span style="font-size:11px;color:var(--text3);margin-left:10px;font-family:var(--mono)" id="imgurConnectedId"></span>
-        <span style="font-size:11px;color:var(--text3);margin-left:6px">· Gambar permanen &amp; publik · CDN global</span>
       </div>
     </div>
   </div>
@@ -450,7 +429,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
              ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event,'headerDropZone')" ondrop="handleDrop(event,'header')">
           <div class="imgur-upload-icon">📁</div>
           <div class="imgur-upload-text">Klik atau drag &amp; drop file PNG/JPG/GIF</div>
-          <div class="imgur-upload-sub" id="headerUploadStatus">Maks 32 MB · Disimpan permanen di ImgBB CDN</div>
+          <div class="imgur-upload-sub" id="headerUploadStatus">PNG/JPG/GIF · Di-embed sebagai base64 langsung di HTML</div>
           <div class="imgur-progress" id="headerProgress" style="display:none">
             <div class="imgur-progress-bar" id="headerProgressBar"></div>
           </div>
@@ -459,8 +438,8 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 
         <!-- URL field (auto-filled after upload) -->
         <div class="field" style="margin-top:12px">
-          <label>URL Gambar Header <span id="headerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ IMGBB CDN</span></label>
-          <input type="text" id="cfHeaderImgUrl" placeholder="Otomatis terisi setelah upload — atau paste URL manual" oninput="previewImg('header')" style="font-family:var(--mono);font-size:11px">
+          <label>URL / Data Gambar Header <span id="headerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ BASE64 EMBED</span></label>
+          <input type="text" id="cfHeaderImgUrl" placeholder="Otomatis terisi base64 setelah upload — atau paste URL manual" oninput="previewImg('header')" style="font-family:var(--mono);font-size:11px">
         </div>
 
         <div class="row2">
@@ -508,7 +487,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
              ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event,'footerDropZone')" ondrop="handleDrop(event,'footer')">
           <div class="imgur-upload-icon">📁</div>
           <div class="imgur-upload-text">Klik atau drag &amp; drop file PNG/JPG/GIF</div>
-          <div class="imgur-upload-sub" id="footerUploadStatus">Maks 32 MB · Disimpan permanen di ImgBB CDN</div>
+          <div class="imgur-upload-sub" id="footerUploadStatus">PNG/JPG/GIF · Di-embed sebagai base64 langsung di HTML</div>
           <div class="imgur-progress" id="footerProgress" style="display:none">
             <div class="imgur-progress-bar" id="footerProgressBar"></div>
           </div>
@@ -516,8 +495,8 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
         <input type="file" id="footerFileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event,'footer')">
 
         <div class="field" style="margin-top:12px">
-          <label>URL Gambar Footer <span id="footerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ IMGBB CDN</span></label>
-          <input type="text" id="cfFooterImgUrl" placeholder="Otomatis terisi setelah upload — atau paste URL manual" oninput="previewImg('footer')" style="font-family:var(--mono);font-size:11px">
+          <label>URL / Data Gambar Footer <span id="footerUrlBadge" style="display:none;background:rgba(63,185,80,.15);color:var(--a2);border:1px solid rgba(63,185,80,.3);font-size:9px;padding:1px 6px;font-family:var(--mono);font-weight:700;margin-left:6px">✓ BASE64 EMBED</span></label>
+          <input type="text" id="cfFooterImgUrl" placeholder="Otomatis terisi base64 setelah upload — atau paste URL manual" oninput="previewImg('footer')" style="font-family:var(--mono);font-size:11px">
         </div>
 
         <div class="row2">
@@ -1180,158 +1159,63 @@ function previewImg(which) {
   box.innerHTML = `<img src="${url}" alt="preview" style="max-height:100%;max-width:100%;object-fit:contain" onerror="this.parentNode.innerHTML='<span style=color:var(--a3)>❌ URL tidak bisa dimuat. Cek link publik.</span>'" onload="this.parentNode.style.background='#0008'">`;
 }
 
-// ═══ IMGBB API ═══
-let imgurClientId = '';
-let imgurConnected = false;
+// ═══ BASE64 IMAGE EMBED ═══
+// No API key, no CORS — images embedded directly as data URIs
 
-function saveImgurClientId() {
-  const id = document.getElementById('cfImgurClientId').value.trim();
-  if (!id) { toast('API Key kosong','warn'); return; }
-  try { localStorage.setItem('imgurClientId', id); toast('✔ API Key disimpan','ok'); }
-  catch(e) { toast('localStorage tidak tersedia','warn'); }
-}
+// Store base64 data URIs keyed by 'header' / 'footer'
+const imgBase64 = { header: '', footer: '' };
 
-function loadSavedClientId() {
-  try {
-    const saved = localStorage.getItem('imgurClientId');
-    if (saved) {
-      document.getElementById('cfImgurClientId').value = saved;
-      imgurClientId = saved;
-      testImgurConnection(true);
-    }
-  } catch(e) {}
-}
-
-// Convert file to base64 string (strips data:...;base64, prefix)
-function fileToBase64(file) {
+function fileToDataURL(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onload = () => resolve(reader.result); // full data:image/...;base64,... string
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
 }
 
-// Post to ImgBB — base64 string via FormData
-async function imgbbPost(apiKey, b64image, name) {
-  const fd = new FormData();
-  fd.append('key', apiKey);
-  fd.append('image', b64image);
-  if (name) fd.append('name', name);
-
-  let res;
-  try {
-    res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
-  } catch(e) {
-    throw new Error('Gagal terhubung ke ImgBB — periksa koneksi internet');
-  }
-
-  const text = await res.text();
-  let data;
-  try { data = JSON.parse(text); } catch(e) {
-    throw new Error('Response tidak valid dari ImgBB (HTTP ' + res.status + ')');
-  }
-
-  if (!data.success) {
-    throw new Error(data?.error?.message || 'HTTP ' + res.status);
-  }
-  return data;
-}
-
-async function testImgurConnection(silent = false) {
-  const id = document.getElementById('cfImgurClientId').value.trim();
-  if (!id) { toast('Isi API Key dulu','warn'); return; }
-
-  const resultBox = document.getElementById('imgurConnectResult');
-  const tag = document.getElementById('imgurStatusTag');
-  resultBox.style.display = 'block';
-  resultBox.innerHTML = '<span style="color:var(--a4);font-family:var(--mono);font-size:11px">⏳ Menghubungkan ke ImgBB API...</span>';
-
-  try {
-    // 1x1 transparent PNG in base64
-    const testPixel = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-    const data = await imgbbPost(id, testPixel, 'test');
-
-    if (data.success) {
-      imgurClientId = id;
-      imgurConnected = true;
-      tag.textContent = '✅ CONNECTED';
-      tag.style.color = 'var(--a2)';
-      resultBox.innerHTML = `<span style="color:var(--a2);font-family:var(--mono);font-size:11px">✅ ImgBB terhubung! API Key valid & siap digunakan.</span>`;
-      document.getElementById('imgurConnectedInfo').style.display = 'block';
-      document.getElementById('imgurConnectedId').textContent = 'Key: ' + id.slice(0,6) + '••••••';
-      if (!silent) toast('✔ ImgBB API Key valid & terhubung!', 'ok');
-    } else {
-      throw new Error(data.error?.message || 'API Key tidak valid');
-    }
-  } catch(e) {
-    imgurConnected = false;
-    tag.textContent = '❌ GAGAL';
-    tag.style.color = 'var(--a3)';
-    resultBox.innerHTML = `<span style="color:var(--a3);font-family:var(--mono);font-size:11px">❌ Gagal: ${e.message} — Pastikan API Key benar.</span>`;
-    document.getElementById('imgurConnectedInfo').style.display = 'none';
-    if (!silent) toast('❌ API Key tidak valid', 'err');
-  }
-}
-
-async function uploadToImgur(file, which) {
-  const zone = document.getElementById(which + 'DropZone');
-  const status = document.getElementById(which + 'UploadStatus');
+async function embedImageAsBase64(file, which) {
+  const zone     = document.getElementById(which + 'DropZone');
+  const status   = document.getElementById(which + 'UploadStatus');
   const progress = document.getElementById(which + 'Progress');
   const progressBar = document.getElementById(which + 'ProgressBar');
-  const urlInput = document.getElementById('cf' + (which==='header'?'Header':'Footer') + 'ImgUrl');
+  const urlInput = document.getElementById('cf' + (which === 'header' ? 'Header' : 'Footer') + 'ImgUrl');
   const urlBadge = document.getElementById(which + 'UrlBadge');
 
-  if (!imgurConnected || !imgurClientId) {
-    toast('⚠ Hubungkan ImgBB API Key dulu di atas!', 'warn');
-    document.getElementById('imgurSetupCard').scrollIntoView({behavior:'smooth'});
-    return;
-  }
-  if (file.size > 32 * 1024 * 1024) { toast('File terlalu besar (maks 32MB)', 'warn'); return; }
+  const MAX_BYTES = 500 * 1024; // warn above 500 KB
+  if (file.size > 10 * 1024 * 1024) { toast('File terlalu besar (maks 10MB untuk base64)', 'warn'); return; }
 
   zone.classList.add('uploading');
   zone.classList.remove('done');
-  status.textContent = '⏳ Mengkonversi & upload ke ImgBB...';
+  status.textContent = '⏳ Membaca & mengkonversi ke base64...';
   progress.style.display = 'block';
-  progressBar.style.width = '0%';
-
-  let prog = 0;
-  const progInterval = setInterval(() => {
-    prog = Math.min(prog + Math.random() * 12, 80);
-    progressBar.style.width = prog + '%';
-  }, 200);
+  progressBar.style.width = '30%';
 
   try {
-    // Convert file to base64 first (bypasses CORS preflight issue with FormData)
-    const b64 = await fileToBase64(file);
-    const name = file.name.replace(/\.[^.]+$/, '');
-    const data = await imgbbPost(imgurClientId, b64, name);
-
-    clearInterval(progInterval);
+    const dataUrl = await fileToDataURL(file);
     progressBar.style.width = '100%';
 
-    if (data.success) {
-      // Prefer display_url (direct image link, no HTML wrapper)
-      const imgUrl = data.data.display_url || data.data.url;
-      urlInput.value = imgUrl;
-      urlBadge.style.display = 'inline';
-      previewImg(which);
-      zone.classList.remove('uploading');
-      zone.classList.add('done');
-      status.textContent = '✅ Upload berhasil! ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)';
-      setTimeout(() => { progress.style.display = 'none'; progressBar.style.width = '0%'; }, 1500);
-      toast('✔ Gambar ' + which + ' berhasil diupload ke ImgBB!', 'ok');
-      setStatus('✔ ImgBB upload OK — ' + file.name);
-    } else {
-      throw new Error(data.error?.message || 'Upload gagal');
-    }
-  } catch(e) {
-    clearInterval(progInterval);
+    // Store and inject into URL input field so existing generate logic works
+    imgBase64[which] = dataUrl;
+    urlInput.value = dataUrl;
+    urlBadge.style.display = 'inline';
+    previewImg(which);
+
     zone.classList.remove('uploading');
-    status.textContent = '❌ Upload gagal: ' + e.message;
+    zone.classList.add('done');
+
+    const kb = (file.size / 1024).toFixed(0);
+    const sizeWarn = file.size > MAX_BYTES ? ' ⚠ >500KB — pertimbangkan kompres dulu' : '';
+    status.textContent = `✅ Base64 siap! ${file.name} (${kb} KB)${sizeWarn}`;
+    setTimeout(() => { progress.style.display = 'none'; progressBar.style.width = '0%'; }, 1200);
+    toast(`✔ Gambar ${which} siap (base64 embed)`, 'ok');
+    setStatus(`✔ Base64 OK — ${file.name}`);
+  } catch(e) {
+    zone.classList.remove('uploading');
+    status.textContent = '❌ Gagal membaca file: ' + e.message;
     progressBar.style.background = 'var(--a3)';
     setTimeout(() => { progress.style.display='none'; progressBar.style.background=''; progressBar.style.width='0%'; }, 2500);
-    toast('❌ Upload gagal: ' + e.message, 'err');
+    toast('❌ Gagal: ' + e.message, 'err');
   }
 }
 
@@ -1351,12 +1235,12 @@ function handleDrop(e, which) {
   const zone = document.getElementById(which + 'DropZone');
   zone.classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) uploadToImgur(file, which);
+  if (file && file.type.startsWith('image/')) embedImageAsBase64(file, which);
   else toast('File harus berupa gambar (PNG/JPG/GIF)', 'warn');
 }
 function handleFileSelect(e, which) {
   const file = e.target.files[0];
-  if (file) uploadToImgur(file, which);
+  if (file) embedImageAsBase64(file, which);
   e.target.value = ''; // reset so same file can be re-selected
 }
 
@@ -1415,7 +1299,6 @@ window.addEventListener('DOMContentLoaded', () => {
   setMode(2);
   selectTemplate(1);
   setTarget('mule');
-  loadSavedClientId(); // auto-load ImgBB API Key jika sudah disimpan
   setStatus('Ready');
 });
 document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => {
