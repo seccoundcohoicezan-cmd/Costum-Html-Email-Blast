@@ -213,7 +213,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <div class="logo-badge">v7.3</div>
+    <div class="logo-badge">v7.4</div>
     Email Template Generator
     <span class="logo-sub">MULE + LISTMONK</span>
   </div>
@@ -392,31 +392,36 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 
   <!-- ── IMGBB API KEY ── -->
   <div class="card" id="imgurSetupCard">
-    <div class="card-head">🔑 ImgBB API Key <span class="tag" id="imgurStatusTag">BELUM CONNECT</span></div>
+    <div class="card-head">☁️ Cloudinary Config <span class="tag" id="imgurStatusTag">BELUM CONNECT</span></div>
     <div class="card-body">
       <div class="alert alert-info" style="margin-bottom:12px">
         <div>
-          <strong>Cara dapat API Key ImgBB (gratis, &lt;1 menit):</strong><br>
+          <strong>Cara dapat Cloudinary credentials (gratis, &lt;2 menit):</strong><br>
           <span style="font-family:var(--mono);font-size:11px;line-height:2">
-            1. Buka <strong>api.imgbb.com</strong> → login (pakai akun imgbb.com)<br>
-            2. Klik <strong>Add API key</strong> → beri nama bebas → klik <strong>Generate</strong><br>
-            3. Copy API key → paste di kotak bawah → klik <strong>🔌 Test &amp; Connect</strong>
+            1. Buka <strong>cloudinary.com</strong> → Sign Up gratis (tidak perlu kartu kredit)<br>
+            2. Di Dashboard → copy <strong>Cloud Name</strong> dan <strong>Upload Preset</strong><br>
+            3. Buat Upload Preset: Settings → Upload → Add upload preset → <strong>Signing Mode: Unsigned</strong><br>
+            4. Isi Cloud Name &amp; Upload Preset di bawah → klik <strong>🔌 Test &amp; Connect</strong>
           </span>
         </div>
       </div>
-      <div style="display:flex;gap:10px;align-items:flex-end">
-        <div class="field" style="flex:1;margin-bottom:0">
-          <label>ImgBB API Key</label>
-          <input type="text" id="cfImgurClientId" placeholder="Paste API key ImgBB di sini" style="font-family:var(--mono)">
+      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+        <div class="field" style="flex:1;min-width:160px;margin-bottom:0">
+          <label>Cloud Name</label>
+          <input type="text" id="cfImgurClientId" placeholder="contoh: dxyz12abc" style="font-family:var(--mono)">
+        </div>
+        <div class="field" style="flex:1;min-width:160px;margin-bottom:0">
+          <label>Upload Preset (Unsigned)</label>
+          <input type="text" id="cfCloudinaryPreset" placeholder="contoh: ml_default" style="font-family:var(--mono)">
         </div>
         <button class="btn btn-primary" onclick="testImgurConnection()" style="flex-shrink:0;height:38px">🔌 Test &amp; Connect</button>
         <button class="btn btn-ghost" onclick="saveImgurClientId()" style="flex-shrink:0;height:38px">💾 Simpan</button>
       </div>
       <div id="imgurConnectResult" style="margin-top:10px;display:none"></div>
       <div id="imgurConnectedInfo" style="display:none;margin-top:12px;padding:10px 14px;background:rgba(63,185,80,.08);border-left:3px solid var(--a2)">
-        <span style="font-size:12px;color:var(--a2);font-weight:700">✅ ImgBB Connected</span>
+        <span style="font-size:12px;color:var(--a2);font-weight:700">✅ Cloudinary Connected</span>
         <span style="font-size:11px;color:var(--text3);margin-left:10px;font-family:var(--mono)" id="imgurConnectedId"></span>
-        <span style="font-size:11px;color:var(--text3);margin-left:6px">· Upload langsung ke ImgBB · CORS OK</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:6px">· Upload via Cloudinary · No IP Ban</span>
       </div>
     </div>
   </div>
@@ -1170,19 +1175,28 @@ let imgurConnected = false;
 
 function saveImgurClientId() {
   const id = document.getElementById('cfImgurClientId').value.trim();
-  if (!id) { toast('API Key kosong', 'warn'); return; }
-  try { localStorage.setItem('imgurClientId', id); toast('✔ API Key disimpan', 'ok'); }
-  catch(e) { toast('localStorage tidak tersedia', 'warn'); }
+  const preset = document.getElementById('cfCloudinaryPreset')?.value.trim() || '';
+  if (!id) { toast('Cloud Name kosong', 'warn'); return; }
+  try {
+    localStorage.setItem('imgurClientId', id);
+    if (preset) localStorage.setItem('cloudinaryPreset', preset);
+    toast('✔ Config Cloudinary disimpan', 'ok');
+  } catch(e) { toast('localStorage tidak tersedia', 'warn'); }
 }
 
 function loadSavedClientId() {
   try {
     const saved = localStorage.getItem('imgurClientId');
+    const savedPreset = localStorage.getItem('cloudinaryPreset');
     if (saved) {
       document.getElementById('cfImgurClientId').value = saved;
       imgurClientId = saved;
-      testImgurConnection(true);
     }
+    if (savedPreset) {
+      const presetEl = document.getElementById('cfCloudinaryPreset');
+      if (presetEl) presetEl.value = savedPreset;
+    }
+    if (saved) testImgurConnection(true);
   } catch(e) {}
 }
 
@@ -1195,48 +1209,39 @@ function fileToBase64(file) {
   });
 }
 
-// Upload langsung ke ImgBB — direct browser fetch, no proxy
-async function imgbbUpload(apiKey, b64image, name) {
-  // Method 1: URLSearchParams (paling kompatibel dengan ImgBB CORS)
-  const params = new URLSearchParams();
-  params.append('key', apiKey);
-  params.append('image', b64image);
-  if (name) params.append('name', name);
+// Upload ke Cloudinary — gratis, no IP ban, CORS full support dari browser
+// Cloudinary Unsigned Upload: tidak perlu server/proxy
+async function imgbbUpload(cloudName, b64image, name) {
+  // Dapatkan upload preset dari input field
+  const preset = document.getElementById('cfCloudinaryPreset')?.value.trim() || 'ml_default';
+
+  const fd = new FormData();
+  fd.append('file', 'data:image/png;base64,' + b64image);
+  fd.append('upload_preset', preset);
+  if (name) fd.append('public_id', name + '_' + Date.now());
 
   let res, data;
-
   try {
-    res = await fetch('https://api.imgbb.com/1/upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString(),
-    });
-    data = await res.json();
-    if (data.success) return data;
-    // Jika gagal, coba FormData
-  } catch(e1) { /* fallthrough */ }
-
-  // Method 2: FormData fallback
-  const fd = new FormData();
-  fd.append('key', apiKey);
-  fd.append('image', b64image);
-  if (name) fd.append('name', name);
-
-  try {
-    res = await fetch('https://api.imgbb.com/1/upload', {
+    res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
       method: 'POST',
       body: fd,
     });
     data = await res.json();
-  } catch(e2) {
-    throw new Error('Tidak dapat terhubung ke ImgBB. Cek koneksi internet.');
+  } catch(e) {
+    throw new Error('Tidak dapat terhubung ke Cloudinary. Cek koneksi internet.');
   }
 
-  if (!data.success) {
-    const msg = data?.error?.message || ('Upload gagal (HTTP ' + (res?.status||'?') + ')');
-    throw new Error(msg);
-  }
-  return data;
+  if (data.error) throw new Error(data.error.message || 'Upload Cloudinary gagal');
+  if (!data.secure_url) throw new Error('Cloudinary tidak mengembalikan URL gambar');
+
+  // Kembalikan format kompatibel dengan kode yang sudah ada
+  return {
+    success: true,
+    data: {
+      url: data.secure_url,
+      display_url: data.secure_url,
+    }
+  };
 }
 
 async function testImgurConnection(silent = false) {
@@ -1249,7 +1254,7 @@ async function testImgurConnection(silent = false) {
   resultBox.innerHTML = '<span style="color:var(--a4);font-family:var(--mono);font-size:11px">⏳ Menghubungkan ke ImgBB...</span>';
 
   try {
-    // 1×1 transparent PNG
+    // Test dengan 1x1 pixel PNG
     const testPixel = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
     const data = await imgbbUpload(id, testPixel, 'test');
 
@@ -1257,10 +1262,10 @@ async function testImgurConnection(silent = false) {
     imgurConnected = true;
     tag.textContent = '✅ CONNECTED';
     tag.style.color = 'var(--a2)';
-    resultBox.innerHTML = '<span style="color:var(--a2);font-family:var(--mono);font-size:11px">✅ ImgBB terhubung! Siap upload gambar.</span>';
+    resultBox.innerHTML = '<span style="color:var(--a2);font-family:var(--mono);font-size:11px">✅ Cloudinary terhubung! Siap upload gambar.</span>';
     document.getElementById('imgurConnectedInfo').style.display = 'block';
-    document.getElementById('imgurConnectedId').textContent = 'Key: ' + id.slice(0,6) + '••••••';
-    if (!silent) toast('✔ ImgBB API Key valid!', 'ok');
+    document.getElementById('imgurConnectedId').textContent = 'Cloud: ' + id;
+    if (!silent) toast('✔ Cloudinary terhubung!', 'ok');
   } catch(e) {
     imgurConnected = false;
     tag.textContent = '❌ GAGAL';
