@@ -139,6 +139,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 .ph-blue{background:rgba(88,166,255,.12);color:var(--a1);border-color:rgba(88,166,255,.25)}
 .ph-purple{background:rgba(188,140,255,.12);color:var(--a5);border-color:rgba(188,140,255,.25)}
 .ph-warn{background:rgba(227,179,65,.12);color:var(--a4);border-color:rgba(227,179,65,.25)}
+.ph-orange{background:rgba(241,130,50,.15);color:#f08040;border-color:rgba(241,130,50,.35)}
 
 /* Stats */
 .info-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
@@ -266,6 +267,46 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 .spam-rule-label{color:var(--text);flex:1}
 .spam-rule-detail{color:var(--text3);margin-top:2px}
 .spam-score-big{font-size:48px;font-weight:800;font-family:var(--mono);line-height:1}
+
+/* ── Email Tracker ── */
+.tracker-stat{background:var(--s2);border:1px solid var(--border);padding:14px 18px;text-align:center;flex:1;position:relative;overflow:hidden}
+.tracker-stat::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.tracker-stat.blue::before{background:var(--a1)}
+.tracker-stat.green::before{background:var(--a2)}
+.tracker-stat.yellow::before{background:var(--a4)}
+.tracker-stat.purple::before{background:var(--a5)}
+.tracker-stat-num{font-size:32px;font-weight:800;font-family:var(--mono);line-height:1;margin-bottom:4px}
+.tracker-stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.tracker-row{display:grid;grid-template-columns:32px 1fr 130px 100px 76px;gap:0;align-items:center;border-bottom:1px solid var(--border);font-size:12px;transition:background .1s}
+.tracker-row:hover:not(.tracker-head){background:rgba(88,166,255,.04)}
+.tracker-row:last-child{border-bottom:none}
+.tracker-row > div{padding:9px 12px}
+.tracker-head{background:var(--s2);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);border-bottom:2px solid var(--border2)}
+.tracker-input{width:100%;background:var(--s2);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:12px;padding:9px 12px;outline:none;transition:border-color .15s}
+.tracker-input:focus{border-color:var(--a1)}
+
+/* ── Wizard Steps (Tracker Setup) ── */
+.setup-steps{display:flex;gap:0;margin-bottom:20px;counter-reset:step}
+.setup-step{flex:1;padding:12px 14px;background:var(--s2);border:1px solid var(--border);border-right:none;position:relative;cursor:default}
+.setup-step:last-child{border-right:1px solid var(--border)}
+.setup-step-num{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text3);margin-bottom:4px;letter-spacing:.08em}
+.setup-step-title{font-size:12px;font-weight:700;color:var(--text2)}
+.setup-step-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.setup-step.done .setup-step-num{color:var(--a2)}
+.setup-step.done .setup-step-title{color:var(--a2)}
+.setup-step.done::after{content:'✓';position:absolute;top:10px;right:10px;color:var(--a2);font-weight:700;font-size:14px}
+.setup-step.active{border-color:var(--a1);background:rgba(88,166,255,.06)}
+.setup-step.active .setup-step-num{color:var(--a1)}
+.setup-step.active .setup-step-title{color:var(--a1)}
+
+/* ── Tracker Status Banner ── */
+.tracker-banner{padding:12px 16px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.tracker-banner.off{background:rgba(110,118,129,.08);border-left:3px solid var(--text3)}
+.tracker-banner.on{background:rgba(63,185,80,.08);border-left:3px solid var(--a2)}
+.tracker-banner.warn{background:rgba(227,179,65,.08);border-left:3px solid var(--a4)}
+.tracker-banner-icon{font-size:22px;flex-shrink:0}
+.tracker-banner-title{font-size:13px;font-weight:700}
+.tracker-banner-sub{font-size:11px;color:var(--text3);margin-top:2px}
 </style>
 </head>
 <body>
@@ -274,7 +315,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <div class="logo-badge">v7.9</div>
+    <div class="logo-badge">v7.11</div>
     Email Template Generator
     <span class="logo-sub">MULE + LISTMONK</span>
   </div>
@@ -287,18 +328,21 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="nav-section">Flow</div>
+  <div class="nav-section">Flow Utama</div>
   <div class="nav-item active" onclick="showPanel('config')" id="nav-config">
-    <span class="ico">⚙</span>Konfigurasi<span class="nav-badge" id="nvMode">2 Sertif</span>
+    <span class="ico">⚙</span>1. Konfigurasi<span class="nav-badge" id="nvMode">2 Sertif</span>
   </div>
   <div class="nav-item" onclick="showPanel('images')" id="nav-images">
-    <span class="ico">🖼</span>Gambar Header/Footer<span class="nav-badge" id="nvImg">OFF</span>
+    <span class="ico">🖼</span>1.5 Gambar<span class="nav-badge" id="nvImg">OFF</span>
   </div>
   <div class="nav-item" onclick="showPanel('template')" id="nav-template">
-    <span class="ico">🎨</span>Pilih Template<span class="nav-badge purple" id="nvTpl">01</span>
+    <span class="ico">🎨</span>2. Pilih Template<span class="nav-badge purple" id="nvTpl">01</span>
+  </div>
+  <div class="nav-item" onclick="showPanel('tracker')" id="nav-tracker">
+    <span class="ico">📡</span>3. Email Tracker<span class="nav-badge" id="nvTracker" style="background:rgba(241,80,102,.12);color:var(--a3);border:1px solid rgba(241,80,102,.2)">OFF</span>
   </div>
   <div class="nav-item" onclick="doGenerate()" id="nav-generate">
-    <span class="ico">⚡</span>Generate &amp; Export<span class="nav-badge live" id="nvGen">-</span>
+    <span class="ico">⚡</span>4. Generate &amp; Export<span class="nav-badge live" id="nvGen">-</span>
   </div>
   <div class="nav-section">Tools</div>
   <div class="nav-item" onclick="openPreview()">
@@ -336,8 +380,10 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 
   <div class="steps-bar">
     <div class="step-item active" onclick="showPanel('config')"><span class="step-num">STEP 1</span>Konfigurasi</div>
+    <div class="step-item" onclick="showPanel('images')"><span class="step-num">STEP 1.5</span>Gambar</div>
     <div class="step-item" onclick="showPanel('template')"><span class="step-num">STEP 2</span>Pilih Template</div>
-    <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 3</span>Generate &amp; Export</div>
+    <div class="step-item" onclick="showPanel('tracker')"><span class="step-num">STEP 3</span>📡 Tracker</div>
+    <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 4</span>Generate</div>
   </div>
 
   <div class="card">
@@ -468,7 +514,8 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
     <div class="step-item done" onclick="showPanel('config')"><span class="step-num">STEP 1</span>Konfigurasi</div>
     <div class="step-item active"><span class="step-num">STEP 1.5</span>Gambar Header/Footer</div>
     <div class="step-item" onclick="showPanel('template')"><span class="step-num">STEP 2</span>Pilih Template</div>
-    <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 3</span>Generate</div>
+    <div class="step-item" onclick="showPanel('tracker')"><span class="step-num">STEP 3</span>📡 Tracker</div>
+    <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 4</span>Generate</div>
   </div>
 
   <!-- ── CLOUDINARY STATUS (hardcoded) ── -->
@@ -601,8 +648,10 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 
   <div class="steps-bar">
     <div class="step-item done" onclick="showPanel('config')"><span class="step-num">STEP 1</span>Konfigurasi</div>
+    <div class="step-item done" onclick="showPanel('images')"><span class="step-num">STEP 1.5</span>Gambar</div>
     <div class="step-item active" onclick="showPanel('template')"><span class="step-num">STEP 2</span>Pilih Template</div>
-    <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 3</span>Generate &amp; Export</div>
+    <div class="step-item" onclick="showPanel('tracker')"><span class="step-num">STEP 3</span>📡 Tracker</div>
+    <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 4</span>Generate</div>
   </div>
 
   <div class="card">
@@ -662,9 +711,10 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
       </div>
       <div class="alert alert-purple">Template aktif: <strong id="tplActiveLabel">01 · Navy Classic</strong> — Placeholder <<NAMA>>, <<ASAL_SEKOLAH>>, <<LINK_SERTIFIKAT_PELATIHAN>> dll akan diisi otomatis oleh Mule dari spreadsheet.</div>
       <div class="btn-row">
-        <button class="btn btn-primary" onclick="doGenerate()">⚡ Generate HTML Template</button>
+        <button class="btn btn-primary" onclick="showPanel('tracker')">➜ Lanjut: Email Tracker</button>
+        <button class="btn btn-success" onclick="doGenerate()">⚡ Generate Langsung</button>
         <button class="btn btn-ghost" onclick="openPreview()">👁 Preview</button>
-        <button class="btn btn-ghost" onclick="showPanel('config')">← Konfigurasi</button>
+        <button class="btn btn-ghost" onclick="showPanel('images')">← Gambar</button>
       </div>
     </div>
   </div>
@@ -675,8 +725,10 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 
   <div class="steps-bar">
     <div class="step-item done" onclick="showPanel('config')"><span class="step-num">STEP 1</span>Konfigurasi</div>
-    <div class="step-item done" onclick="showPanel('template')"><span class="step-num">STEP 2</span>Pilih Template</div>
-    <div class="step-item active"><span class="step-num">STEP 3</span>Generate &amp; Export</div>
+    <div class="step-item done" onclick="showPanel('images')"><span class="step-num">STEP 1.5</span>Gambar</div>
+    <div class="step-item done" onclick="showPanel('template')"><span class="step-num">STEP 2</span>Template</div>
+    <div class="step-item done" onclick="showPanel('tracker')"><span class="step-num">STEP 3</span>📡 Tracker</div>
+    <div class="step-item active"><span class="step-num">STEP 4</span>Generate &amp; Export</div>
   </div>
 
   <div class="card">
@@ -764,7 +816,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
       <p style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.7">Placeholder berikut ada di dalam HTML template. Mule akan mengisi nilai ini dari kolom spreadsheet:</p>
       <div class="ph-list" id="phList"></div>
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-        <p style="font-size:11px;color:var(--text3)">🟢 Data dari spreadsheet &nbsp;|&nbsp; 🔵 Data dari Konfigurasi (sudah terisi) &nbsp;|&nbsp; 🟣 Opsional</p>
+        <p style="font-size:11px;color:var(--text3)">🟢 Data dari spreadsheet &nbsp;|&nbsp; 🔵 Data dari Konfigurasi (sudah terisi) &nbsp;|&nbsp; 🟣 Opsional &nbsp;|&nbsp; 🟠 Custom Placeholder (kolom kustom Anda)</p>
       </div>
     </div>
   </div>
@@ -935,10 +987,11 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
         Tambah kolom spreadsheet kustom — otomatis jadi placeholder di HTML template saat Generate.
         Format: nama kolom → <code style="background:rgba(0,0,0,.2);padding:1px 5px">&lt;&lt;NAMA_KOLOM&gt;&gt;</code> (spasi → underscore, otomatis uppercase).
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 120px 36px;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
-        <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase">Nama Kolom Spreadsheet</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase">Sample Data (Preview)</div>
-        <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase">Placeholder</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 110px 90px 34px;gap:8px;margin-bottom:6px;padding:8px 0;border-bottom:2px solid var(--border2)">
+        <div style="font-size:10px;font-weight:700;color:var(--a1);letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono)">📊 Nama Kolom Spreadsheet</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono)">🔤 Contoh Isi (Preview)</div>
+        <div style="font-size:10px;font-weight:700;color:var(--a2);letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono)">Placeholder</div>
+        <div style="font-size:10px;font-weight:700;color:var(--a5);letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono)">Style</div>
         <div></div>
       </div>
       <div id="phBuilderRows"></div>
@@ -1168,20 +1221,242 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 </div>
 <!-- ═══ END VISUAL TEXT EDITOR ═══ -->
 
+<!-- ═══ EMAIL TRACKER (FLOW STEP 3) ═══ -->
+<div class="panel" id="panel-tracker">
+
+  <!-- Steps bar in flow -->
+  <div class="steps-bar">
+    <div class="step-item done" onclick="showPanel('config')"><span class="step-num">STEP 1</span>Konfigurasi</div>
+    <div class="step-item done" onclick="showPanel('images')"><span class="step-num">STEP 1.5</span>Gambar</div>
+    <div class="step-item done" onclick="showPanel('template')"><span class="step-num">STEP 2</span>Template</div>
+    <div class="step-item active"><span class="step-num">STEP 3</span>📡 Email Tracker</div>
+    <div class="step-item" onclick="doGenerate()"><span class="step-num">STEP 4</span>Generate</div>
+  </div>
+
+  <!-- ── QUICK STATUS CARD ── -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-body" style="padding:16px 20px">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div id="trackerBanner" class="tracker-banner off" style="flex:1;margin-bottom:0;min-width:280px">
+          <div class="tracker-banner-icon">📡</div>
+          <div style="flex:1">
+            <div class="tracker-banner-title" id="trackerBannerTitle">Tracker Belum Aktif</div>
+            <div class="tracker-banner-sub" id="trackerBannerSub">Opsional — skip jika tidak perlu tracking buka email</div>
+          </div>
+          <label class="toggle-switch" style="flex-shrink:0">
+            <input type="checkbox" id="trackerEnabled" onchange="trackerToggle()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button class="btn btn-success" onclick="doGenerate()" style="font-size:13px;padding:10px 20px">⚡ Generate Sekarang →</button>
+          <button class="btn btn-ghost" onclick="showPanel('template')">← Template</button>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:10px 14px;background:rgba(88,166,255,.06);border-left:3px solid var(--a1);font-size:12px;color:var(--text2);line-height:1.7">
+        💡 <strong>Email Tracker</strong> menyisipkan pixel 1×1 ke setiap email — saat penerima membuka email, data tercatat otomatis di Google Sheet Anda. <span style="color:var(--text3)">Tracker bersifat opsional — klik "Generate Sekarang" untuk skip.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SETUP WIZARD (compact) ── -->
+  <div class="card" id="trackerSetupCard">
+    <div class="card-head">🛠 Setup Tracker <span class="tag" id="trackerSetupTag">Belum selesai</span>
+      <button onclick="toggleTrackerSetup()" id="trackerSetupToggleBtn" style="margin-left:auto;background:none;border:1px solid var(--border2);color:var(--text3);cursor:pointer;font-size:10px;font-weight:700;padding:2px 10px;font-family:var(--mono)">SEMBUNYIKAN ▲</button>
+    </div>
+    <div class="card-body" id="trackerSetupBody">
+
+      <!-- Progress indicator - compact -->
+      <div class="setup-steps" id="trackerWizardSteps" style="margin-bottom:16px">
+        <div class="setup-step active" id="wStep1">
+          <div class="setup-step-num">LANGKAH 1</div>
+          <div class="setup-step-title">Buat Apps Script</div>
+          <div class="setup-step-sub">Copy &amp; deploy kode</div>
+        </div>
+        <div class="setup-step" id="wStep2">
+          <div class="setup-step-num">LANGKAH 2</div>
+          <div class="setup-step-title">Paste URL Endpoint</div>
+          <div class="setup-step-sub">Dari hasil deploy</div>
+        </div>
+        <div class="setup-step" id="wStep3">
+          <div class="setup-step-num">LANGKAH 3</div>
+          <div class="setup-step-title">Test &amp; Aktifkan</div>
+          <div class="setup-step-sub">Ping + toggle ON</div>
+        </div>
+        <div class="setup-step" id="wStep4">
+          <div class="setup-step-num">LANGKAH 4</div>
+          <div class="setup-step-title">Generate &amp; Blast</div>
+          <div class="setup-step-sub">Pixel otomatis masuk</div>
+        </div>
+      </div>
+
+      <!-- LANGKAH 1: Apps Script Code (collapsed by default if endpoint already set) -->
+      <div id="wSection1" style="margin-bottom:16px;background:var(--s2);border:1px solid var(--border);padding:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="background:var(--a1);color:#000;font-family:var(--mono);font-size:10px;font-weight:800;padding:2px 10px;flex-shrink:0">LANGKAH 1</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Buat Google Apps Script</div>
+          <a href="https://script.google.com" target="_blank" style="margin-left:auto;color:var(--a1);font-size:11px;font-weight:700;text-decoration:none">Buka script.google.com ↗</a>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start">
+          <div style="position:relative">
+            <div class="output-box" id="appsScriptCode" style="max-height:140px;font-size:10px;line-height:1.5;color:var(--a2);padding:10px 12px"></div>
+            <button class="btn btn-ghost" onclick="trackerCopyAppsScript()" style="position:absolute;top:6px;right:6px;font-size:10px;padding:2px 8px">📋 Copy</button>
+          </div>
+          <div style="font-size:11px;color:var(--text2);line-height:2;min-width:200px;background:var(--s3);border:1px solid var(--border);padding:12px">
+            <strong style="color:var(--a1);font-family:var(--mono)">Cara Deploy:</strong><br>
+            1. New Project → Paste kode<br>
+            2. Ganti <code style="color:var(--a4);background:rgba(0,0,0,.3);padding:0 3px">SPREADSHEET_ID</code><br>
+            3. Deploy → New deployment<br>
+            4. Type: <strong>Web app</strong><br>
+            5. Execute as: <span style="color:var(--a2);font-weight:700">Me</span> · Access: <span style="color:var(--a2);font-weight:700">Anyone</span><br>
+            6. Deploy → Copy URL
+          </div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text3)">
+          💡 ID Spreadsheet ada di URL: <code style="color:var(--a2)">spreadsheets/d/<strong>INI_ID_NYA</strong>/edit</code>
+        </div>
+      </div>
+
+      <!-- LANGKAH 2 & 3 side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <!-- Langkah 2 -->
+        <div style="background:var(--s2);border:1px solid var(--border);padding:14px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <div style="background:var(--a5);color:#000;font-family:var(--mono);font-size:10px;font-weight:800;padding:2px 10px;flex-shrink:0">LANGKAH 2</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)">Paste URL Endpoint</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <input class="tracker-input" type="text" id="trackerEndpoint" placeholder="https://script.google.com/macros/s/.../exec" style="flex:1;font-size:11px" oninput="trackerSaveEndpoint(); trackerCheckSetup()">
+          </div>
+          <div style="margin-top:8px;display:flex;gap:6px">
+            <button class="btn btn-ghost" onclick="trackerTestPing()" style="flex:1;font-size:11px;padding:6px">🔔 Test Ping</button>
+          </div>
+          <div id="trackerEndpointStatus" style="font-family:var(--mono);font-size:10px;min-height:16px;color:var(--text3);margin-top:6px"></div>
+        </div>
+
+        <!-- Langkah 3 -->
+        <div style="background:var(--s2);border:1px solid var(--border);padding:14px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <div style="background:var(--a2);color:#000;font-family:var(--mono);font-size:10px;font-weight:800;padding:2px 10px;flex-shrink:0">LANGKAH 3</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)">Nama Campaign &amp; Aktifkan</div>
+          </div>
+          <div class="field" style="margin-bottom:10px">
+            <label>Nama Campaign <span style="color:var(--text3);font-weight:400">(opsional)</span></label>
+            <input class="tracker-input" type="text" id="trackerCampaign" placeholder="Default: Judul dari Konfigurasi" style="font-size:11px">
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(63,185,80,.06);border:1px solid rgba(63,185,80,.2)">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text)">Aktifkan Tracker</div>
+              <div style="font-size:10px;color:var(--text3);margin-top:1px">Toggle ON setelah setup selesai</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="trackerEnabled2" onchange="document.getElementById('trackerEnabled').checked=this.checked;trackerToggle()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Langkah 4 reminder -->
+      <div style="background:rgba(63,185,80,.06);border:1px solid rgba(63,185,80,.2);padding:12px 16px;display:flex;align-items:center;gap:14px">
+        <div style="background:var(--a2);color:#000;font-family:var(--mono);font-size:10px;font-weight:800;padding:2px 10px;flex-shrink:0">LANGKAH 4</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7;flex:1">
+          Tracker aktif → klik <strong>Generate</strong> → pixel otomatis masuk ke HTML →  blast → setiap buka email ter-track per orang di Google Sheet.
+        </div>
+        <button class="btn btn-success" onclick="doGenerate()" style="flex-shrink:0">⚡ Generate →</button>
+      </div>
+
+    </div><!-- /trackerSetupBody -->
+  </div>
+
+  <!-- ── STATS DASHBOARD ── -->
+  <div id="trackerDashboard">
+    <!-- Campaign filter tabs -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+      <div style="font-size:12px;font-weight:700;color:var(--text);letter-spacing:.04em;white-space:nowrap">📊 Dashboard Tracking</div>
+      <div id="campaignTabsWrap" style="display:flex;gap:4px;flex-wrap:wrap;flex:1">
+        <button class="btn btn-primary" id="tabAll" onclick="switchCampaignTab('__all__')" style="font-size:10px;padding:3px 12px">Semua Campaign</button>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-ghost" onclick="trackerLoadCampaigns()" style="font-size:10px;padding:4px 10px">🔄 Refresh</button>
+        <button class="btn btn-ghost" onclick="trackerExportCSV()" style="font-size:10px;padding:4px 10px">⬇ CSV</button>
+      </div>
+    </div>
+
+    <!-- Campaign summary cards -->
+    <div id="campaignSummaryCards" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
+
+    <!-- Stat chips for selected campaign -->
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <div class="tracker-stat blue">
+        <div class="tracker-stat-num" id="trkStatSent" style="color:var(--a1)">—</div>
+        <div class="tracker-stat-label">Total Dikirim</div>
+      </div>
+      <div class="tracker-stat green">
+        <div class="tracker-stat-num" id="trkStatOpened" style="color:var(--a2)">—</div>
+        <div class="tracker-stat-label">Sudah Dibuka</div>
+      </div>
+      <div class="tracker-stat yellow">
+        <div class="tracker-stat-num" id="trkStatRate" style="color:var(--a4)">—</div>
+        <div class="tracker-stat-label">Open Rate</div>
+      </div>
+      <div class="tracker-stat purple">
+        <div class="tracker-stat-num" id="trkStatLast" style="color:var(--a5);font-size:14px;padding-top:6px;line-height:1.3">—</div>
+        <div class="tracker-stat-label">Terakhir Buka</div>
+      </div>
+    </div>
+
+    <!-- Log table -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head" style="padding:10px 14px">
+        📋 Log Buka Email
+        <span class="tag" id="trkTableLabel" style="margin-left:8px">0 opens</span>
+        <span id="trkCampaignLabel" style="margin-left:8px;font-size:10px;color:var(--a5);font-family:var(--mono)"></span>
+        <div style="margin-left:auto;font-size:11px;color:var(--text3)" id="trkLastRefresh"></div>
+      </div>
+      <div style="padding:0">
+        <div class="tracker-row tracker-head">
+          <div>#</div>
+          <div>Nama / Email Penerima</div>
+          <div>Campaign</div>
+          <div>Waktu Dibuka</div>
+          <div>Buka ke-</div>
+        </div>
+        <div id="trackerTableBody" style="max-height:320px;overflow-y:auto">
+          <div style="text-align:center;padding:36px 16px;color:var(--text3);font-size:12px;font-family:var(--mono)">
+            <div style="font-size:28px;margin-bottom:8px">📭</div>
+            Belum ada data.<br><span style="font-size:11px">Aktifkan tracker → Generate HTML → Blast email → klik Refresh</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="btn-row" style="margin-top:16px">
+    <button class="btn btn-success" onclick="doGenerate()" style="font-size:14px;padding:12px 28px">⚡ Generate &amp; Export →</button>
+    <button class="btn btn-ghost" onclick="showPanel('template')">← Pilih Template</button>
+  </div>
+
+</div>
+<!-- ═══ END EMAIL TRACKER ═══ -->
+
 </div><!-- /main -->
 
-<!-- LIVE PREVIEW PANE (hidden by default) -->
-<div class="split-preview-pane" id="livePreviewPane" style="display:none">
+<!-- LIVE PREVIEW PANE — inside splitWrapper so it joins the CSS grid -->
+<div id="livePreviewPane" style="display:none;flex-direction:column;background:var(--bg);border-left:1px solid var(--border);height:calc(100vh - 52px);overflow:hidden;position:sticky;top:0">
   <div class="split-preview-header">
     <span>⚡ LIVE PREVIEW</span>
     <div class="split-preview-toggle">
-      <button class="split-preview-btn active" onclick="setPreviewDevice('desktop')" id="pvBtnDesk">Desktop 600px</button>
-      <button class="split-preview-btn" onclick="setPreviewDevice('mobile')" id="pvBtnMob">Mobile 375px</button>
+      <button class="split-preview-btn active" onclick="setPreviewDevice('desktop')" id="pvBtnDesk">Desktop</button>
+      <button class="split-preview-btn" onclick="setPreviewDevice('mobile')" id="pvBtnMob">Mobile</button>
     </div>
-    <button onclick="refreshLivePreview()" style="margin-left:8px;background:none;border:none;color:var(--a1);cursor:pointer;font-size:12px;font-weight:700;">↻ Refresh</button>
+    <button onclick="refreshLivePreview()" style="margin-left:8px;background:none;border:none;color:var(--a1);cursor:pointer;font-size:12px;font-weight:700;">↻</button>
   </div>
-  <div style="flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:16px;background:var(--s3)">
-    <iframe id="livePreviewFrame" style="width:600px;min-height:500px;border:none;background:#fff;transition:width .3s" src="about:blank"></iframe>
+  <div style="flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:16px;background:#c8d0da">
+    <div id="livePreviewScaler" style="transition:width .3s;width:600px">
+      <iframe id="livePreviewFrame" style="width:100%;min-height:500px;border:none;background:#fff;display:block" src="about:blank"></iframe>
+    </div>
   </div>
 </div>
 
@@ -1262,7 +1537,9 @@ function getVars(forPreview) {
     footerImgUrl: getImgSrc('footer'),
     footerImgLink: document.getElementById('cfFooterImgLink').value || '#',
     footerImgAlt: document.getElementById('cfFooterImgAlt').value || 'Footer Email',
-    footerImgH: document.getElementById('cfFooterImgH').value || '80'
+    footerImgH: document.getElementById('cfFooterImgH').value || '80',
+    // ── Custom Placeholders ──
+    customPlaceholders: JSON.parse(JSON.stringify(customPlaceholders))
   };
 }
 
@@ -1296,6 +1573,63 @@ function buildFooterImg(d) {
   return `<tr><td align="center" style="padding:0;font-size:0;line-height:0;"><a href="${d.footerImgLink}" target="_blank" style="display:block;border:0;text-decoration:none;"><img src="${d.footerImgUrl}" alt="${d.footerImgAlt}" width="600" height="${h}" style="display:block;width:100%;max-width:600px;height:auto;border:0;" border="0"></a></td></tr>`;
 }
 
+// ═══ BUILD CUSTOM PLACEHOLDER BLOCK ═══
+// Injects a hidden-but-present block carrying custom <<PH>> tags so Mule/Listmonk can fill them.
+// In forPreview mode shows sample values; in generate mode keeps <<TAG>> intact.
+function buildCustomPhBlock(d) {
+  if (!d.customPlaceholders || !d.customPlaceholders.length) return '';
+  const valid = d.customPlaceholders.filter(p => p.col.trim());
+  if (!valid.length) return '';
+
+  const parts = valid.map(p => {
+    const tag      = p.col.trim().toUpperCase().replace(/\s+/g, '_');
+    const label    = p.col.trim();
+    // IMPORTANT: In HTML string, <<TAG>> is parsed as < + <TAG>(unknown element) + >
+    // which renders as "<>" — broken. Use HTML entities for display in email HTML.
+    // Mule reads the OUTPUT STRING (textContent), not the rendered DOM,
+    // so we store the real <<TAG>> in a data attribute and also as entity-escaped text.
+    // Mule replaces <<TAG>> in the raw HTML string — &lt;&lt;TAG&gt;&gt; will NOT match.
+    // Solution: keep <<TAG>> as plain text inside the td — it IS valid in HTML text nodes
+    // when NOT inside an attribute. The key is: browser only mangles <<TAG>> when it
+    // appears where a tag is expected. Inside a <td> text node it's fine IF we trick
+    // the parser: use a zero-width comment trick: <<<!---->TAG>> — but that's fragile.
+    // CLEANEST FIX: wrap each << >> in a <span> so parser sees it as text, not tag start.
+    // <<TAG>> → <span style="...">&lt;&lt;</span>TAG<span>&gt;&gt;</span>
+    // But Mule reads raw HTML string — it looks for <<TAG>> literally.
+    // So we need <<TAG>> in the RAW HTML SOURCE (which minify produces from JS string)
+    // but display in preview/iframe must be escaped.
+    //
+    // THE REAL ANSWER: getTemplate() builds an HTML string in JS (not DOM).
+    // That string is then set as srcdoc → browser parses it → <<TAG>> breaks in DOM.
+    // But generatedHTML = minify(rawHTML) → rawHTML is the JS string → <<TAG>> is intact!
+    // So: the OUTPUT (copy/download) is fine. Only PREVIEW is broken.
+    // Fix preview: escape for display. Fix output: already fine (string not DOM).
+    //
+    // For email clients receiving the email: Mule replaces <<TAG>> in the raw HTML
+    // BEFORE sending — so the recipient never sees <<TAG>>, they see the real value.
+    // The display issue only affects our internal preview.
+    //
+    // FINAL APPROACH: use &lt;&lt; and &gt;&gt; in HTML — preview shows correctly,
+    // AND Mule output: we post-process to unescape back to << >> in the output string.
+    const tagDisplay = `&lt;&lt;${tag}&gt;&gt;`;
+    const phStyle  = p.style || 'text';
+
+    if (phStyle === 'table') {
+      return `<tr><td style="padding:8px 20px;background-color:#F7F9FC;border-left:3px solid #C0C8D0;border-bottom:1px solid #EBF0F7;">` +
+        `<span style="font-size:11px;color:#888888;font-family:Arial,sans-serif;text-transform:uppercase;letter-spacing:0.08em;">${label}:</span>` +
+        `<span style="font-size:13px;color:#1A2E45;font-family:Arial,sans-serif;font-weight:600;margin-left:8px;">${tagDisplay}</span>` +
+        `</td></tr>`;
+    } else {
+      return `<tr><td style="padding:4px 0;">` +
+        `<p style="margin:0;font-size:13px;color:#4A5568;font-family:Arial,sans-serif;line-height:1.8;">` +
+        `<span style="color:#888888;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;">${label}: </span>${tagDisplay}` +
+        `</p></td></tr>`;
+    }
+  }).join('');
+
+  return `<!-- custom-placeholders --><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:8px;">${parts}</table>`;
+}
+
 // ═══ CONVERT MULE HTML → LISTMONK HTML ═══
 // Replaces <<PLACEHOLDER>> with {{ .Subscriber.Attribs.key }} and adds {{ template "content" . }}
 function convertToListmonk(muleHTML) {
@@ -1308,6 +1642,14 @@ function convertToListmonk(muleHTML) {
     'NOMINAL': '{{ .Subscriber.Attribs.nominal }}'
   };
 
+  // ── Auto-add custom placeholders to map ──
+  customPlaceholders.forEach(p => {
+    if (!p.col.trim()) return;
+    const tag = p.col.trim().toUpperCase().replace(/\s+/g, '_');
+    const key = tag.toLowerCase();
+    if (!phMap[tag]) phMap[tag] = `{{ .Subscriber.Attribs.${key} }}`;
+  });
+
   let html = muleHTML;
   // Replace each <<KEY>> with listmonk template syntax
   Object.entries(phMap).forEach(([key, val]) => {
@@ -1315,13 +1657,7 @@ function convertToListmonk(muleHTML) {
     html = html.replace(rx, val);
   });
 
-  // Insert {{ template "content" . }} before the first download section (after the description paragraph)
-  // Find the closing tag before downloadBtns area — inject before </td></tr></table></body></html>
-  // We insert it just before the closing footer row as a hidden spacer
-  // Strategy: inject right before the first footer <tr><td bgcolor="#... (darkest footer)
-  // For safety, inject right before </body>
   const contentTag = '<!-- listmonk:content -->{{ template "content" . }}<!-- /listmonk:content -->';
-  // Insert after the last </table> before </body>
   html = html.replace(/<\/body><\/html>$/, contentTag + '</body></html>');
 
   return html;
@@ -1332,6 +1668,7 @@ function getTemplate(id, d) {
   const downloadBtns = buildDownloadSection(d);
   const headerImgRow = buildHeaderImg(d);
   const footerImgRow = buildFooterImg(d);
+  const customPhBlock = buildCustomPhBlock(d);  // ← custom placeholder injection
 
   const sekolahNav = buildSekolahRow(d, '#8BA8C4', '#0A1628', "Georgia,'Times New Roman',serif");
   const sekolahGreen = buildSekolahRow(d, '#7DCEA0', '#374151', 'Arial,sans-serif');
@@ -1366,7 +1703,7 @@ function getTemplate(id, d) {
     10: `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Sertifikat ${d.judul}</title></head><body style="margin:0;padding:0;background-color:#EDF0FF;font-family:Arial,Helvetica,sans-serif;"><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#EDF0FF"><tr><td align="center" style="padding:36px 16px;"><table role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="width:600px;"><tr><td><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="50%" height="5" bgcolor="#4154F1" style="background-color:#4154F1;font-size:0;"></td><td width="30%" height="5" bgcolor="#F5A623" style="background-color:#F5A623;font-size:0;"></td><td width="20%" height="5" bgcolor="#1DCFCF" style="background-color:#1DCFCF;font-size:0;"></td></tr></table></td></tr><tr><td><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="220" bgcolor="#4154F1" style="background-color:#4154F1;padding:40px 28px;vertical-align:middle;"><p style="margin:0 0 6px 0;font-size:9px;font-weight:700;color:#A5ADFF;letter-spacing:0.22em;text-transform:uppercase;">${d.penyelenggara}</p><p style="margin:0 0 24px 0;font-size:20px;font-weight:700;color:#FFFFFF;line-height:1.25;">${d.judul}</p><table role="presentation" border="0" cellspacing="0" cellpadding="0"><tr><td bgcolor="#F5A623" style="background-color:#F5A623;padding:4px 10px;"><p style="margin:0;font-size:9px;font-weight:700;color:#2C1A06;letter-spacing:0.12em;text-transform:uppercase;">${d.program}</p></td></tr></table></td><td bgcolor="#FFFFFF" style="background-color:#FFFFFF;padding:32px;vertical-align:top;"><p style="margin:0 0 4px 0;font-size:10px;color:#A5ADFF;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">Diberikan Kepada</p><p style="margin:0 0 2px 0;font-size:22px;font-weight:700;color:#1A1F6B;line-height:1.2;">${d.nama}</p>${sekolahIndigo}<table role="presentation" border="0" cellspacing="0" cellpadding="0" style="margin-bottom:20px;"><tr><td bgcolor="#EDF0FF" style="background-color:#EDF0FF;border-left:3px solid #4154F1;padding:10px 14px;"><p style="margin:0;font-size:13px;color:#1A1F6B;font-weight:700;line-height:1.6;">&#10003; Selamat! Sertifikat resmi Anda siap diunduh.</p></td></tr></table><p style="margin:0 0 14px 0;font-size:13px;color:#4A5568;line-height:1.8;">Anda telah menyelesaikan <strong style="color:#4154F1;">${d.judul}</strong> bersama ${d.penyelenggara}.</p>${downloadBtns}</td></tr></table></td></tr><tr><td bgcolor="#1A1F6B" style="background-color:#1A1F6B;padding:18px 32px;"><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td valign="middle"><p style="margin:0;font-size:12px;font-weight:700;color:#FFFFFF;">${d.from_name}</p><p style="margin:2px 0 0 0;font-size:11px;color:#A5ADFF;">${d.penyelenggara}</p></td><td align="right" valign="middle"><a href="https://instagram.com/${d.ig1}" style="font-size:11px;color:#F5A623;text-decoration:none;display:block;text-align:right;">@${d.ig1}</a><a href="https://instagram.com/${d.ig2}" style="font-size:11px;color:#A5ADFF;text-decoration:none;display:block;text-align:right;margin-top:3px;">@${d.ig2}</a></td></tr></table></td></tr><tr><td><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="50%" height="5" bgcolor="#4154F1" style="background-color:#4154F1;font-size:0;"></td><td width="30%" height="5" bgcolor="#F5A623" style="background-color:#F5A623;font-size:0;"></td><td width="20%" height="5" bgcolor="#1DCFCF" style="background-color:#1DCFCF;font-size:0;"></td></tr></table></td></tr></table></td></tr></table></body></html>`
   };
 
-  return injectImages(T[id] || T[1], headerImgRow, footerImgRow);
+  return injectCustomPh(injectImages(T[id] || T[1], headerImgRow, footerImgRow), customPhBlock);
 }
 
 // ═══ INJECT IMAGES INTO TEMPLATE ═══
@@ -1395,14 +1732,35 @@ function injectImages(html, headerRow, footerRow) {
   return html;
 }
 
+// ═══ INJECT CUSTOM PLACEHOLDER BLOCK ═══
+function injectCustomPh(html, customPhBlock) {
+  if (!customPhBlock) return html;
+  // Inject AFTER the download buttons section (after last </table> inside white body area),
+  // specifically after the closing tag of downloadBtns — which always ends with </table>
+  // and is followed by </td></tr> closing the white content cell.
+  // We look for the pattern: </table></td></tr> just before the footer row (bgcolor of footer).
+  // Safe fallback: inject before </body>
+  const inserted = html.replace(
+    /(<\/table><\/td><\/tr>)(<tr><td [^>]*(?:bgcolor|background-color)[^>]*style[^>]*>(?:[^<]|<(?!\/body))*?<\/table><\/td><\/tr><\/table><\/body><\/html>)/,
+    '$1' + customPhBlock + '$2'
+  );
+  // If regex didn't match (edge case), fallback to before </body>
+  if (inserted === html) {
+    return html.replace(/<\/body><\/html>$/, customPhBlock + '</body></html>');
+  }
+  return inserted;
+}
+
 // ═══ MINIFY ═══
 function minify(html) {
   return html
-    .replace(/<!--[\s\S]*?-->/g,'')
+    .replace(/<!--(?!custom-placeholders|\/custom-placeholders|listmonk:content|\/listmonk:content)[\s\S]*?-->/g,'')
     .replace(/\r?\n/g,'')
     .replace(/\t/g,' ')
     .replace(/>\s+</g,'><')
     .replace(/\s{2,}/g,' ')
+    // Unescape &lt;&lt;TAG&gt;&gt; back to <<TAG>> so Mule can replace them
+    .replace(/&lt;&lt;([A-Z0-9_]+)&gt;&gt;/g, '<<$1>>')
     .trim();
 }
 
@@ -1470,11 +1828,13 @@ function doGenerate() {
   document.getElementById('nvGen').textContent = '✓ OK';
 
   // Alert message
+  const customCount = customPlaceholders.filter(p=>p.col.trim()).length;
+  const customNote = customCount > 0 ? ` + ${customCount} custom placeholder.` : '';
   document.getElementById('outAlert').textContent = targetPlatform === 'mule'
-    ? '✅ FormMule: Placeholder <<...>> siap diisi Mule dari spreadsheet.'
+    ? `✅ FormMule: Placeholder <<...>> siap diisi Mule dari spreadsheet.${customNote}`
     : targetPlatform === 'listmonk'
-    ? '✅ Listmonk: Template {{ .Subscriber.Attribs.x }} siap dipakai di Campaign / HTML.'
-    : '✅ Kedua format siap — FormMule dan Listmonk.';
+    ? `✅ Listmonk: Template {{ .Subscriber.Attribs.x }} siap dipakai di Campaign / HTML.${customNote}`
+    : `✅ Kedua format siap — FormMule dan Listmonk.${customNote}`;
 
   // Placeholder list
   const phs = [];
@@ -1497,9 +1857,33 @@ function doGenerate() {
     {t:'blue',v:'{{program}} → '+d.program},
     {t:'blue',v:'{{from_name}} → '+d.from_name}
   );
+  // ── Custom Placeholders ──
+  const validCustom = customPlaceholders.filter(p => p.col.trim());
+  if (validCustom.length > 0) {
+    phs.push({t:'text', v:'— CUSTOM —'}); // divider label
+    validCustom.forEach(p => {
+      const tag = '<<' + p.col.trim().toUpperCase().replace(/\s+/g,'_') + '>>';
+      phs.push({t:'orange', v: tag + (p.sample ? ' · ex: '+p.sample : '')});
+      if (targetPlatform !== 'mule') {
+        const key = p.col.trim().toLowerCase().replace(/\s+/g,'_');
+        phs.push({t:'warn', v:'{{ .Subscriber.Attribs.'+key+' }}'});
+      }
+    });
+  }
   document.getElementById('phList').innerHTML = phs.map(p=>
-    `<span class="ph ph-${p.t}">${p.v}</span>`
+    p.t === 'text'
+      ? `<span style="width:100%;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);padding:6px 0 2px;display:block">${p.v}</span>`
+      : `<span class="ph ph-${p.t}">${p.v}</span>`
   ).join('');
+
+  // Update phCard header with custom PH count
+  const phCardHead = document.querySelector('#phCard .card-head');
+  if (phCardHead) {
+    const customCount2 = customPlaceholders.filter(p=>p.col.trim()).length;
+    phCardHead.innerHTML = customCount2 > 0
+      ? `🔖 Placeholder yang Digunakan <span style="margin-left:auto;background:rgba(241,130,50,.15);color:#f08040;border:1px solid rgba(241,130,50,.35);font-family:var(--mono);font-size:10px;padding:2px 8px">+${customCount2} CUSTOM</span>`
+      : '🔖 Placeholder yang Digunakan';
+  }
 
   setStatus('✓ Template generated · '+len.toLocaleString()+' chars · '+targetPlatform);
   toast('✔ HTML Template siap! ('+targetPlatform+')','ok');
@@ -1784,6 +2168,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderPresets();
   renderHistory();
   renderCustomPh();
+  initCustomPhListeners(); // Attach event delegation for custom placeholder inputs
 });
 document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => {
   if (e.target === m) m.classList.remove('open');
@@ -1801,15 +2186,18 @@ function toggleLivePreview() {
   const btn = document.getElementById('livePreviewBtn');
   const pane = document.getElementById('livePreviewPane');
   const app = document.querySelector('.app');
+  const main = document.getElementById('mainContent');
 
   if (livePreviewActive) {
     btn.textContent = '⬛ Live Preview ON';
     btn.style.background = 'rgba(63,185,80,.15)';
     btn.style.color = 'var(--a2)';
     btn.style.borderColor = 'rgba(63,185,80,.3)';
+    // Show pane — it's inside splitWrapper (display:contents) so grid-column logic is on app
     pane.style.display = 'flex';
     pane.style.flexDirection = 'column';
-    app.style.gridTemplateColumns = '220px 1fr 1fr';
+    // 3-column grid: sidebar | main | preview
+    app.style.gridTemplateColumns = '220px 1fr 420px';
     refreshLivePreview();
   } else {
     btn.textContent = '⬜ Live Preview';
@@ -1825,26 +2213,42 @@ function setPreviewDevice(dev) {
   livePreviewDevice = dev;
   document.getElementById('pvBtnDesk').classList.toggle('active', dev === 'desktop');
   document.getElementById('pvBtnMob').classList.toggle('active', dev === 'mobile');
-  const frame = document.getElementById('livePreviewFrame');
-  frame.style.width = dev === 'mobile' ? '375px' : '600px';
+  const scaler = document.getElementById('livePreviewScaler');
+  if (scaler) scaler.style.width = dev === 'mobile' ? '375px' : '600px';
 }
 
 function refreshLivePreview() {
-  if (!livePreviewActive) return;
+  const frame = document.getElementById('livePreviewFrame');
+  if (!frame) return;
+  if (!livePreviewActive) {
+    // If called directly by user clicking Refresh button even when toggled off, still show
+    if (frame.srcdoc && frame.srcdoc !== 'about:blank') return;
+  }
   const d = getVars(true);
   const html = getTemplate(activeTpl, d);
-  const frame = document.getElementById('livePreviewFrame');
-  if (frame) frame.srcdoc = html;
+  // Use blob URL to avoid CSP/srcdoc issues in some browsers
+  try {
+    const blob = new Blob([html], {type: 'text/html'});
+    const url = URL.createObjectURL(blob);
+    // Revoke previous blob if any
+    if (frame._blobUrl) URL.revokeObjectURL(frame._blobUrl);
+    frame._blobUrl = url;
+    frame.src = url;
+  } catch(e) {
+    // Fallback to srcdoc
+    frame.srcdoc = html;
+  }
 }
 
 function scheduleRealtimePreview() {
   clearTimeout(livePreviewTimer);
   livePreviewTimer = setTimeout(() => {
-    refreshLivePreview();
-    if (document.getElementById('panel-customizer').classList.contains('active')) {
+    if (livePreviewActive) refreshLivePreview();
+    if (document.getElementById('panel-customizer') &&
+        document.getElementById('panel-customizer').classList.contains('active')) {
       refreshCustomizerPreview();
     }
-  }, 300);
+  }, 350);
 }
 
 // Hook input changes for live preview
@@ -1868,51 +2272,190 @@ window.selectTemplate = function(id) {
 
 // ════════════════════════════════════════
 // FEATURE 2: CUSTOM PLACEHOLDER BUILDER
+// Fix: No DOM rebuild on keystroke — update in-place only
 // ════════════════════════════════════════
 let customPlaceholders = [];
 
-function addCustomPh(colName='', sample='') {
+function addCustomPh(colName, sample) {
   const id = 'cph_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
-  customPlaceholders.push({id, col:colName, sample});
-  renderCustomPh();
+  customPlaceholders.push({id, col: colName || '', sample: sample || '', style: 'text'});
+  renderCustomPh(); // Full rebuild only on add (row count changes)
+  // Focus the new row's col input immediately
+  setTimeout(() => {
+    const container = document.getElementById('phBuilderRows');
+    if (!container) return;
+    const rows = container.querySelectorAll('.ph-builder-row');
+    const lastRow = rows[rows.length - 1];
+    if (lastRow) {
+      const inp = lastRow.querySelector('.ph-col-name');
+      if (inp) inp.focus();
+    }
+  }, 30);
 }
 
 function renderCustomPh() {
+  // Full rebuild — called only on add/delete/reset (NOT on keystroke)
   const container = document.getElementById('phBuilderRows');
   if (!container) return;
+
   if (customPlaceholders.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px">Belum ada custom placeholder. Klik "+ Tambah Kolom".</div>';
-    document.getElementById('phPreviewCard').style.display = 'none';
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px;font-family:var(--mono)">Belum ada custom placeholder.<br>Klik <strong>+ Tambah Kolom</strong> untuk mulai.</div>';
+    const previewCard = document.getElementById('phPreviewCard');
+    if (previewCard) previewCard.style.display = 'none';
     document.getElementById('nvPh').textContent = '0';
     return;
   }
+
   container.innerHTML = customPlaceholders.map((ph) => {
-    const phTag = ph.col.trim() ? '<<' + ph.col.trim().toUpperCase().replace(/\s+/g,'_') + '>>' : '...';
-    return `<div class="ph-builder-row" data-id="${ph.id}" style="display:grid;grid-template-columns:1fr 1fr 130px 36px;gap:8px;align-items:center">
-      <input class="ph-col-name" type="text" value="${ph.col}" placeholder="Nama kolom..." oninput="updateCustomPh('${ph.id}','col',this.value)" style="text-transform:uppercase;width:100%">
-      <input class="ph-sample" type="text" value="${ph.sample}" placeholder="Sample data..." oninput="updateCustomPh('${ph.id}','sample',this.value)" style="width:100%">
-      <span class="ph-generated">${phTag}</span>
-      <button class="ph-del-btn" onclick="deleteCustomPh('${ph.id}')">✕</button>
+    const phTag = ph.col.trim()
+      ? '&lt;&lt;' + ph.col.trim().toUpperCase().replace(/\s+/g,'_') + '&gt;&gt;'
+      : '<span style="color:var(--text3)">—</span>';
+    const isText  = (ph.style || 'text') === 'text';
+    const isTable = (ph.style || 'text') === 'table';
+    return `<div class="ph-builder-row" data-phid="${ph.id}" style="display:grid;grid-template-columns:1fr 1fr 110px 90px 34px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <input
+        class="ph-col-name"
+        type="text"
+        data-phid="${ph.id}"
+        data-field="col"
+        value="${ph.col.replace(/"/g,'&quot;')}"
+        placeholder="Nama kolom..."
+        autocomplete="off"
+        spellcheck="false"
+        style="text-transform:uppercase;width:100%;background:var(--s2);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none;"
+      >
+      <input
+        class="ph-sample"
+        type="text"
+        data-phid="${ph.id}"
+        data-field="sample"
+        value="${ph.sample.replace(/"/g,'&quot;')}"
+        placeholder="Contoh: Vania Azzahra"
+        autocomplete="off"
+        spellcheck="false"
+        style="width:100%;background:var(--s2);border:1px solid var(--border2);color:var(--text3);font-family:var(--mono);font-size:12px;padding:8px 10px;outline:none;"
+      >
+      <span class="ph-generated" data-phid-tag="${ph.id}" style="font-family:var(--mono);font-size:11px;padding:4px 8px;background:rgba(63,185,80,.1);color:var(--a2);border:1px solid rgba(63,185,80,.2);text-align:center;overflow:hidden;white-space:nowrap">${phTag}</span>
+      <div style="display:flex;gap:0;">
+        <button
+          class="ph-style-btn"
+          data-phid="${ph.id}"
+          data-style="text"
+          title="Teks biasa — label: <<TAG>>"
+          style="flex:1;padding:5px 0;font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--border2);border-right:none;font-family:var(--font);transition:.15s;${isText ? 'background:var(--a5);color:#000;border-color:var(--a5);' : 'background:var(--s2);color:var(--text3);'}"
+        >Teks</button>
+        <button
+          class="ph-style-btn"
+          data-phid="${ph.id}"
+          data-style="table"
+          title="Row tabel — card dengan border"
+          style="flex:1;padding:5px 0;font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--border2);font-family:var(--font);transition:.15s;${isTable ? 'background:var(--a5);color:#000;border-color:var(--a5);' : 'background:var(--s2);color:var(--text3);'}"
+        >Tabel</button>
+      </div>
+      <button
+        class="ph-del-btn"
+        data-phid="${ph.id}"
+        style="background:rgba(241,80,102,.1);border:1px solid rgba(241,80,102,.25);color:var(--a3);cursor:pointer;padding:6px 10px;font-size:13px;font-weight:700;line-height:1"
+      >✕</button>
     </div>`;
   }).join('');
-  document.getElementById('phPreviewCard').style.display = 'block';
-  document.getElementById('customPhPreview').innerHTML = customPlaceholders
-    .filter(ph => ph.col.trim())
-    .map(ph => {
+
+  // Attach input listeners via event delegation on container (not inline)
+  // (listeners are set once on DOMContentLoaded, see initCustomPhListeners)
+  _syncCustomPhPreview();
+}
+
+function _syncCustomPhPreview() {
+  // Update tag previews and nav badge — no DOM rebuild
+  const previewCard = document.getElementById('phPreviewCard');
+  const previewList = document.getElementById('customPhPreview');
+  const nvBadge = document.getElementById('nvPh');
+
+  const validPhs = customPlaceholders.filter(p => p.col.trim());
+
+  if (nvBadge) nvBadge.textContent = validPhs.length;
+
+  if (!customPlaceholders.length) {
+    if (previewCard) previewCard.style.display = 'none';
+    return;
+  }
+
+  if (previewCard) previewCard.style.display = 'block';
+  if (previewList) {
+    previewList.innerHTML = validPhs.map(ph => {
       const tag = '<<' + ph.col.trim().toUpperCase().replace(/\s+/g,'_') + '>>';
       return `<span class="ph ph-green">${tag}</span>`;
     }).join('');
-  document.getElementById('nvPh').textContent = customPlaceholders.filter(p => p.col.trim()).length;
+  }
 }
 
-function updateCustomPh(id, field, value) {
+function _updateInPlaceTag(id) {
+  // Update ONLY the tag span for this row — no rebuild
   const ph = customPlaceholders.find(p => p.id === id);
-  if (ph) { ph[field] = value; renderCustomPh(); }
+  if (!ph) return;
+  const tagEl = document.querySelector(`[data-phid-tag="${id}"]`);
+  if (tagEl) {
+    tagEl.innerHTML = ph.col.trim()
+      ? '&lt;&lt;' + ph.col.trim().toUpperCase().replace(/\s+/g,'_') + '&gt;&gt;'
+      : '<span style="color:var(--text3)">—</span>';
+  }
+  _syncCustomPhPreview();
+}
+
+function initCustomPhListeners() {
+  // Event delegation on #phBuilderRows — handles all inputs without rebuilding DOM
+  const container = document.getElementById('phBuilderRows');
+  if (!container) return;
+
+  container.addEventListener('input', function(e) {
+    const target = e.target;
+    const phid = target.getAttribute('data-phid');
+    const field = target.getAttribute('data-field');
+    if (!phid || !field) return;
+
+    const ph = customPlaceholders.find(p => p.id === phid);
+    if (!ph) return;
+
+    ph[field] = target.value; // update state only
+
+    if (field === 'col') {
+      _updateInPlaceTag(phid); // update tag display in-place
+    }
+  });
+
+  container.addEventListener('click', function(e) {
+    // Delete button
+    const btn = e.target.closest('.ph-del-btn');
+    if (btn) {
+      const phid = btn.getAttribute('data-phid');
+      if (phid) deleteCustomPh(phid);
+      return;
+    }
+    // Style toggle
+    const styleBtn = e.target.closest('.ph-style-btn');
+    if (styleBtn) {
+      const phid = styleBtn.getAttribute('data-phid');
+      const newStyle = styleBtn.getAttribute('data-style');
+      const ph = customPlaceholders.find(p => p.id === phid);
+      if (!ph || !newStyle) return;
+      ph.style = newStyle;
+      // Update button states in-place — no full rebuild needed
+      const row = container.querySelector(`[data-phid="${phid}"].ph-builder-row`);
+      if (row) {
+        row.querySelectorAll('.ph-style-btn').forEach(b => {
+          const active = b.getAttribute('data-style') === newStyle;
+          b.style.background = active ? 'var(--a5)' : 'var(--s2)';
+          b.style.color      = active ? '#000'       : 'var(--text3)';
+          b.style.borderColor= active ? 'var(--a5)'  : 'var(--border2)';
+        });
+      }
+    }
+  });
 }
 
 function deleteCustomPh(id) {
   customPlaceholders = customPlaceholders.filter(p => p.id !== id);
-  renderCustomPh();
+  renderCustomPh(); // Full rebuild OK — row count changed
 }
 
 function clearCustomPh() {
@@ -2319,7 +2862,7 @@ showPanel = function(name) {
   if (name === 'presets') renderPresets();
   if (name === 'history') renderHistory();
   if (name === 'customizer') setTimeout(refreshCustomizerPreview, 60);
-  if (name === 'customph') renderCustomPh();
+  if (name === 'customph') { renderCustomPh(); initCustomPhListeners(); }
   if (name === 'visualeditor') {
     // Auto-load if HTML is available and editor not yet initialized
     if (generatedHTML && !veState.initialized) {
@@ -2665,14 +3208,761 @@ function veResetAll() {
   toast('↩ Semua perubahan direset', 'info');
 }
 
-// ── Copy HTML ─────────────────────────────
-function veCopyHtml() {
-  if (!veState.initialized) { toast('Load preview dulu!', 'warn'); return; }
-  const html = veSerialize();
-  if (!html) return;
-  navigator.clipboard?.writeText(html);
-  toast('✔ HTML dicopy ke clipboard', 'ok');
+// ════════════════════════════════════════
+// FEATURE: EMAIL TRACKER
+// Pixel 1×1 → Apps Script → Google Sheet
+// ════════════════════════════════════════
+
+const TRACKER_KEY = 'etg_tracker_v1';
+
+function trackerGetConfig() {
+  try { return JSON.parse(localStorage.getItem(TRACKER_KEY) || '{}'); } catch { return {}; }
 }
+
+function trackerSaveConfig(cfg) {
+  localStorage.setItem(TRACKER_KEY, JSON.stringify(cfg));
+}
+
+// ── Sync kedua toggle (banner + wizard) ──
+function trackerToggle() {
+  const src = event ? event.target : document.getElementById('trackerEnabled');
+  const enabled = src.checked;
+  // Sync both toggles
+  document.getElementById('trackerEnabled').checked = enabled;
+  const t2 = document.getElementById('trackerEnabled2');
+  if (t2) t2.checked = enabled;
+
+  const cfg = trackerGetConfig();
+  cfg.enabled = enabled;
+  trackerSaveConfig(cfg);
+  trackerUpdateBanner();
+  trackerCheckSetup();
+
+  const badge = document.getElementById('nvTracker');
+  if (enabled) {
+    badge.textContent = 'ON';
+    badge.style.background = 'rgba(63,185,80,.12)';
+    badge.style.color = 'var(--a2)';
+    badge.style.borderColor = 'rgba(63,185,80,.3)';
+    if (cfg.endpoint) toast('📡 Tracker aktif — pixel akan disisipkan saat Generate', 'ok');
+    else toast('⚠ Tracker ON tapi endpoint belum diisi!', 'warn');
+  } else {
+    badge.textContent = 'OFF';
+    badge.style.background = 'rgba(241,80,102,.12)';
+    badge.style.color = 'var(--a3)';
+    badge.style.borderColor = 'rgba(241,80,102,.2)';
+    toast('📡 Tracker dinonaktifkan', 'info');
+  }
+}
+
+function trackerSaveEndpoint() {
+  const url = document.getElementById('trackerEndpoint').value.trim();
+  const cfg = trackerGetConfig();
+  cfg.endpoint = url;
+  trackerSaveConfig(cfg);
+}
+
+// ── Update status banner ──
+function trackerUpdateBanner() {
+  const cfg = trackerGetConfig();
+  const banner = document.getElementById('trackerBanner');
+  const title  = document.getElementById('trackerBannerTitle');
+  const sub    = document.getElementById('trackerBannerSub');
+
+  if (!cfg.endpoint) {
+    banner.className = 'tracker-banner off';
+    title.textContent = 'Setup Belum Selesai';
+    sub.textContent = 'Lengkapi Langkah 1–3 di bawah untuk mengaktifkan tracker';
+  } else if (!cfg.enabled) {
+    banner.className = 'tracker-banner warn';
+    title.textContent = 'Endpoint Tersimpan — Tracker Belum Aktif';
+    sub.textContent = 'Aktifkan toggle di kanan untuk mulai tracking';
+  } else {
+    banner.className = 'tracker-banner on';
+    title.textContent = '✅ Tracker Aktif — Pixel Otomatis Masuk ke Setiap Generate';
+    sub.textContent = 'Email terbuka akan tercatat di Google Sheet dan panel dashboard di bawah';
+  }
+}
+
+// ── Update wizard step indicators ──
+function trackerCheckSetup() {
+  const cfg = trackerGetConfig();
+  const hasEndpoint = !!(cfg.endpoint && cfg.endpoint.trim());
+  const isEnabled   = !!cfg.enabled;
+
+  // Step 1: always done once user lands here (code is shown)
+  const s1 = document.getElementById('wStep1');
+  const s2 = document.getElementById('wStep2');
+  const s3 = document.getElementById('wStep3');
+  const s4 = document.getElementById('wStep4');
+
+  // Step 1: mark done once endpoint is pasted (implies they got the code)
+  s1.className = 'setup-step ' + (hasEndpoint ? 'done' : 'active');
+  s2.className = 'setup-step ' + (hasEndpoint ? 'done' : (s1.classList.contains('done') ? 'active' : ''));
+  s3.className = 'setup-step ' + (isEnabled ? 'done' : (hasEndpoint ? 'active' : ''));
+  s4.className = 'setup-step ' + (isEnabled && hasEndpoint ? 'active' : '');
+
+  // Update setup card tag
+  const tag = document.getElementById('trackerSetupTag');
+  if (isEnabled && hasEndpoint) {
+    tag.textContent = '✅ Setup Selesai';
+    tag.style.color = 'var(--a2)';
+    tag.style.background = 'rgba(63,185,80,.12)';
+  } else if (hasEndpoint) {
+    tag.textContent = '⚠ Belum Diaktifkan';
+    tag.style.color = 'var(--a4)';
+    tag.style.background = 'rgba(227,179,65,.12)';
+  } else {
+    tag.textContent = 'Belum selesai';
+    tag.style.color = 'var(--text3)';
+    tag.style.background = '';
+  }
+}
+
+function trackerBuildPixelUrl(email, nama, campaign) {
+  const cfg = trackerGetConfig();
+  if (!cfg.enabled || !cfg.endpoint) return '';
+  const base = cfg.endpoint.replace(/\/$/, '');
+  const params = new URLSearchParams({
+    email: email || '<<EMAIL>>',
+    nama: nama || '<<NAMA>>',
+    campaign: campaign || document.getElementById('cfJudul').value || 'blast',
+    t: Date.now()
+  });
+  return `${base}?${params.toString()}`;
+}
+
+function trackerBuildPixelTag(email, nama, campaign) {
+  const cfg = trackerGetConfig();
+  if (!cfg.enabled || !cfg.endpoint) return '';
+  const pixelUrl = trackerBuildPixelUrl(email, nama, campaign);
+  return `<img src="${pixelUrl}" width="1" height="1" alt="" style="display:none;width:1px;height:1px;border:0;mso-hide:all;" border="0">`;
+}
+
+// Inject pixel into generated HTML
+function trackerInjectPixel(html) {
+  const cfg = trackerGetConfig();
+  if (!cfg.enabled || !cfg.endpoint) return html;
+  const campaign = (document.getElementById('trackerCampaign').value || '').trim() ||
+                   document.getElementById('cfJudul').value || 'blast';
+  const pixelTag = trackerBuildPixelTag('<<EMAIL>>', '<<NAMA>>', campaign);
+  if (!pixelTag) return html;
+  if (html.includes('</body>')) return html.replace('</body>', pixelTag + '</body>');
+  return html + pixelTag;
+}
+
+function trackerIncrementSent() {
+  const cfg = trackerGetConfig();
+  cfg.sent = (cfg.sent || 0) + 1;
+  trackerSaveConfig(cfg);
+}
+
+// ── Load campaigns list then load data ──
+let activeCampaignTab = '__all__';
+
+async function trackerLoadCampaigns() {
+  const cfg = trackerGetConfig();
+  if (!cfg.endpoint) { renderTrackerTable([], null, true); return; }
+
+  try {
+    const url = cfg.endpoint.replace(/\/$/, '') + '?action=getCampaigns&t=' + Date.now();
+    const res  = await fetch(url);
+    const json = await res.json();
+    const campaigns = json.campaigns || [];
+
+    renderCampaignTabs(campaigns);
+    renderCampaignSummaryCards(campaigns);
+
+    // Load data for active tab
+    await trackerLoadData(activeCampaignTab === '__all__' ? '' : activeCampaignTab);
+  } catch(e) {
+    // If getCampaigns not supported (old script), fallback to loading all
+    await trackerLoadData('');
+  }
+}
+
+function renderCampaignTabs(campaigns) {
+  const wrap = document.getElementById('campaignTabsWrap');
+  if (!wrap) return;
+
+  const allActive = activeCampaignTab === '__all__';
+  let html = `<button class="btn ${allActive ? 'btn-primary' : 'btn-ghost'}" id="tabAll" onclick="switchCampaignTab('__all__')" style="font-size:10px;padding:3px 12px">Semua Campaign</button>`;
+
+  campaigns.forEach(c => {
+    const isActive = activeCampaignTab === c.name;
+    html += `<button class="btn ${isActive ? 'btn-purple' : 'btn-ghost'}" onclick="switchCampaignTab(${JSON.stringify(c.name)})" style="font-size:10px;padding:3px 12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.name}">
+      📧 ${c.name.length > 14 ? c.name.substring(0,14)+'…' : c.name}
+      <span style="background:rgba(255,255,255,.15);border-radius:2px;padding:0 4px;margin-left:4px;font-size:9px">${c.opens}</span>
+    </button>`;
+  });
+
+  wrap.innerHTML = html;
+}
+
+function renderCampaignSummaryCards(campaigns) {
+  const el = document.getElementById('campaignSummaryCards');
+  if (!el) return;
+  if (!campaigns || campaigns.length === 0) { el.innerHTML = ''; return; }
+
+  const totalOpens = campaigns.reduce((s,c) => s + c.opens, 0);
+  el.innerHTML = `
+    <div style="background:var(--s2);border:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:12px;flex:1;min-width:140px">
+      <div style="font-size:24px;font-weight:800;font-family:var(--mono);color:var(--a5)">${campaigns.length}</div>
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:700">Campaign<br>Aktif</div>
+    </div>
+    <div style="background:var(--s2);border:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:12px;flex:1;min-width:140px">
+      <div style="font-size:24px;font-weight:800;font-family:var(--mono);color:var(--a2)">${totalOpens}</div>
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-weight:700">Total<br>Opens</div>
+    </div>
+    ${campaigns.slice(0,3).map(c => `
+    <div style="background:var(--s2);border:1px solid var(--border);padding:10px 14px;flex:1;min-width:160px;cursor:pointer;border-left:3px solid var(--a5)" onclick="switchCampaignTab(${JSON.stringify(c.name)})">
+      <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.name}</div>
+      <div style="font-size:18px;font-weight:800;font-family:var(--mono);color:${c.opens>0?'var(--a2)':'var(--text3)'}">${c.opens} <span style="font-size:10px;font-weight:400;color:var(--text3)">opens</span></div>
+    </div>`).join('')}
+  `;
+}
+
+async function switchCampaignTab(campaign) {
+  activeCampaignTab = campaign;
+  // Re-render tabs with active state
+  const cfg = trackerGetConfig();
+  if (!cfg.endpoint) return;
+  try {
+    const url = cfg.endpoint.replace(/\/$/, '') + '?action=getCampaigns&t=' + Date.now();
+    const res = await fetch(url);
+    const json = await res.json();
+    renderCampaignTabs(json.campaigns || []);
+  } catch(e) {}
+  await trackerLoadData(campaign === '__all__' ? '' : campaign);
+}
+
+// ── Load data from Google Sheet (per campaign or all) ──
+async function trackerLoadData(campaign) {
+  const cfg = trackerGetConfig();
+  const statusEl = document.getElementById('trackerEndpointStatus');
+  if (!cfg.endpoint) {
+    renderTrackerTable([], null, true);
+    return;
+  }
+  const campParam = campaign !== undefined ? campaign : (activeCampaignTab === '__all__' ? '' : activeCampaignTab);
+  if (statusEl) { statusEl.textContent = '⏳ Mengambil data...'; statusEl.style.color = 'var(--text3)'; }
+  try {
+    let url = cfg.endpoint.replace(/\/$/, '') + '?action=getData&t=' + Date.now();
+    if (campParam) url += '&campaign=' + encodeURIComponent(campParam);
+    const res  = await fetch(url);
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    const rows = json.data || [];
+    if (statusEl) { statusEl.textContent = `✅ ${rows.length} record dimuat · ${new Date().toLocaleTimeString('id-ID')}`; statusEl.style.color = 'var(--a2)'; }
+    const lastRefEl = document.getElementById('trkLastRefresh');
+    if (lastRefEl) lastRefEl.textContent = 'Update: ' + new Date().toLocaleTimeString('id-ID');
+    const campLabelEl = document.getElementById('trkCampaignLabel');
+    if (campLabelEl) campLabelEl.textContent = campParam ? '📧 ' + campParam : '';
+    renderTrackerTable(rows);
+    updateTrackerStats(rows, cfg);
+  } catch(e) {
+    if (statusEl) { statusEl.textContent = '❌ ' + e.message; statusEl.style.color = 'var(--a3)'; }
+    renderTrackerTable(null, e.message);
+  }
+}
+
+function renderTrackerTable(rows, errorMsg, empty) {
+  const body  = document.getElementById('trackerTableBody');
+  const label = document.getElementById('trkTableLabel');
+
+  if (errorMsg) {
+    body.innerHTML = `<div style="text-align:center;padding:28px 16px;color:var(--a3);font-size:12px;font-family:var(--mono)">❌ Gagal memuat data:<br>${errorMsg}<br><span style="color:var(--text3);font-size:10px">Cek URL endpoint dan coba lagi</span></div>`;
+    label.textContent = 'Error';
+    return;
+  }
+  if (empty || !rows || !rows.length) {
+    body.innerHTML = `<div style="text-align:center;padding:36px 16px;color:var(--text3);font-size:12px;font-family:var(--mono)"><div style="font-size:28px;margin-bottom:8px">📭</div>Belum ada data buka email.<br><span style="font-size:11px">Blast email → tunggu penerima buka → klik Refresh</span></div>`;
+    label.textContent = '0 opens';
+    document.getElementById('trkStatOpened').textContent = '0';
+    document.getElementById('trkStatRate').textContent = '0%';
+    document.getElementById('trkStatLast').textContent = '—';
+    return;
+  }
+
+  label.textContent = rows.length + ' opens';
+  const sorted = [...rows].sort((a,b) => new Date(b.timestamp||b.timestamp_||0) - new Date(a.timestamp||a.timestamp_||0));
+
+  body.innerHTML = sorted.map((r, i) => {
+    const ts    = r.timestamp || r.timestamp_ || '';
+    const tsStr = ts ? new Date(ts).toLocaleString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
+    const nama  = r.nama  || r.nama_  || '—';
+    const email = r.email || r.email_ || '—';
+    const camp  = r.campaign || r.campaign_ || '—';
+    const buka  = r.buka_ke_ || r['buka_ke-'] || r.buka || '—';
+    const bg    = i%2===0 ? 'transparent' : 'rgba(255,255,255,.015)';
+    const bukaColor = buka > 1 ? 'var(--a4)' : 'var(--a2)';
+    return `<div class="tracker-row" style="background:${bg}">
+      <div style="color:var(--text3);font-family:var(--mono);font-size:11px">${i+1}</div>
+      <div>
+        <div style="font-weight:600;color:var(--text);font-size:12px">${nama}</div>
+        <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px">${email}</div>
+      </div>
+      <div style="font-size:11px;color:var(--a5);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${camp}</div>
+      <div style="font-size:11px;color:var(--a4);font-family:var(--mono)">${tsStr}</div>
+      <div><span style="background:rgba(63,185,80,.1);color:${bukaColor};font-size:10px;font-weight:700;padding:2px 8px;font-family:var(--mono);border:1px solid rgba(63,185,80,.25)">${buka > 1 ? '🔁 ke-'+buka : '✅ pertama'}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function updateTrackerStats(rows, cfg) {
+  const sent   = cfg.sent || 0;
+  const unique = new Set(rows.map(r => r.email || r.email_)).size;
+  const rate   = sent > 0 ? Math.round(unique/sent*100) : (unique > 0 ? 100 : 0);
+  const last   = rows.length > 0 ? rows.reduce((a,b) => new Date(a.timestamp||0) > new Date(b.timestamp||0) ? a : b) : null;
+  const lastTs = last ? new Date(last.timestamp).toLocaleString('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
+
+  document.getElementById('trkStatSent').textContent    = sent || rows.length;
+  document.getElementById('trkStatOpened').textContent  = unique;
+  document.getElementById('trkStatRate').textContent    = rate + '%';
+  document.getElementById('trkStatLast').textContent    = lastTs;
+}
+
+async function trackerTestPing() {
+  const endpoint = document.getElementById('trackerEndpoint').value.trim();
+  const statusEl = document.getElementById('trackerEndpointStatus');
+  if (!endpoint) { toast('Isi URL endpoint dulu!', 'warn'); return; }
+  if (statusEl) { statusEl.textContent = '⏳ Testing endpoint...'; statusEl.style.color = 'var(--text3)'; }
+  try {
+    const testUrl = endpoint.replace(/\/$/, '') + '?email=test%40example.com&nama=TEST&campaign=ping_test&t=' + Date.now();
+    const res  = await fetch(testUrl);
+    const text = await res.text();
+    if (statusEl) { statusEl.textContent = '✅ Endpoint OK! Cek Google Sheet Anda — baris baru harus muncul'; statusEl.style.color = 'var(--a2)'; }
+    // Mark step 2 done
+    const s2 = document.getElementById('wStep2');
+    if (s2) s2.className = 'setup-step done';
+    const s3 = document.getElementById('wStep3');
+    if (s3) s3.className = 'setup-step active';
+    toast('✅ Ping berhasil! Cek Google Sheet Anda.', 'ok');
+  } catch(e) {
+    if (statusEl) { statusEl.textContent = '❌ Gagal: ' + e.message + ' — Pastikan deploy sudah benar'; statusEl.style.color = 'var(--a3)'; }
+    toast('❌ Endpoint tidak bisa dijangkau', 'err');
+  }
+}
+
+function trackerExportCSV() {
+  const rows = document.querySelectorAll('#trackerTableBody .tracker-row');
+  if (!rows.length) { toast('Tidak ada data untuk diexport', 'warn'); return; }
+  let csv = 'No,Nama,Email,Campaign,Waktu Buka\n';
+  let i = 1;
+  rows.forEach(row => {
+    const nama  = row.children[1]?.children[0]?.textContent?.trim() || '';
+    const email = row.children[1]?.children[1]?.textContent?.trim() || '';
+    const camp  = row.children[2]?.textContent?.trim() || '';
+    const ts    = row.children[3]?.textContent?.trim() || '';
+    csv += `${i++},"${nama}","${email}","${camp}","${ts}"\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'tracker_' + Date.now() + '.csv'; a.click();
+  URL.revokeObjectURL(a.href);
+  toast('✔ CSV diexport!', 'ok');
+}
+
+function trackerCopyAppsScript() {
+  const code = document.getElementById('appsScriptCode').textContent;
+  navigator.clipboard?.writeText(code);
+  toast('✔ Kode Apps Script dicopy!', 'ok');
+}
+
+// ── Toggle setup wizard visibility ──
+function toggleTrackerSetup() {
+  const body = document.getElementById('trackerSetupBody');
+  const btn  = document.getElementById('trackerSetupToggleBtn');
+  if (!body) return;
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? 'block' : 'none';
+  btn.textContent = hidden ? 'SEMBUNYIKAN ▲' : 'TAMPILKAN ▼';
+}
+
+// ── Auto-hide setup wizard when tracker is already configured ──
+function trackerAutoCollapseSetup() {
+  const cfg = trackerGetConfig();
+  const body = document.getElementById('trackerSetupBody');
+  const btn  = document.getElementById('trackerSetupToggleBtn');
+  if (!body || !btn) return;
+  if (cfg.enabled && cfg.endpoint) {
+    body.style.display = 'none';
+    btn.textContent = 'TAMPILKAN ▼';
+  }
+}
+
+// ── Apps Script code ──
+const APPS_SCRIPT_CODE = `// ══════════════════════════════════════════════════════
+// EMAIL TRACKER v2 — Multi-Campaign Dashboard
+// Sheet otomatis per campaign + Summary sheet
+// Deploy as: Web App · Execute as: Me · Access: Anyone
+// ══════════════════════════════════════════════════════
+
+const SPREADSHEET_ID = 'GANTI_DENGAN_ID_SPREADSHEET_ANDA';
+const SUMMARY_SHEET  = '📊 Summary';
+const ALL_SHEET      = '📋 Semua Data';
+
+// ── Warna header per sheet (cycle) ──
+const HEADER_COLORS = [
+  '#0A1628','#0D4F3C','#3A1C8C','#C0190A','#0A6B6B',
+  '#2C1A06','#4154F1','#1A4A2E','#6B1A1A','#1A1A6B'
+];
+
+// ── Nama sheet dari nama campaign (sanitasi) ──
+function getCampaignSheetName(campaign) {
+  const clean = (campaign || 'Tanpa Campaign')
+    .replace(/[\\\\/*?:\\[\\]]/g, '-')
+    .substring(0, 28)
+    .trim();
+  return '📧 ' + clean;
+}
+
+// ── Buat / ambil sheet campaign ──
+function getOrCreateCampaignSheet(ss, campaign) {
+  const sheetName = getCampaignSheetName(campaign);
+  let sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    // Header row
+    const headers = [['No','Timestamp','Email','Nama','Campaign','Buka ke-']];
+    sheet.getRange(1, 1, 1, 6).setValues(headers);
+    // Format header
+    const hRange = sheet.getRange(1, 1, 1, 6);
+    const colorIdx = (ss.getSheets().length - 1) % HEADER_COLORS.length;
+    hRange.setBackground(HEADER_COLORS[colorIdx]);
+    hRange.setFontColor('#FFFFFF');
+    hRange.setFontWeight('bold');
+    hRange.setFontSize(10);
+    // Column widths
+    sheet.setColumnWidth(1, 45);
+    sheet.setColumnWidth(2, 160);
+    sheet.setColumnWidth(3, 220);
+    sheet.setColumnWidth(4, 180);
+    sheet.setColumnWidth(5, 180);
+    sheet.setColumnWidth(6, 70);
+    sheet.setFrozenRows(1);
+    // Reorder: Summary first, then All, then campaigns alphabetically
+    ss.moveActiveSheet(ss.getNumSheets());
+  }
+  return sheet;
+}
+
+// ── Buat / ambil sheet "Semua Data" ──
+function getOrCreateAllSheet(ss) {
+  let sheet = ss.getSheetByName(ALL_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(ALL_SHEET, 1); // posisi 2
+    const headers = [['No','Timestamp','Email','Nama','Campaign','Buka ke-']];
+    sheet.getRange(1, 1, 1, 6).setValues(headers);
+    const hRange = sheet.getRange(1, 1, 1, 6);
+    hRange.setBackground('#1F2937');
+    hRange.setFontColor('#E5E7EB');
+    hRange.setFontWeight('bold');
+    hRange.setFontSize(10);
+    sheet.setColumnWidth(1, 45);
+    sheet.setColumnWidth(2, 160);
+    sheet.setColumnWidth(3, 220);
+    sheet.setColumnWidth(4, 180);
+    sheet.setColumnWidth(5, 180);
+    sheet.setColumnWidth(6, 70);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+// ── Buat / ambil Summary sheet ──
+function getOrCreateSummarySheet(ss) {
+  let sheet = ss.getSheetByName(SUMMARY_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(SUMMARY_SHEET, 0); // posisi pertama
+    // Title
+    sheet.getRange('A1').setValue('📊 EMAIL BLAST TRACKING DASHBOARD');
+    sheet.getRange('A1:F1').merge();
+    sheet.getRange('A1').setFontSize(14).setFontWeight('bold')
+      .setBackground('#0A1628').setFontColor('#58A6FF');
+    sheet.getRange('A2').setValue('Auto-update setiap ada email dibuka · v2 Multi-Campaign');
+    sheet.getRange('A2:F2').merge();
+    sheet.getRange('A2').setFontSize(10).setFontColor('#8B949E')
+      .setBackground('#0D1117');
+    // Table header baris 4
+    const th = [['Campaign / Blasting','Total Buka','Unique Opener','Last Open','Sheet Link','Status']];
+    sheet.getRange(4, 1, 1, 6).setValues(th);
+    const thRange = sheet.getRange(4, 1, 1, 6);
+    thRange.setBackground('#21262D').setFontColor('#58A6FF')
+      .setFontWeight('bold').setFontSize(10);
+    sheet.setFrozenRows(4);
+    sheet.setColumnWidth(1, 240);
+    sheet.setColumnWidth(2, 100);
+    sheet.setColumnWidth(3, 120);
+    sheet.setColumnWidth(4, 160);
+    sheet.setColumnWidth(5, 100);
+    sheet.setColumnWidth(6, 80);
+  }
+  return sheet;
+}
+
+// ── Update Summary sheet ──
+function updateSummarySheet(ss) {
+  const summary = getOrCreateSummarySheet(ss);
+  const allSheets = ss.getSheets();
+  const campaignSheets = allSheets.filter(s =>
+    s.getName().startsWith('📧 ')
+  );
+
+  // Clear existing data rows (from row 5 onwards)
+  const lastRow = summary.getLastRow();
+  if (lastRow >= 5) {
+    summary.getRange(5, 1, lastRow - 4, 6).clearContent().clearFormat();
+  }
+
+  if (campaignSheets.length === 0) {
+    summary.getRange(5, 1).setValue('Belum ada campaign. Kirim email blast pertama Anda!');
+    summary.getRange(5, 1, 1, 6).merge().setFontColor('#8B949E').setHorizontalAlignment('center');
+    return;
+  }
+
+  const rows = [];
+  campaignSheets.forEach((cs, idx) => {
+    const data = cs.getDataRange().getValues();
+    if (data.length <= 1) {
+      rows.push([cs.getName().replace('📧 ',''), 0, 0, '—', 'Lihat Sheet', '⏳ Belum ada data']);
+      return;
+    }
+    const dataRows = data.slice(1);
+    const totalOpens  = dataRows.length;
+    const uniqueEmails = new Set(dataRows.map(r => r[2])).size; // kolom Email = index 2
+    // Last open = max timestamp
+    const timestamps = dataRows.map(r => r[1] instanceof Date ? r[1] : new Date(r[1]));
+    const lastOpen = timestamps.reduce((a,b) => a > b ? a : b, new Date(0));
+    const lastOpenStr = lastOpen.getFullYear() > 2000
+      ? Utilities.formatDate(lastOpen, Session.getScriptTimeZone(), 'dd MMM yyyy HH:mm')
+      : '—';
+    const campName = cs.getName().replace('📧 ','');
+    rows.push([campName, totalOpens, uniqueEmails, lastOpenStr, 'Lihat Sheet', totalOpens > 0 ? '✅ Ada buka' : '📭 Belum']);
+  });
+
+  if (rows.length > 0) {
+    const dataRange = summary.getRange(5, 1, rows.length, 6);
+    dataRange.setValues(rows);
+    // Alternate row colors
+    rows.forEach((_, i) => {
+      const rowRange = summary.getRange(5 + i, 1, 1, 6);
+      rowRange.setBackground(i % 2 === 0 ? '#0D1117' : '#161B22');
+      rowRange.setFontColor('#E6EDF3').setFontSize(11);
+    });
+    // Highlight "Total Buka" col (B) green if > 0
+    rows.forEach((r, i) => {
+      if (r[1] > 0) {
+        summary.getRange(5 + i, 2).setFontColor('#3FB950').setFontWeight('bold');
+        summary.getRange(5 + i, 6).setFontColor('#3FB950');
+      }
+    });
+  }
+
+  // Update timestamp
+  summary.getRange('A3').setValue('Terakhir diupdate: ' + 
+    Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd MMM yyyy HH:mm:ss'));
+  summary.getRange('A3:F3').merge();
+  summary.getRange('A3').setFontSize(9).setFontColor('#6E7681').setBackground('#080C10');
+}
+
+// ── Hitung buka ke-N untuk email ini di campaign ini ──
+function getOpenCount(sheet, email) {
+  const data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return 1;
+  const count = data.slice(1).filter(r => r[2] === email).length;
+  return count + 1; // +1 karena ini akan jadi baris baru
+}
+
+// ══ MAIN HANDLER ══
+function doGet(e) {
+  const params = e ? (e.parameter || {}) : {};
+  const action = params.action || 'track';
+
+  if (action === 'getData')    return handleGetData(params);
+  if (action === 'getCampaigns') return handleGetCampaigns();
+  return handleTrack(params);
+}
+
+// ── Track: catat buka email ──
+function handleTrack(params) {
+  try {
+    const ss       = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const campaign = (params.campaign || 'Tanpa Campaign').trim();
+    const email    = params.email || '';
+    const nama     = params.nama  || '';
+    const now      = new Date();
+
+    // ① Sheet campaign spesifik
+    const campSheet = getOrCreateCampaignSheet(ss, campaign);
+    const openCount = getOpenCount(campSheet, email);
+    const nextNo    = Math.max(campSheet.getLastRow(), 1); // nomor baris data
+    campSheet.appendRow([nextNo, now, email, nama, campaign, openCount]);
+
+    // ② Sheet "Semua Data"
+    const allSheet  = getOrCreateAllSheet(ss);
+    const allNextNo = Math.max(allSheet.getLastRow(), 1);
+    allSheet.appendRow([allNextNo, now, email, nama, campaign, openCount]);
+
+    // ③ Update Summary (debounced: hanya update setiap 5 opens agar tidak lambat)
+    const totalRows = campSheet.getLastRow() - 1;
+    if (totalRows <= 1 || totalRows % 5 === 0) {
+      updateSummarySheet(ss);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ok: true, campaign, openCount}))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({error: err.message}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ── getData: ambil data (semua atau per campaign) ──
+function handleGetData(params) {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const campaign = (params && params.campaign) ? params.campaign.trim() : '';
+
+    let sheet;
+    if (campaign) {
+      sheet = ss.getSheetByName(getCampaignSheetName(campaign));
+      if (!sheet) return ContentService
+        .createTextOutput(JSON.stringify({data:[], campaign}))
+        .setMimeType(ContentService.MimeType.JSON);
+    } else {
+      sheet = ss.getSheetByName(ALL_SHEET);
+      if (!sheet) return ContentService
+        .createTextOutput(JSON.stringify({data:[]}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const rows = sheet.getDataRange().getValues();
+    if (rows.length <= 1) return ContentService
+      .createTextOutput(JSON.stringify({data:[], campaign}))
+      .setMimeType(ContentService.MimeType.JSON);
+
+    const headers = rows[0];
+    const data = rows.slice(1).map(row => {
+      const obj = {};
+      headers.forEach((h, i) => {
+        const key = String(h).toLowerCase().replace(/[^a-z0-9]/g,'_');
+        obj[key] = row[i] instanceof Date ? row[i].toISOString() : row[i];
+      });
+      return obj;
+    });
+
+    return ContentService
+      .createTextOutput(JSON.stringify({data, campaign}))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({error: err.message}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ── getCampaigns: list semua campaign yang ada ──
+function handleGetCampaigns() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const allSheets = ss.getSheets();
+    const campaigns = allSheets
+      .filter(s => s.getName().startsWith('📧 '))
+      .map(s => {
+        const name  = s.getName().replace('📧 ','');
+        const rows  = s.getLastRow() - 1;
+        const opens = Math.max(rows, 0);
+        return { name, opens };
+      });
+
+    return ContentService
+      .createTextOutput(JSON.stringify({campaigns}))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({error: err.message}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ── Manual trigger: force update Summary ──
+function forceSummaryUpdate() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  updateSummarySheet(ss);
+}`;
+
+
+// ── Init tracker on DOMContentLoaded ──
+window.addEventListener('DOMContentLoaded', () => {
+  const cfg = trackerGetConfig();
+  const t1 = document.getElementById('trackerEnabled');
+  const t2 = document.getElementById('trackerEnabled2');
+  if (cfg.enabled) {
+    if (t1) t1.checked = true;
+    if (t2) t2.checked = true;
+  }
+  if (cfg.endpoint && document.getElementById('trackerEndpoint')) {
+    document.getElementById('trackerEndpoint').value = cfg.endpoint;
+  }
+  // Render Apps Script code
+  const codeEl = document.getElementById('appsScriptCode');
+  if (codeEl) codeEl.textContent = APPS_SCRIPT_CODE;
+
+  trackerUpdateBanner();
+  trackerCheckSetup();
+  trackerAutoCollapseSetup();
+
+  // Update nav badge
+  const badge = document.getElementById('nvTracker');
+  if (badge) {
+    if (cfg.enabled) {
+      badge.textContent = 'ON';
+      badge.style.background = 'rgba(63,185,80,.12)';
+      badge.style.color = 'var(--a2)';
+      badge.style.borderColor = 'rgba(63,185,80,.3)';
+    }
+  }
+});
+
+// ── Patch doGenerate: inject pixel ──
+const _origDoGenerateTracker = doGenerate;
+doGenerate = function() {
+  _origDoGenerateTracker.call(this, ...arguments);
+  const cfg = trackerGetConfig();
+  if (cfg.enabled && cfg.endpoint && generatedHTML) {
+    generatedHTML = trackerInjectPixel(generatedHTML);
+    if (generatedHTMLListmonk) {
+      generatedHTMLListmonk = trackerInjectPixel(generatedHTMLListmonk)
+        .replace(/email=<<EMAIL>>/g, 'email={{ .Subscriber.Email }}')
+        .replace(/nama=<<NAMA>>/g,   'nama={{ .Subscriber.Name }}');
+    }
+    // Update displayed outputs
+    const outEl = document.getElementById('outHTML');     if (outEl) outEl.textContent = generatedHTML;
+    const outElL= document.getElementById('outHTMLListmonk'); if (outElL) outElL.textContent = generatedHTMLListmonk;
+    const outM2 = document.getElementById('outHTMLMule2');    if (outM2) outM2.textContent = generatedHTML;
+    const outL2 = document.getElementById('outHTMLListmonk2');if (outL2) outL2.textContent = generatedHTMLListmonk;
+    trackerIncrementSent();
+    toast('📡 Pixel tracker disisipkan ke HTML!', 'info');
+  }
+};
+
+// ── Patch showPanel: auto-load data ──
+const _trackerOrigShowPanel = showPanel;
+showPanel = function(name) {
+  _trackerOrigShowPanel.call(this, name);
+  if (name === 'tracker') {
+    trackerUpdateBanner();
+    trackerCheckSetup();
+    trackerAutoCollapseSetup();
+    setTimeout(trackerLoadCampaigns, 200);
+  }
+};
 </script>
 </body>
 </html>
