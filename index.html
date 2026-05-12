@@ -274,7 +274,7 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <div class="logo-badge">v7.6</div>
+    <div class="logo-badge">v7.9</div>
     Email Template Generator
     <span class="logo-sub">MULE + LISTMONK</span>
   </div>
@@ -1095,88 +1095,80 @@ input:checked + .toggle-slider:before{transform:translateX(18px);background:var(
   </div>
 </div>
 
+
 <!-- ═══ VISUAL TEXT EDITOR ═══ -->
 <div class="panel" id="panel-visualeditor">
+
   <div class="card">
     <div class="card-head">✏️ Visual Text Editor <span class="tag">Klik Teks → Edit Langsung</span></div>
     <div class="card-body" style="padding:14px 18px">
       <div class="alert alert-purple" style="margin-bottom:12px">
-        <div>🖱 <strong>Cara pakai:</strong> Klik teks di preview email di bawah → edit langsung → HTML otomatis update. Setelah selesai, klik <strong>Terapkan ke Generate</strong> untuk menyimpan ke output.</div>
+        <div>🖱 <strong>Cara pakai:</strong> (1) Pastikan sudah Generate template terlebih dahulu. (2) Klik <strong>Load Preview</strong>. (3) Klik teks di panel kiri → edit di panel kanan → <strong>Terapkan</strong>. (4) Klik <strong>Simpan ke Output</strong> jika sudah selesai.</div>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
-        <button class="btn btn-purple" onclick="initVisualEditor()">🔄 Load / Refresh Preview</button>
-        <button class="btn btn-success" onclick="applyVisualEditorToOutput()" id="veApplyBtn" style="display:none">✅ Terapkan ke Generate</button>
-        <button class="btn btn-ghost" onclick="resetVisualEditor()" id="veResetBtn" style="display:none">↩ Reset Perubahan</button>
-        <span id="veChangeCount" style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-left:4px"></span>
-      </div>
-      <div id="veInstructions" style="font-size:12px;color:var(--text3);font-family:var(--mono);padding:10px;background:var(--s2);border:1px solid var(--border);margin-bottom:12px;display:none">
-        <strong style="color:var(--a5)">Elemen dapat diedit:</strong> <span id="veElemCount">0</span> teks terdeteksi.
-        Placeholder seperti <code style="background:rgba(0,0,0,.3);padding:1px 4px">&lt;&lt;NAMA&gt;&gt;</code> <em>tidak</em> dapat diedit (itu variable Mule/Listmonk).
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-purple" onclick="veInit()">🔄 Load / Refresh Preview</button>
+        <button class="btn btn-success" onclick="veSaveToOutput()" id="veBtnSave" style="display:none">💾 Simpan ke Output</button>
+        <button class="btn btn-ghost" onclick="veResetAll()" id="veBtnReset" style="display:none">↩ Reset Semua</button>
+        <span id="veStatusText" style="font-family:var(--mono);font-size:11px;color:var(--text3);margin-left:4px"></span>
       </div>
     </div>
   </div>
 
-  <!-- Editor area: side-by-side preview + HTML source -->
-  <div style="display:grid;grid-template-columns:1fr 380px;gap:0;border:1px solid var(--border);min-height:600px;background:var(--s1)" id="veEditorArea" style="display:none">
-    <!-- Left: visual preview -->
-    <div style="border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden">
-      <div style="padding:8px 14px;background:var(--s2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px">
-        📧 EMAIL PREVIEW — klik teks untuk edit
-        <span style="margin-left:auto;font-weight:400;color:var(--text3);font-family:var(--mono)" id="veClickHint">⬅ Klik teks di preview</span>
-      </div>
-      <div style="flex:1;overflow:auto;background:#f0f4f8;padding:16px;display:flex;justify-content:center;align-items:flex-start">
-        <div id="vePreviewContainer" style="width:600px;max-width:100%;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.25)">
-          <div id="vePreviewContent" style="pointer-events:all"></div>
-        </div>
-      </div>
+  <div id="veArea" style="display:none;border:1px solid var(--border);background:var(--s1)">
+    <div style="display:flex;align-items:center;gap:16px;padding:8px 16px;background:var(--s2);border-bottom:1px solid var(--border);font-size:11px">
+      <span style="color:var(--text3);font-family:var(--mono)">ELEMEN: <span id="veCountEl" style="color:var(--a5);font-weight:700">0</span></span>
+      <span style="color:var(--text3);font-family:var(--mono)">DIUBAH: <span id="veCountChanged" style="color:var(--a2);font-weight:700">0</span></span>
+      <span style="color:var(--text3);font-family:var(--mono)">DIHAPUS: <span id="veCountDeleted" style="color:var(--a3);font-weight:700">0</span></span>
+      <span style="margin-left:auto;font-size:10px;color:var(--text3)">⬅ Klik teks di preview untuk mengedit</span>
     </div>
-
-    <!-- Right: inline editor panel -->
-    <div style="display:flex;flex-direction:column;overflow:hidden">
-      <div style="padding:8px 14px;background:var(--s2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">
-        ✏️ EDITOR TEKS
-      </div>
-      <div id="veEditorPanel" style="flex:1;overflow-y:auto;padding:16px">
-        <div id="veNoSelection" style="text-align:center;padding:40px 16px;color:var(--text3);font-size:12px">
-          <div style="font-size:32px;margin-bottom:12px">🖱</div>
-          <div style="font-weight:600;margin-bottom:6px">Belum ada elemen dipilih</div>
-          <div>Klik teks di preview email untuk mulai mengedit</div>
+    <div style="display:grid;grid-template-columns:1fr 360px;min-height:560px">
+      <div style="border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden">
+        <div style="padding:7px 14px;background:var(--s2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">📧 EMAIL PREVIEW — klik teks berwarna ungu untuk edit</div>
+        <div style="flex:1;overflow:auto;background:#e8edf2;padding:16px;display:flex;justify-content:center;align-items:flex-start">
+          <div id="vePreviewWrap" style="width:600px;max-width:100%;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.2)"></div>
         </div>
-        <div id="veEditForm" style="display:none">
-          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Elemen yang dipilih</div>
-          <div id="veSelectedTag" style="font-family:var(--mono);font-size:11px;color:var(--a5);background:var(--s2);border:1px solid var(--border2);padding:6px 10px;margin-bottom:12px"></div>
-          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Edit Teks</div>
-          <textarea id="veTextInput" rows="4" style="width:100%;background:var(--s2);border:1px solid var(--a5);color:var(--text);font-family:var(--mono);font-size:13px;padding:10px;outline:none;resize:vertical;line-height:1.6" oninput="veApplyEdit()"></textarea>
-          <div style="margin-top:10px;display:flex;gap:6px">
-            <button class="btn btn-purple" style="flex:1" onclick="veConfirmEdit()">✓ Terapkan</button>
-            <button class="btn btn-ghost" onclick="veDeselectElement()">✕ Batal</button>
+      </div>
+      <div style="display:flex;flex-direction:column;overflow:hidden">
+        <div style="padding:7px 14px;background:var(--s2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)">✏️ PANEL EDIT</div>
+        <div id="veNoSel" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 16px;color:var(--text3);text-align:center">
+          <div style="font-size:36px;margin-bottom:12px">🖱</div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:6px">Belum ada elemen dipilih</div>
+          <div style="font-size:11px;font-family:var(--mono)">Klik teks di preview email di kiri</div>
+        </div>
+        <div id="veEditForm" style="display:none;flex-direction:column;flex:1;padding:16px;gap:12px;overflow-y:auto">
+          <div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Elemen Terpilih</div>
+            <div id="veElInfo" style="font-family:var(--mono);font-size:11px;color:var(--a5);background:var(--s2);border:1px solid var(--border2);padding:7px 10px"></div>
           </div>
-          <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
-            <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Hapus Elemen</div>
-            <button class="btn" style="width:100%;background:rgba(247,129,102,.1);color:var(--a3);border:1px solid rgba(247,129,102,.3)" onclick="veDeleteElement()">🗑 Hapus dari Email</button>
+          <div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Edit Teks</div>
+            <textarea id="veInput" rows="5" oninput="veLiveUpdate()" style="width:100%;background:var(--s2);border:1px solid var(--a5);color:var(--text);font-family:var(--mono);font-size:13px;padding:10px;outline:none;resize:vertical;line-height:1.6;box-sizing:border-box"></textarea>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-purple" style="flex:1" onclick="veConfirm()">✓ Terapkan</button>
+            <button class="btn btn-ghost" onclick="veDeselect()">✕ Batal</button>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:12px">
+            <button class="btn" style="width:100%;background:rgba(247,129,102,.08);color:var(--a3);border:1px solid rgba(247,129,102,.25)" onclick="veDeleteEl()">🗑 Hapus Elemen dari Email</button>
           </div>
         </div>
-      </div>
-
-      <!-- HTML source box -->
-      <div style="border-top:1px solid var(--border)">
-        <div style="padding:6px 14px;background:var(--s2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px">
-          💻 HTML LIVE
-          <button onclick="copyVeHtml()" style="margin-left:auto;background:none;border:1px solid var(--border2);color:var(--a1);cursor:pointer;font-size:10px;font-weight:700;padding:2px 8px;font-family:var(--mono)">Copy</button>
+        <div id="veLogWrap" style="border-top:1px solid var(--border);flex-shrink:0">
+          <div style="padding:6px 14px;background:var(--s2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px">
+            📝 LOG <span id="veLogCount" style="color:var(--a2);font-family:var(--mono)">0</span> perubahan
+            <button onclick="veCopyHtml()" style="margin-left:auto;background:none;border:1px solid var(--border2);color:var(--a1);cursor:pointer;font-size:10px;font-weight:700;padding:2px 8px;font-family:var(--mono)">Copy HTML</button>
+          </div>
+          <div id="veLogList" style="max-height:140px;overflow-y:auto;padding:6px 14px;background:var(--bg);font-family:var(--mono);font-size:10px;color:var(--text3)">
+            <div style="padding:8px 0;text-align:center">Belum ada perubahan.</div>
+          </div>
         </div>
-        <div id="veHtmlSource" style="max-height:160px;overflow-y:auto;padding:10px;font-family:var(--mono);font-size:10px;color:var(--text3);line-height:1.5;white-space:pre-wrap;word-break:break-all;background:var(--bg)"></div>
       </div>
     </div>
   </div>
 
-  <!-- Change log -->
-  <div id="veChangeLog" style="display:none;margin-top:12px">
-    <div class="card-head" style="font-size:11px;padding:8px 14px">📝 LOG PERUBAHAN <span class="tag" id="veLogCount">0 perubahan</span></div>
-    <div id="veChangeList" style="max-height:160px;overflow-y:auto;padding:8px 14px;background:var(--s1);border:1px solid var(--border);border-top:none"></div>
-  </div>
 </div>
+<!-- ═══ END VISUAL TEXT EDITOR ═══ -->
 
-
+</div><!-- /main -->
 
 <!-- LIVE PREVIEW PANE (hidden by default) -->
 <div class="split-preview-pane" id="livePreviewPane" style="display:none">
@@ -2300,295 +2292,12 @@ function renderSpamResult(score, rules) {
 }
 
 // ════════════════════════════════════════
-// VISUAL TEXT EDITOR
-// ════════════════════════════════════════
-let veEditableHTML = ''; // working copy of email HTML
-let veOriginalHTML = ''; // snapshot before edits
-let veSelectedEl = null; // currently selected DOM element in preview
-let veChangeLog = [];    // [{index, oldText, newText, tag}]
-
-// CSS injected into preview to highlight editable elements
-const VE_STYLE = `
-  <style>
-  [data-ve-id]{cursor:pointer;transition:outline .12s,background .12s}
-  [data-ve-id]:hover{outline:2px dashed #bc8cff !important;outline-offset:2px !important;background:rgba(188,140,255,.08) !important}
-  [data-ve-id].ve-selected{outline:2px solid #bc8cff !important;outline-offset:2px !important;background:rgba(188,140,255,.12) !important}
-  [data-ve-id].ve-changed{outline:2px solid #3fb950 !important;outline-offset:2px !important}
-  </style>
-`;
-
-function initVisualEditor() {
-  // Get current template as rendered preview HTML (with sample data)
-  const d = getVars(true);
-  const raw = getTemplate(activeTpl, d);
-  veOriginalHTML = raw;
-  veEditableHTML = raw;
-  veChangeLog = [];
-  veSelectedEl = null;
-
-  // Parse into DOM, inject ve-ids on all text-bearing elements
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(raw, 'text/html');
-
-  // Target text nodes: p, td, th, span, a, h1-h6, div (with direct text)
-  const textSelectors = 'p, h1, h2, h3, h4, h5, h6, span, a';
-  let idx = 0;
-  doc.querySelectorAll(textSelectors).forEach(el => {
-    // Skip if it contains only images or other block elements
-    const directText = Array.from(el.childNodes)
-      .filter(n => n.nodeType === Node.TEXT_NODE)
-      .map(n => n.textContent.trim())
-      .join('');
-    if (!directText) return;
-    // Skip placeholders only — still allow editing around them
-    // Mark element
-    el.setAttribute('data-ve-id', idx++);
-    el.setAttribute('data-ve-original', el.innerHTML);
-  });
-
-  // Also tag tds that hold only plain text (button-like cells)
-  doc.querySelectorAll('td').forEach(el => {
-    if (el.querySelector('a,p,span,h1,h2,h3,h4,h5,h6,table')) return; // has child elements
-    const text = el.textContent.trim();
-    if (!text) return;
-    el.setAttribute('data-ve-id', idx++);
-    el.setAttribute('data-ve-original', el.innerHTML);
-  });
-
-  document.getElementById('veElemCount').textContent = idx;
-  document.getElementById('veInstructions').style.display = 'block';
-  document.getElementById('veEditorArea').style.display = 'grid';
-  document.getElementById('veChangeLog').style.display = 'none';
-  document.getElementById('veApplyBtn').style.display = 'none';
-  document.getElementById('veResetBtn').style.display = 'none';
-  document.getElementById('veChangeCount').textContent = '';
-
-  // Inject style into head
-  const styleEl = doc.createElement('style');
-  styleEl.textContent = `[data-ve-id]{cursor:pointer;transition:outline .12s,background .12s}[data-ve-id]:hover{outline:2px dashed #bc8cff !important;outline-offset:2px !important;background:rgba(188,140,255,.08) !important}[data-ve-id].ve-selected{outline:2px solid #bc8cff !important;outline-offset:2px !important;background:rgba(188,140,255,.12) !important}[data-ve-id].ve-changed{outline:2px solid #3fb950 !important;outline-offset:2px !important}`;
-  doc.head.appendChild(styleEl);
-
-  // Render into container
-  const container = document.getElementById('vePreviewContent');
-  container.innerHTML = doc.body.innerHTML;
-
-  // Attach click handlers
-  container.querySelectorAll('[data-ve-id]').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      veSelectElement(el);
-    });
-  });
-
-  // Update HTML source pane
-  veUpdateHtmlPane();
-  document.getElementById('veClickHint').textContent = `✏ ${idx} elemen bisa diedit`;
-  toast('✔ Visual Editor siap — klik teks di preview!', 'ok');
-}
-
-function veSelectElement(el) {
-  // Deselect previous
-  if (veSelectedEl) veSelectedEl.classList.remove('ve-selected');
-  veSelectedEl = el;
-  el.classList.add('ve-selected');
-
-  // Populate edit form
-  const tag = el.tagName.toLowerCase();
-  const veId = el.getAttribute('data-ve-id');
-  const currentText = el.innerText || el.textContent;
-
-  document.getElementById('veNoSelection').style.display = 'none';
-  document.getElementById('veEditForm').style.display = 'block';
-  document.getElementById('veSelectedTag').textContent = `<${tag}> · elemen #${veId}`;
-  document.getElementById('veTextInput').value = currentText;
-  document.getElementById('veTextInput').focus();
-}
-
-function veDeselectElement() {
-  if (veSelectedEl) veSelectedEl.classList.remove('ve-selected');
-  veSelectedEl = null;
-  document.getElementById('veNoSelection').style.display = 'block';
-  document.getElementById('veEditForm').style.display = 'none';
-}
-
-function veApplyEdit() {
-  if (!veSelectedEl) return;
-  const newText = document.getElementById('veTextInput').value;
-  // Preserve HTML structure — only replace text nodes
-  veSelectedEl.childNodes.forEach(n => {
-    if (n.nodeType === Node.TEXT_NODE && n.textContent.trim()) {
-      n.textContent = newText;
-    }
-  });
-  // If element has no direct text node but has inner text (simple case)
-  const hasDirectText = Array.from(veSelectedEl.childNodes).some(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
-  if (!hasDirectText) {
-    // Replace full innerText
-    const original = veSelectedEl.getAttribute('data-ve-original');
-    // Replace text content while keeping child tags intact if possible
-    veSelectedEl.innerText = newText;
-  }
-  veUpdateHtmlPane();
-}
-
-function veConfirmEdit() {
-  if (!veSelectedEl) return;
-  const newText = document.getElementById('veTextInput').value;
-  const veId = veSelectedEl.getAttribute('data-ve-id');
-  const originalText = veSelectedEl.getAttribute('data-ve-original');
-  const originalPlain = document.createElement('div');
-  originalPlain.innerHTML = originalText;
-
-  // Apply change
-  veApplyEdit();
-  veSelectedEl.classList.add('ve-changed');
-  veSelectedEl.classList.remove('ve-selected');
-
-  // Log change
-  const existing = veChangeLog.findIndex(c => c.id === veId);
-  const entry = {
-    id: veId,
-    tag: veSelectedEl.tagName.toLowerCase(),
-    oldText: originalPlain.textContent.trim(),
-    newText
-  };
-  if (existing >= 0) veChangeLog[existing] = entry;
-  else veChangeLog.push(entry);
-
-  veUpdateChangeLog();
-  veUpdateHtmlPane();
-  veRebuildHTML();
-  veDeselectElement();
-  toast('✔ Teks diperbarui!', 'ok');
-}
-
-function veDeleteElement() {
-  if (!veSelectedEl) return;
-  const veId = veSelectedEl.getAttribute('data-ve-id');
-  const tag = veSelectedEl.tagName.toLowerCase();
-  const text = veSelectedEl.textContent.trim().slice(0, 40);
-
-  veSelectedEl.remove();
-
-  veChangeLog.push({ id: veId, tag, oldText: text, newText: '[DIHAPUS]', deleted: true });
-  veUpdateChangeLog();
-  veUpdateHtmlPane();
-  veRebuildHTML();
-  veSelectedEl = null;
-  document.getElementById('veNoSelection').style.display = 'block';
-  document.getElementById('veEditForm').style.display = 'none';
-  toast('🗑 Elemen dihapus dari email', 'warn');
-}
-
-function veRebuildHTML() {
-  // Rebuild full email HTML from current preview state
-  // Strategy: replace only the <body> content from the preview container
-  const previewEl = document.getElementById('vePreviewContent');
-  const bodyContent = previewEl.innerHTML;
-
-  // Strip ve-* classes and data attributes for clean output
-  const clean = bodyContent
-    .replace(/\s*data-ve-id="[^"]*"/g, '')
-    .replace(/\s*data-ve-original="[^"]*"/g, '')
-    .replace(/\bve-selected\b/g, '')
-    .replace(/\bve-changed\b/g, '')
-    .replace(/\s*class="(\s*)"/g, '')
-    .replace(/\s+class=""/g, '');
-
-  // Reconstruct full HTML using original head + clean body
-  const parser = new DOMParser();
-  const origDoc = parser.parseFromString(veOriginalHTML, 'text/html');
-  origDoc.body.innerHTML = clean;
-  veEditableHTML = '<!DOCTYPE html>' + origDoc.documentElement.outerHTML;
-}
-
-function veUpdateHtmlPane() {
-  veRebuildHTML();
-  const pane = document.getElementById('veHtmlSource');
-  // Show trimmed version for readability
-  const preview = veEditableHTML.length > 2000
-    ? veEditableHTML.slice(0, 2000) + '\n... [+'+(veEditableHTML.length-2000)+' chars]'
-    : veEditableHTML;
-  pane.textContent = preview;
-}
-
-function veUpdateChangeLog() {
-  const count = veChangeLog.length;
-  document.getElementById('veChangeLog').style.display = count > 0 ? 'block' : 'none';
-  document.getElementById('veLogCount').textContent = count + ' perubahan';
-  document.getElementById('veApplyBtn').style.display = count > 0 ? 'inline-flex' : 'none';
-  document.getElementById('veResetBtn').style.display = count > 0 ? 'inline-flex' : 'none';
-  document.getElementById('veChangeCount').textContent = count > 0 ? `(${count} perubahan belum disimpan)` : '';
-
-  document.getElementById('veChangeList').innerHTML = veChangeLog.map((c, i) =>
-    `<div style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px">
-      <span style="color:${c.deleted ? 'var(--a3)' : 'var(--a2)' };font-size:14px">${c.deleted ? '🗑' : '✏'}</span>
-      <div style="flex:1;min-width:0">
-        <div style="font-family:var(--mono);color:var(--text3)">&lt;${c.tag}&gt;</div>
-        <div style="color:var(--a3);text-decoration:line-through;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.oldText || '(empty)'}</div>
-        <div style="color:var(--a2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.newText}</div>
-      </div>
-      <button onclick="veUndoChange(${i})" style="background:none;border:1px solid var(--border2);color:var(--text3);cursor:pointer;font-size:10px;padding:2px 6px;white-space:nowrap" title="Undo">↩</button>
-    </div>`
-  ).join('');
-}
-
-function veUndoChange(idx) {
-  const change = veChangeLog[idx];
-  if (!change) return;
-  // Re-init (simplest approach for undo)
-  veChangeLog.splice(idx, 1);
-  toast('↩ Perubahan dibatalkan. Re-load preview untuk melihat efek.', 'info');
-  veUpdateChangeLog();
-  initVisualEditor(); // reset preview
-}
-
-function resetVisualEditor() {
-  if (!confirm('Reset semua perubahan di Visual Editor?')) return;
-  veChangeLog = [];
-  veEditableHTML = veOriginalHTML;
-  initVisualEditor();
-  toast('↩ Semua perubahan direset', 'info');
-}
-
-function applyVisualEditorToOutput() {
-  if (!veEditableHTML) { toast('Tidak ada HTML untuk diterapkan', 'warn'); return; }
-  // Minify and apply to generatedHTML
-  const minified = veEditableHTML
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/\r?\n/g, '')
-    .replace(/\t/g, ' ')
-    .replace(/>\s+</g, '><')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-
-  generatedHTML = minified;
-  generatedHTMLListmonk = minify(convertToListmonk(veEditableHTML));
-
-  // Update output panels if visible
-  const outEl = document.getElementById('outHTML');
-  if (outEl) outEl.textContent = generatedHTML;
-  const outElL = document.getElementById('outHTMLListmonk');
-  if (outElL) outElL.textContent = generatedHTMLListmonk;
-
-  document.getElementById('veChangeCount').textContent = '✅ Tersimpan ke output!';
-  document.getElementById('veChangeCount').style.color = 'var(--a2)';
-  toast('✅ HTML berhasil diterapkan ke Generate output!', 'ok');
-}
-
-function copyVeHtml() {
-  if (!veEditableHTML) { toast('Tidak ada HTML', 'warn'); return; }
-  navigator.clipboard?.writeText(veEditableHTML);
-  toast('✔ HTML dicopy ke clipboard', 'ok');
-}
-
-// ════════════════════════════════════════
-// PATCH doGenerate + showPanel
+// PATCH doGenerate + showPanel (clean, no double-patch)
 // ════════════════════════════════════════
 const _origDoGenerate = doGenerate;
 doGenerate = function() {
   _origDoGenerate();
-  // Apply customizer if enabled
+  // Apply customizer override if enabled
   if (document.getElementById('custColorOn') && document.getElementById('custColorOn').checked) {
     generatedHTML = applyCustomizerToHtml(generatedHTML);
     generatedHTMLListmonk = applyCustomizerToHtml(generatedHTMLListmonk);
@@ -2597,27 +2306,373 @@ doGenerate = function() {
     const outElL = document.getElementById('outHTMLListmonk');
     if (outElL && generatedHTMLListmonk) outElL.textContent = generatedHTMLListmonk;
   }
-  // Push history
+  // Push to history
   setTimeout(() => {
     if (generatedHTML || generatedHTMLListmonk) pushHistory(generatedHTML, generatedHTMLListmonk, captureCurrentConfig());
   }, 150);
   scheduleRealtimePreview();
 };
 
-const _origShowPanel2 = showPanel;
+const _origShowPanel = showPanel;
 showPanel = function(name) {
-  _origShowPanel2(name);
-  if (name==='presets') renderPresets();
-  if (name==='history') renderHistory();
-  if (name==='customizer') setTimeout(refreshCustomizerPreview, 60);
-  if (name==='customph') renderCustomPh();
-  if (name==='visualeditor') {
-    // Auto-init if not yet loaded
-    if (!veEditableHTML) {
-      setTimeout(initVisualEditor, 80);
+  _origShowPanel(name);
+  if (name === 'presets') renderPresets();
+  if (name === 'history') renderHistory();
+  if (name === 'customizer') setTimeout(refreshCustomizerPreview, 60);
+  if (name === 'customph') renderCustomPh();
+  if (name === 'visualeditor') {
+    // Auto-load if HTML is available and editor not yet initialized
+    if (generatedHTML && !veState.initialized) {
+      setTimeout(veInit, 80);
     }
   }
 };
+
+// ════════════════════════════════════════
+// FEATURE: VISUAL TEXT EDITOR (v2 — clean rewrite)
+// ════════════════════════════════════════
+/*
+  Architecture:
+  - veState holds all mutable state, isolated from global scope
+  - Works on a live DOM clone injected into #vePreviewWrap
+  - Each editable element tagged with data-veid (integer index)
+  - Changes tracked in veState.changes map (veid → {tag, orig, current, deleted})
+  - "Simpan ke Output" serialises the DOM clone back to HTML string
+  - No iframe writes / no srcdoc manipulation — avoids cross-origin issues
+  - No monkey-patching of other features
+*/
+
+const veState = {
+  initialized: false,  // has veInit() been called successfully
+  domClone: null,      // DocumentFragment / div holding working DOM
+  selectedVeid: null,  // currently selected element's veid
+  changes: {},         // {veid: {tag, orig, current, deleted}}
+  totalEls: 0,
+};
+
+// ── Helpers ──────────────────────────────
+function veGetEl(veid) {
+  return document.querySelector(`#vePreviewWrap [data-veid="${veid}"]`);
+}
+
+function veCounters() {
+  const all = Object.values(veState.changes);
+  return {
+    changed: all.filter(c => !c.deleted && c.current !== c.orig).length,
+    deleted: all.filter(c => c.deleted).length,
+  };
+}
+
+function veUpdateInfoBar() {
+  const c = veCounters();
+  document.getElementById('veCountEl').textContent = veState.totalEls;
+  document.getElementById('veCountChanged').textContent = c.changed;
+  document.getElementById('veCountDeleted').textContent = c.deleted;
+  document.getElementById('veLogCount').textContent = c.changed + c.deleted;
+
+  const total = c.changed + c.deleted;
+  const saveBtn = document.getElementById('veBtnSave');
+  const rstBtn  = document.getElementById('veBtnReset');
+  if (saveBtn) saveBtn.style.display = total > 0 ? 'inline-flex' : 'none';
+  if (rstBtn)  rstBtn.style.display  = total > 0 ? 'inline-flex' : 'none';
+
+  const status = document.getElementById('veStatusText');
+  if (status) {
+    status.textContent = total > 0
+      ? `${c.changed} perubahan · ${c.deleted} dihapus — belum disimpan`
+      : veState.initialized ? 'Preview aktif' : '';
+    status.style.color = total > 0 ? 'var(--a4)' : 'var(--text3)';
+  }
+}
+
+function veUpdateLog() {
+  const list = document.getElementById('veLogList');
+  if (!list) return;
+  const entries = Object.values(veState.changes).filter(c => c.deleted || c.current !== c.orig);
+  if (!entries.length) {
+    list.innerHTML = '<div style="padding:8px 0;text-align:center">Belum ada perubahan.</div>';
+    return;
+  }
+  list.innerHTML = entries.map(c => {
+    const icon = c.deleted ? '🗑' : '✏';
+    const color = c.deleted ? 'var(--a3)' : 'var(--a2)';
+    const newText = c.deleted ? '[DIHAPUS]' : (c.current || '').slice(0, 60);
+    const oldText = (c.orig || '').slice(0, 40);
+    return `<div style="display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px solid var(--border)">
+      <span style="color:${color}">${icon}</span>
+      <div style="flex:1;min-width:0;line-height:1.5">
+        <span style="color:var(--a5)">&lt;${c.tag}&gt;</span>
+        <span style="color:var(--text3);text-decoration:line-through;margin:0 4px">${oldText}</span>
+        <span style="color:${color}">${newText}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Init ─────────────────────────────────
+function veInit() {
+  const srcHTML = generatedHTML || generatedHTMLListmonk;
+  if (!srcHTML) {
+    toast('⚠ Generate template dulu sebelum membuka Visual Editor!', 'warn');
+    return;
+  }
+
+  // Reset state
+  veState.initialized = false;
+  veState.selectedVeid = null;
+  veState.changes = {};
+  veState.totalEls = 0;
+
+  // Parse source HTML into a working DOM
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(srcHTML, 'text/html');
+
+  // Tag all editable text elements
+  const selectors = 'p, h1, h2, h3, h4, h5, h6, span, a, td';
+  let veid = 0;
+  doc.querySelectorAll(selectors).forEach(el => {
+    // Skip elements that only contain child block elements (no direct text)
+    const directText = Array.from(el.childNodes)
+      .filter(n => n.nodeType === Node.TEXT_NODE)
+      .map(n => n.textContent.trim())
+      .join('');
+    // For td: skip if it contains block children (table, p, etc.)
+    if (el.tagName === 'TD' && el.querySelector('p,h1,h2,h3,h4,h5,h6,span,a,table')) return;
+    if (!directText) return;
+    // Skip if text is only a placeholder token
+    if (/^<<[A-Z_]+>>$/.test(directText)) return;
+
+    el.setAttribute('data-veid', veid);
+    veid++;
+  });
+
+  veState.totalEls = veid;
+
+  // Inject CSS for interactivity — safely appended to body, not head
+  const style = doc.createElement('style');
+  style.textContent = `
+    [data-veid]{cursor:pointer;transition:outline 0.1s}
+    [data-veid]:hover{outline:2px dashed #bc8cff !important;outline-offset:1px}
+    [data-veid].ve-sel{outline:2px solid #bc8cff !important;outline-offset:1px;background:rgba(188,140,255,.12) !important}
+    [data-veid].ve-done{outline:2px solid #3fb950 !important;outline-offset:1px}
+    [data-veid].ve-del{display:none}
+  `;
+  doc.body.appendChild(style);
+
+  // Render into #vePreviewWrap
+  const wrap = document.getElementById('vePreviewWrap');
+  wrap.innerHTML = doc.body.innerHTML;
+
+  // Attach click listeners
+  wrap.querySelectorAll('[data-veid]').forEach(el => {
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      veSelect(parseInt(this.getAttribute('data-veid')));
+    });
+  });
+
+  // Show editor area
+  document.getElementById('veArea').style.display = 'block';
+  veState.initialized = true;
+
+  veUpdateInfoBar();
+  veUpdateLog();
+  veDeselect();
+  toast(`✔ Visual Editor siap — ${veid} elemen dapat diedit`, 'ok');
+}
+
+// ── Select ────────────────────────────────
+function veSelect(veid) {
+  // Remove selection from previous
+  if (veState.selectedVeid !== null) {
+    const prev = veGetEl(veState.selectedVeid);
+    if (prev) prev.classList.remove('ve-sel');
+  }
+
+  veState.selectedVeid = veid;
+  const el = veGetEl(veid);
+  if (!el) { veDeselect(); return; }
+
+  el.classList.add('ve-sel');
+
+  // Get current text (innerText strips HTML tags nicely)
+  const currentText = el.innerText || el.textContent || '';
+
+  // Show edit form
+  document.getElementById('veNoSel').style.display = 'none';
+  document.getElementById('veEditForm').style.display = 'flex';
+  document.getElementById('veElInfo').textContent = `<${el.tagName.toLowerCase()}> · veid=${veid}`;
+  document.getElementById('veInput').value = currentText;
+  document.getElementById('veInput').focus();
+}
+
+// ── Deselect ──────────────────────────────
+function veDeselect() {
+  if (veState.selectedVeid !== null) {
+    const el = veGetEl(veState.selectedVeid);
+    if (el) el.classList.remove('ve-sel');
+  }
+  veState.selectedVeid = null;
+  document.getElementById('veNoSel').style.display = 'flex';
+  document.getElementById('veEditForm').style.display = 'none';
+}
+
+// ── Live update (while typing) ────────────
+function veLiveUpdate() {
+  if (veState.selectedVeid === null) return;
+  const el = veGetEl(veState.selectedVeid);
+  if (!el) return;
+  const newText = document.getElementById('veInput').value;
+
+  // Update only text nodes, preserve child HTML elements
+  let updatedDirectText = false;
+  el.childNodes.forEach(n => {
+    if (n.nodeType === Node.TEXT_NODE && n.textContent.trim()) {
+      n.textContent = newText;
+      updatedDirectText = true;
+    }
+  });
+  // Fallback: no direct text node found
+  if (!updatedDirectText) {
+    el.textContent = newText;
+  }
+}
+
+// ── Confirm edit ──────────────────────────
+function veConfirm() {
+  if (veState.selectedVeid === null) return;
+  const veid = veState.selectedVeid;
+  const el = veGetEl(veid);
+  if (!el) return;
+
+  const newText = document.getElementById('veInput').value.trim();
+  const orig = veState.changes[veid]
+    ? veState.changes[veid].orig
+    : (el.innerText || el.textContent || '').trim();
+
+  // Apply
+  veLiveUpdate();
+  el.classList.remove('ve-sel');
+  el.classList.add('ve-done');
+
+  // Record change
+  veState.changes[veid] = {
+    tag: el.tagName.toLowerCase(),
+    orig,
+    current: newText,
+    deleted: false,
+  };
+
+  veUpdateInfoBar();
+  veUpdateLog();
+  veDeselect();
+  toast('✔ Teks diperbarui', 'ok');
+}
+
+// ── Delete element ────────────────────────
+function veDeleteEl() {
+  if (veState.selectedVeid === null) return;
+  const veid = veState.selectedVeid;
+  const el = veGetEl(veid);
+  if (!el) return;
+
+  const origText = (el.innerText || el.textContent || '').trim();
+  const orig = veState.changes[veid]
+    ? veState.changes[veid].orig
+    : origText;
+
+  // Hide visually and mark as deleted
+  el.classList.add('ve-del');
+  el.classList.remove('ve-sel', 've-done');
+
+  veState.changes[veid] = {
+    tag: el.tagName.toLowerCase(),
+    orig,
+    current: '[DIHAPUS]',
+    deleted: true,
+  };
+
+  veUpdateInfoBar();
+  veUpdateLog();
+  veDeselect();
+  toast('🗑 Elemen dihapus dari email', 'warn');
+}
+
+// ── Serialize DOM back to HTML string ────
+function veSerialize() {
+  const wrap = document.getElementById('vePreviewWrap');
+  if (!wrap) return '';
+
+  // Clone so we can clean up ve-* attributes without affecting live DOM
+  const clone = wrap.cloneNode(true);
+
+  // Remove all ve classes and attributes
+  clone.querySelectorAll('[data-veid]').forEach(el => {
+    el.removeAttribute('data-veid');
+    el.classList.remove('ve-sel', 've-done', 've-del');
+    if (el.getAttribute('class') === '') el.removeAttribute('class');
+  });
+
+  // Remove injected style tag
+  clone.querySelectorAll('style').forEach(s => {
+    if (s.textContent.includes('data-veid')) s.remove();
+  });
+
+  // Rebuild full HTML using original doc structure
+  const parser = new DOMParser();
+  const srcHTML = generatedHTML || '';
+  const origDoc = parser.parseFromString(srcHTML, 'text/html');
+  origDoc.body.innerHTML = clone.innerHTML;
+  return '<!DOCTYPE html>' + origDoc.documentElement.outerHTML;
+}
+
+// ── Save to output ────────────────────────
+function veSaveToOutput() {
+  if (!veState.initialized) { toast('Load preview dulu!', 'warn'); return; }
+  const html = veSerialize();
+  if (!html) { toast('Tidak ada HTML untuk disimpan', 'warn'); return; }
+
+  // Minify
+  const minified = html
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/\r?\n/g, '')
+    .replace(/\t/g, ' ')
+    .replace(/>\s+</g, '><')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  generatedHTML = minified;
+  generatedHTMLListmonk = minify(convertToListmonk(html));
+
+  // Update output boxes if visible
+  const outEl = document.getElementById('outHTML');
+  if (outEl) outEl.textContent = generatedHTML;
+  const outElL = document.getElementById('outHTMLListmonk');
+  if (outElL) outElL.textContent = generatedHTMLListmonk;
+
+  const status = document.getElementById('veStatusText');
+  if (status) { status.textContent = '✅ Tersimpan ke output!'; status.style.color = 'var(--a2)'; }
+  toast('✅ HTML berhasil disimpan ke Generate Output!', 'ok');
+}
+
+// ── Reset all ─────────────────────────────
+function veResetAll() {
+  if (!confirm('Reset semua perubahan Visual Editor?')) return;
+  veState.changes = {};
+  veState.initialized = false;
+  // Re-init from scratch
+  veInit();
+  toast('↩ Semua perubahan direset', 'info');
+}
+
+// ── Copy HTML ─────────────────────────────
+function veCopyHtml() {
+  if (!veState.initialized) { toast('Load preview dulu!', 'warn'); return; }
+  const html = veSerialize();
+  if (!html) return;
+  navigator.clipboard?.writeText(html);
+  toast('✔ HTML dicopy ke clipboard', 'ok');
+}
 </script>
 </body>
 </html>
